@@ -1,183 +1,122 @@
+!*****************************************************************************************
+!>
+!  Implementation of geodesic routines in Fortran
+!
 ! The subroutines in this files are documented at
 ! https://geodesic_module.sourceforge.io/html/Fortran/
 !
-!> @file geodesic.for
-!! @brief Implementation of geodesic routines in Fortran
-!!
-!! This is a Fortran implementation of the geodesic algorithms described
-!! in
-!! - C. F. F. Karney,
-!!   <a href="https://doi.org/10.1007/s00190-012-0578-z">
-!!   Algorithms for geodesics</a>,
-!!   J. Geodesy <b>87</b>, 43--55 (2013);
-!!   DOI: <a href="https://doi.org/10.1007/s00190-012-0578-z">
-!!   10.1007/s00190-012-0578-z</a>;
-!!   <a href=
-!!   "https://geodesic_module.sourceforge.io/geod-addenda.html">
-!!   addenda</a>.
-!! .
-!! The principal advantages of these algorithms over previous ones
-!! (e.g., Vincenty, 1975) are
-!! - accurate to round off for |<i>f</i>| &lt; 1/50;
-!! - the solution of the inverse problem is always found;
-!! - differential and integral properties of geodesics are computed.
-!!
-!! The shortest path between two points on the ellipsoid at (\e lat1, \e
-!! lon1) and (\e lat2, \e lon2) is called the geodesic.  Its length is
-!! \e s12 and the geodesic from point 1 to point 2 has forward azimuths
-!! \e azi1 and \e azi2 at the two end points.
-!!
-!! Traditionally two geodesic problems are considered:
-!! - the direct problem -- given \e lat1, \e lon1, \e s12, and \e azi1,
-!!   determine \e lat2, \e lon2, and \e azi2.  This is solved by the
-!!   subroutine direct().
-!! - the inverse problem -- given \e lat1, \e lon1, \e lat2, \e lon2,
-!!   determine \e s12, \e azi1, and \e azi2.  This is solved by the
-!!   subroutine invers().
-!!
-!! The ellipsoid is specified by its equatorial radius \e a (typically
-!! in meters) and flattening \e f.  The routines are accurate to round
-!! off with double precision arithmetic provided that |<i>f</i>| &lt;
-!! 1/50; for the WGS84 ellipsoid, the errors are less than 15
-!! nanometers.  (Reasonably accurate results are obtained for |<i>f</i>|
-!! &lt; 1/5.)  For a prolate ellipsoid, specify \e f &lt; 0.
-!!
-!! The routines also calculate several other quantities of interest
-!! - \e SS12 is the area between the geodesic from point 1 to point 2
-!!   and the equator; i.e., it is the area, measured counter-clockwise,
-!!   of the geodesic quadrilateral with corners (\e lat1,\e lon1), (0,\e
-!!   lon1), (0,\e lon2), and (\e lat2,\e lon2).
-!! - \e m12, the reduced length of the geodesic is defined such that if
-!!   the initial azimuth is perturbed by \e dazi1 (radians) then the
-!!   second point is displaced by \e m12 \e dazi1 in the direction
-!!   perpendicular to the geodesic.  On a curved surface the reduced
-!!   length obeys a symmetry relation, \e m12 + \e m21 = 0.  On a flat
-!!   surface, we have \e m12 = \e s12.
-!! - \e MM12 and \e MM21 are geodesic scales.  If two geodesics are
-!!   parallel at point 1 and separated by a small distance \e dt, then
-!!   they are separated by a distance \e MM12 \e dt at point 2.  \e MM21
-!!   is defined similarly (with the geodesics being parallel to one
-!!   another at point 2).  On a flat surface, we have \e MM12 = \e MM21
-!!   = 1.
-!! - \e a12 is the arc length on the auxiliary sphere.  This is a
-!!   construct for converting the problem to one in spherical
-!!   trigonometry.  \e a12 is measured in degrees.  The spherical arc
-!!   length from one equator crossing to the next is always 180&deg;.
-!!
-!! If points 1, 2, and 3 lie on a single geodesic, then the following
-!! addition rules hold:
-!! - \e s13 = \e s12 + \e s23
-!! - \e a13 = \e a12 + \e a23
-!! - \e SS13 = \e SS12 + \e SS23
-!! - \e m13 = \e m12 \e MM23 + \e m23 \e MM21
-!! - \e MM13 = \e MM12 \e MM23 &minus; (1 &minus; \e MM12 \e MM21) \e
-!!   m23 / \e m12
-!! - \e MM31 = \e MM32 \e MM21 &minus; (1 &minus; \e MM23 \e MM32) \e
-!!   m12 / \e m23
-!!
-!! The shortest distance returned by the solution of the inverse problem
-!! is (obviously) uniquely defined.  However, in a few special cases
-!! there are multiple azimuths which yield the same shortest distance.
-!! Here is a catalog of those cases:
-!! - \e lat1 = &minus;\e lat2 (with neither point at a pole).  If \e
-!!   azi1 = \e azi2, the geodesic is unique.  Otherwise there are two
-!!   geodesics and the second one is obtained by setting [\e azi1, \e
-!!   azi2] &rarr; [\e azi2, \e azi1], [\e MM12, \e MM21] &rarr; [\e
-!!   MM21, \e MM12], \e SS12 &rarr; &minus;\e SS12.  (This occurs when
-!!   the longitude difference is near &plusmn;180&deg; for oblate
-!!   ellipsoids.)
-!! - \e lon2 = \e lon1 &plusmn; 180&deg; (with neither point at a pole).
-!!   If \e azi1 = 0&deg; or &plusmn;180&deg;, the geodesic is unique.
-!!   Otherwise there are two geodesics and the second one is obtained by
-!!   setting [\e azi1, \e azi2] &rarr; [&minus;\e azi1, &minus;\e azi2],
-!!   \e SS12 &rarr; &minus;\e SS12.  (This occurs when \e lat2 is near
-!!   &minus;\e lat1 for prolate ellipsoids.)
-!! - Points 1 and 2 at opposite poles.  There are infinitely many
-!!   geodesics which can be generated by setting [\e azi1, \e azi2]
-!!   &rarr; [\e azi1, \e azi2] + [\e d, &minus;\e d], for arbitrary \e
-!!   d.  (For spheres, this prescription applies when points 1 and 2 are
-!!   antipodal.)
-!! - \e s12 = 0 (coincident points).  There are infinitely many
-!!   geodesics which can be generated by setting [\e azi1, \e azi2]
-!!   &rarr; [\e azi1, \e azi2] + [\e d, \e d], for arbitrary \e d.
-!!
-!! These routines are a simple transcription of the corresponding C++
-!! classes in <a href="https://geodesic_module.sourceforge.io">
-!! geodesic_module</a>.  Because of the limitations of Fortran 77, the
-!! classes have been replaced by simple subroutines with no attempt to
-!! save "state" across subroutine calls.  Most of the internal comments
-!! have been retained.  However, in the process of transcription some
-!! documentation has been lost and the documentation for the C++
-!! classes, geodesic_module::Geodesic, geodesic_module::GeodesicLine, and
-!! geodesic_module::PolygonAreaT, should be consulted.  The C++ code
-!! remains the "reference implementation".  Think twice about
-!! restructuring the internals of the Fortran code since this may make
-!! porting fixes from the C++ code more difficult.
-!!
-!! Copyright (c) Charles Karney (2012-2022) <charles@karney.com> and
-!! licensed under the MIT/X11 License.  For more information, see
-!! https://geodesic_module.sourceforge.io/
-
-!> Solve the direct geodesic problem
-!!
-!! @param[in] a the equatorial radius (meters).
-!! @param[in] f the flattening of the ellipsoid.  Setting \e f = 0 gives
-!!   a sphere.  Negative \e f gives a prolate ellipsoid.
-!! @param[in] lat1 latitude of point 1 (degrees).
-!! @param[in] lon1 longitude of point 1 (degrees).
-!! @param[in] azi1 azimuth at point 1 (degrees).
-!! @param[in] s12a12 if \e arcmode is not set, this is the distance
-!!   from point 1 to point 2 (meters); otherwise it is the arc
-!!   length from point 1 to point 2 (degrees); it can be negative.
-!! @param[in] flags a bitor'ed combination of the \e arcmode and \e
-!!   unroll flags.
-!! @param[out] lat2 latitude of point 2 (degrees).
-!! @param[out] lon2 longitude of point 2 (degrees).
-!! @param[out] azi2 (forward) azimuth at point 2 (degrees).
-!! @param[in] omask a bitor'ed combination of mask values
-!!   specifying which of the following parameters should be set.
-!! @param[out] a12s12 if \e arcmode is not set, this is the arc length
-!!   from point 1 to point 2 (degrees); otherwise it is the distance
-!!   from point 1 to point 2 (meters).
-!! @param[out] m12 reduced length of geodesic (meters).
-!! @param[out] MM12 geodesic scale of point 2 relative to point 1
-!!   (dimensionless).
-!! @param[out] MM21 geodesic scale of point 1 relative to point 2
-!!   (dimensionless).
-!! @param[out] SS12 area under the geodesic (meters<sup>2</sup>).
-!!
-!! \e flags is an integer in [0, 4) whose binary bits are interpreted
-!! as follows
-!! - 1 the \e arcmode flag
-!! - 2 the \e unroll flag
-!! .
-!! If \e arcmode is not set, \e s12a12 is \e s12 and \e a12s12 is \e
-!! a12; otherwise, \e s12a12 is \e a12 and \e a12s12 is \e s12.  It \e
-!! unroll is not set, the value \e lon2 returned is in the range
-!! [&minus;180&deg;, 180&deg;]; if unroll is set, the longitude variable
-!! is "unrolled" so that \e lon2 &minus; \e lon1 indicates how many
-!! times and in what sense the geodesic encircles the ellipsoid.
-!!
-!! \e omask is an integer in [0, 16) whose binary bits are interpreted
-!! as follows
-!! - 1 return \e a12
-!! - 2 return \e m12
-!! - 4 return \e MM12 and \e MM21
-!! - 8 return \e SS12
-!!
-!! \e lat1 should be in the range [&minus;90&deg;, 90&deg;].  The value
-!! \e azi2 returned is in the range [&minus;180&deg;, 180&deg;].
-!!
-!! If either point is at a pole, the azimuth is defined by keeping the
-!! longitude fixed, writing \e lat = \e lat = &plusmn;(90&deg; &minus;
-!! &epsilon;), and taking the limit &epsilon; &rarr; 0+.  An arc length
-!! greater that 180&deg; signifies a geodesic which is not a shortest
-!! path.  (For a prolate ellipsoid, an additional condition is necessary
-!! for a shortest path: the longitudinal extent must not exceed of
-!! 180&deg;.)
-!!
-!! Example of use:
-!! \include geoddirect.for
+! This is a Fortran implementation of the geodesic algorithms described in:
+! - C. F. F. Karney,
+!   <a href="https://doi.org/10.1007/s00190-012-0578-z">
+!   Algorithms for geodesics</a>,
+!   J. Geodesy <b>87</b>, 43--55 (2013);
+!   DOI: <a href="https://doi.org/10.1007/s00190-012-0578-z">
+!   10.1007/s00190-012-0578-z</a>;
+!   <a href=
+!   "https://geodesic_module.sourceforge.io/geod-addenda.html">
+!   addenda</a>.
+!
+! The principal advantages of these algorithms over previous ones
+! (e.g., Vincenty, 1975) are
+! - accurate to round off for |<i>f</i>| &lt; 1/50;
+! - the solution of the inverse problem is always found;
+! - differential and integral properties of geodesics are computed.
+!
+! The shortest path between two points on the ellipsoid at (\e lat1, \e
+! lon1) and (\e lat2, \e lon2) is called the geodesic.  Its length is
+! \e s12 and the geodesic from point 1 to point 2 has forward azimuths
+! \e azi1 and \e azi2 at the two end points.
+!
+! Traditionally two geodesic problems are considered:
+! - the direct problem -- given \e lat1, \e lon1, \e s12, and \e azi1,
+!   determine \e lat2, \e lon2, and \e azi2.  This is solved by the
+!   subroutine direct().
+! - the inverse problem -- given \e lat1, \e lon1, \e lat2, \e lon2,
+!   determine \e s12, \e azi1, and \e azi2.  This is solved by the
+!   subroutine invers().
+!
+! The ellipsoid is specified by its equatorial radius \e a (typically
+! in meters) and flattening \e f.  The routines are accurate to round
+! off with double precision arithmetic provided that |<i>f</i>| &lt;
+! 1/50; for the WGS84 ellipsoid, the errors are less than 15
+! nanometers.  (Reasonably accurate results are obtained for |<i>f</i>|
+! &lt; 1/5.)  For a prolate ellipsoid, specify \e f &lt; 0.
+!
+! The routines also calculate several other quantities of interest
+! - \e SS12 is the area between the geodesic from point 1 to point 2
+!   and the equator; i.e., it is the area, measured counter-clockwise,
+!   of the geodesic quadrilateral with corners (\e lat1,\e lon1), (0,\e
+!   lon1), (0,\e lon2), and (\e lat2,\e lon2).
+! - \e m12, the reduced length of the geodesic is defined such that if
+!   the initial azimuth is perturbed by \e dazi1 (radians) then the
+!   second point is displaced by \e m12 \e dazi1 in the direction
+!   perpendicular to the geodesic.  On a curved surface the reduced
+!   length obeys a symmetry relation, \e m12 + \e m21 = 0.  On a flat
+!   surface, we have \e m12 = \e s12.
+! - \e MM12 and \e MM21 are geodesic scales.  If two geodesics are
+!   parallel at point 1 and separated by a small distance \e dt, then
+!   they are separated by a distance \e MM12 \e dt at point 2.  \e MM21
+!   is defined similarly (with the geodesics being parallel to one
+!   another at point 2).  On a flat surface, we have \e MM12 = \e MM21
+!   = 1.
+! - \e a12 is the arc length on the auxiliary sphere.  This is a
+!   construct for converting the problem to one in spherical
+!   trigonometry.  \e a12 is measured in degrees.  The spherical arc
+!   length from one equator crossing to the next is always 180 deg.
+!
+! If points 1, 2, and 3 lie on a single geodesic, then the following
+! addition rules hold:
+! - \e s13 = \e s12 + \e s23
+! - \e a13 = \e a12 + \e a23
+! - \e SS13 = \e SS12 + \e SS23
+! - \e m13 = \e m12 \e MM23 + \e m23 \e MM21
+! - \e MM13 = \e MM12 \e MM23 - (1 - \e MM12 \e MM21) \e
+!   m23 / \e m12
+! - \e MM31 = \e MM32 \e MM21 - (1 - \e MM23 \e MM32) \e
+!   m12 / \e m23
+!
+! The shortest distance returned by the solution of the inverse problem
+! is (obviously) uniquely defined.  However, in a few special cases
+! there are multiple azimuths which yield the same shortest distance.
+! Here is a catalog of those cases:
+! - \e lat1 = -\e lat2 (with neither point at a pole).  If \e
+!   azi1 = \e azi2, the geodesic is unique.  Otherwise there are two
+!   geodesics and the second one is obtained by setting [\e azi1, \e
+!   azi2] &rarr; [\e azi2, \e azi1], [\e MM12, \e MM21] &rarr; [\e
+!   MM21, \e MM12], \e SS12 &rarr; -\e SS12.  (This occurs when
+!   the longitude difference is near &plusmn;180 deg for oblate
+!   ellipsoids.)
+! - \e lon2 = \e lon1 &plusmn; 180 deg (with neither point at a pole).
+!   If \e azi1 = 0 deg or &plusmn;180 deg, the geodesic is unique.
+!   Otherwise there are two geodesics and the second one is obtained by
+!   setting [\e azi1, \e azi2] &rarr; [-\e azi1, -\e azi2],
+!   \e SS12 &rarr; -\e SS12.  (This occurs when \e lat2 is near
+!   -\e lat1 for prolate ellipsoids.)
+! - Points 1 and 2 at opposite poles.  There are infinitely many
+!   geodesics which can be generated by setting [\e azi1, \e azi2]
+!   &rarr; [\e azi1, \e azi2] + [\e d, -\e d], for arbitrary \e
+!   d.  (For spheres, this prescription applies when points 1 and 2 are
+!   antipodal.)
+! - \e s12 = 0 (coincident points).  There are infinitely many
+!   geodesics which can be generated by setting [\e azi1, \e azi2]
+!   &rarr; [\e azi1, \e azi2] + [\e d, \e d], for arbitrary \e d.
+!
+! These routines are a simple transcription of the corresponding C++
+! classes in <a href="https://geodesic_module.sourceforge.io">
+! geodesic_module</a>.  Because of the limitations of Fortran 77, the
+! classes have been replaced by simple subroutines with no attempt to
+! save "state" across subroutine calls.  Most of the internal comments
+! have been retained.  However, in the process of transcription some
+! documentation has been lost and the documentation for the C++
+! classes, geodesic_module::Geodesic, geodesic_module::GeodesicLine, and
+! geodesic_module::PolygonAreaT, should be consulted.  The C++ code
+! remains the "reference implementation".  Think twice about
+! restructuring the internals of the Fortran code since this may make
+! porting fixes from the C++ code more difficult.
+!
+! Copyright (c) Charles Karney (2012-2022) <charles@karney.com> and
+! licensed under the MIT/X11 License.  For more information, see
+! https://geodesic_module.sourceforge.io/
 
 module geodesic_module
 
@@ -208,13 +147,66 @@ module geodesic_module
   double precision,parameter,private :: xthrsh = 1000 * tol2
 
 contains
+!*****************************************************************************************
+
+!*****************************************************************************************
+!>
+!  Solve the direct geodesic problem.
+!
+!### Notes
+!  If `arcmode` is not set, `s12a12` is `s12` and `a12s12` is
+!  `a12`; otherwise, `s12a12` is `a12` and `a12s12` is `s12`.  If
+!  `unroll` is not set, the value `lon2` returned is in the range
+!  [-180 deg, 180 deg]; if `unroll` is set, the longitude variable
+!  is "unrolled" so that `lon2 - lon1` indicates how many
+!  times and in what sense the geodesic encircles the ellipsoid.
+!
+!  If either point is at a pole, the azimuth is defined by keeping the
+!  longitude fixed, writing `lat = lat = +/- (90 deg - Epsilon)`,
+!  and taking the limit Epsilon --> 0+.  An arc length
+!  greater that 180 deg signifies a geodesic which is not a shortest
+!  path.  (For a prolate ellipsoid, an additional condition is necessary
+!  for a shortest path: the longitudinal extent must not exceed of
+!  180 deg.)
 
 subroutine direct(a, f, lat1, lon1, azi1, s12a12, flags, &
                   lat2, lon2, azi2, omask, a12s12, m12, MM12, MM21, SS12)
-  double precision, intent(in) :: a, f, lat1, lon1, azi1, s12a12
-  integer, intent(in) :: flags, omask
-  double precision, intent(out) :: lat2, lon2, azi2
-  double precision, intent(out) :: a12s12, m12, MM12, MM21, SS12
+
+  double precision, intent(in) :: a !! the equatorial radius (meters).
+  double precision, intent(in) :: f !! the flattening of the ellipsoid.  Setting `f = 0` gives
+                                    !! a sphere.  Negative `f` gives a prolate ellipsoid.
+  double precision, intent(in) :: lat1 !! lat1 latitude of point 1 (degrees). `lat1` should be in the range [-90 deg, 90 deg].
+  double precision, intent(in) :: lon1 !! lon1 longitude of point 1 (degrees).
+  double precision, intent(in) :: azi1 !! azi1 azimuth at point 1 (degrees).
+  double precision, intent(in) :: s12a12 !! if `arcmode` is not set, this is the distance
+                                         !! from point 1 to point 2 (meters); otherwise it is the arc
+                                         !! length from point 1 to point 2 (degrees); it can be negative.
+  integer, intent(in) :: flags !! a bitor'ed combination of the `arcmode` and `unroll` flags.
+                               !!
+                               !! `flags` is an integer in [0, 4) whose binary bits are interpreted as follows:
+                               !!
+                               !!  * 1 the `arcmode` flag
+                               !!  * 2 the `unroll` flag
+  integer, intent(in) :: omask !! a bitor'ed combination of mask values
+                               !! specifying which of the following parameters should be set.
+                               !!
+                               !! omask is an integer in [0, 16) whose binary bits are interpreted
+                               !! as follows:
+                               !!
+                               !!  * 1 return `a12`
+                               !!  * 2 return `m12`
+                               !!  * 4 return `MM12` and `MM21`
+                               !!  * 8 return `SS12`
+  double precision, intent(out) :: lat2 !! latitude of point 2 (degrees).
+  double precision, intent(out) :: lon2 !! longitude of point 2 (degrees).
+  double precision, intent(out) :: azi2 !! (forward) azimuth at point 2 (degrees). The value `azi2` returned is in the range [-180 deg, 180 deg].
+  double precision, intent(out) :: a12s12 !! if `arcmode` is not set, this is the arc length
+                                          !! from point 1 to point 2 (degrees); otherwise it is the distance
+                                          !! from point 1 to point 2 (meters).
+  double precision, intent(out) :: m12 !! reduced length of geodesic (meters).
+  double precision, intent(out) :: MM12 !! geodesic scale of point 2 relative to point 1 (dimensionless).
+  double precision, intent(out) :: MM21 !! geodesic scale of point 1 relative to point 2 (dimensionless).
+  double precision, intent(out) :: SS12 !! area under the geodesic (meters<sup>2</sup>).
 
 integer ord, nC1, nC1p, nC2, nA3, nA3x, nC3, nC3x, nC4, nC4x
 parameter (ord = 6, nC1 = ord, nC1p = ord, &
@@ -224,8 +216,6 @@ parameter (ord = 6, nC1 = ord, nC1p = ord, &
 double precision A3x(0:nA3x-1), C3x(0:nC3x-1), C4x(0:nC4x-1), &
     C1a(nC1), C1pa(nC1p), C2a(nC2), C3a(nC3-1), C4a(0:nC4-1)
 
-! double precision atanhx, hypotx, &
-!     AngNm, AngRnd, TrgSum, A1m1f, A2m1f, A3f, atn2dx, LatFix
 logical arcmod, unroll, arcp, redlp, scalp, areap
 double precision e2, f1, ep2, n, b, c2, &
     salp0, calp0, k2, eps, &
@@ -522,12 +512,12 @@ end subroutine direct
 !! - 4 return \e MM12 and \e MM21
 !! - 8 return \e SS12
 !!
-!! \e lat1 and \e lat2 should be in the range [&minus;90&deg;, 90&deg;].
+!! \e lat1 and \e lat2 should be in the range [-90 deg, 90 deg].
 !! The values of \e azi1 and \e azi2 returned are in the range
-!! [&minus;180&deg;, 180&deg;].
+!! [-180 deg, 180 deg].
 !!
 !! If either point is at a pole, the azimuth is defined by keeping the
-!! longitude fixed, writing \e lat = &plusmn;(90&deg; &minus;
+!! longitude fixed, writing \e lat = &plusmn;(90 deg -
 !! &epsilon;), and taking the limit &epsilon; &rarr; 0+.
 !!
 !! The solution to the inverse problem is found using Newton's method.
@@ -956,7 +946,7 @@ end subroutine invers
 !! @param[out] AA the (signed) area of the polygon (meters<sup>2</sup>).
 !! @param[out] PP the perimeter of the polygon.
 !!
-!! \e lats should be in the range [&minus;90&deg;, 90&deg;].
+!! \e lats should be in the range [-90 deg, 90 deg].
 !!
 !! Arbitrarily complex polygons are allowed.  In the case of
 !! self-intersecting polygons the area is accumulated "algebraically",

@@ -33,4 +33,5 @@
 
 #misc
 build/
+doc/
 .DS_Store
