@@ -175,6 +175,9 @@ module geodesic_module
   public :: great_circle_distance
   public :: geocentric_radius
 
+  ! other routines
+  public :: AngDif,AngNm,sumx,LatFix,atn2dx,AngRnd,sncsdx
+
 contains
 !*****************************************************************************************
 
@@ -801,22 +804,21 @@ else if (.not. merid) then
     calp1b = -1
     tripn = .false.
     tripb = .false.
-    do 10 numit = 0, maxit2-1
-    ! the WGS84 test set: mean = 1.47, sd = 1.25, max = 16
-    ! WGS84 and random input: mean = 2.85, sd = 0.60
+    do numit = 0, maxit2-1
+      ! the WGS84 test set: mean = 1.47, sd = 1.25, max = 16
+      ! WGS84 and random input: mean = 2.85, sd = 0.60
       v = Lam12f(sbet1, cbet1, dn1, sbet2, cbet2, dn2, &
           salp1, calp1, slam12, clam12, f, A3x, C3x, salp2, calp2, &
           sig12, ssig1, csig1, ssig2, csig2, &
           eps, domg12, numit < maxit1, dv, Ca)
-! Reversed test to allow escape with NaNs
+      ! Reversed test to allow escape with NaNs
       if (tripn) then
         dummy = 8
       else
         dummy = 1
       end if
-      if (tripb .or. .not. (abs(v) >= dummy * tol0)) &
-          go to 20
-! Update bracketing values
+      if (tripb .or. .not. (abs(v) >= dummy * tol0)) exit
+      ! Update bracketing values
       if (v > 0 .and. (numit > maxit1 .or. &
           calp1/salp1 > calp1b/salp1b)) then
         salp1b = salp1
@@ -835,29 +837,28 @@ else if (.not. merid) then
           calp1 = calp1 * cdalp1 - salp1 * sdalp1
           salp1 = nsalp1
           call norm2x(salp1, calp1)
-! In some regimes we don't get quadratic convergence because
-! slope -> 0.  So use convergence conditions based on dbleps
-! instead of sqrt(dbleps).
+          ! In some regimes we don't get quadratic convergence because
+          ! slope -> 0.  So use convergence conditions based on dbleps
+          ! instead of sqrt(dbleps).
           tripn = abs(v) <= 16 * tol0
-          go to 10
+          cycle
         end if
       end if
-! Either dv was not positive or updated value was outside legal
-! range.  Use the midpoint of the bracket as the next estimate.
-! This mechanism is not needed for the WGS84 ellipsoid, but it does
-! catch problems with more eccentric ellipsoids.  Its efficacy is
-! such for the WGS84 test set with the starting guess set to alp1 =
-! 90deg:
-! the WGS84 test set: mean = 5.21, sd = 3.93, max = 24
-! WGS84 and random input: mean = 4.74, sd = 0.99
+      ! Either dv was not positive or updated value was outside legal
+      ! range.  Use the midpoint of the bracket as the next estimate.
+      ! This mechanism is not needed for the WGS84 ellipsoid, but it does
+      ! catch problems with more eccentric ellipsoids.  Its efficacy is
+      ! such for the WGS84 test set with the starting guess set to alp1 =
+      ! 90deg:
+      ! the WGS84 test set: mean = 5.21, sd = 3.93, max = 24
+      ! WGS84 and random input: mean = 4.74, sd = 0.99
       salp1 = (salp1a + salp1b)/2
       calp1 = (calp1a + calp1b)/2
       call norm2x(salp1, calp1)
       tripn = .false.
       tripb = abs(salp1a - salp1) + (calp1a - calp1) < tolb &
           .or. abs(salp1 - salp1b) + (calp1 - calp1b) < tolb
-10     continue
-20     continue
+    end do
     call Lengs(eps, sig12, ssig1, csig1, dn1, ssig2, csig2, dn2, &
         cbet1, cbet2, lmask, &
         s12x, m12x, dummy, MM12, MM21, ep2, Ca)
@@ -987,14 +988,14 @@ omask = 8
 call accini(Aacc)
 call accini(Pacc)
 cross = 0
-do 10 i = 0, n-1
+do i = 0, n-1
   call invers(a, f, lats(i+1), lons(i+1), &
       lats(mod(i+1,n)+1), lons(mod(i+1,n)+1), &
       s12, azi1, azi2, omask, dummy, dummy, dummy, dummy, SS12)
   call accadd(Pacc, s12)
   call accadd(Aacc, -SS12)
   cross = cross + trnsit(lons(i+1), lons(mod(i+1,n)+1))
-10 continue
+end do
 PP = Pacc(1)
 b = a * (1 - f)
 e2 = f * (2 - f)
@@ -1077,9 +1078,9 @@ if (distp) then
   end if
 else if (redlp .or. scalp) then
 ! Assume here that nC1 >= nC2
-  do 10 l = 1, nC2
+  do l = 1, nC2
     Cb(l) = A1 * Ca(l) - A2 * Cb(l)
-10   continue
+  end do
   J12 = m0x * sig12 + (TrgSum(.true., ssig2, csig2, Cb, nC2) - &
       TrgSum(.true., ssig1, csig1, Cb, nC2))
 end if
@@ -1259,7 +1260,6 @@ if (shortp .and. ssig12 < etol2) then
 else if (abs(n) > 0.1d0 .or. csig12 >= 0 .or. &
       ssig12 >= 6 * abs(n) * pi * cbet1**2) then
 ! Nothing to do, zeroth order spherical approximation is OK
-  continue
 else
 ! lam12 - pi
   lam12x = atan2(-slam12, -clam12)
@@ -1504,12 +1504,12 @@ real(wp) mult
 
 mult = 1
 o = 0
-do 10 l = 1, nC3 - 1
+do l = 1, nC3 - 1
   m = nC3 - l - 1
   mult = mult * eps
   c(l) = mult * polval(m, C3x(o), eps)
   o = o + m + 1
-10 continue
+end do
 
 end subroutine C3f
 
@@ -1529,12 +1529,12 @@ real(wp) mult
 
 mult = 1
 o = 0
-do 10 l = 0, nC4 - 1
+do l = 0, nC4 - 1
   m = nC4 - l - 1
   c(l) = mult * polval(m, C4x(o), eps)
   o = o + m + 1
   mult = mult * eps
-10 continue
+end do
 
 end subroutine C4f
 
@@ -1580,12 +1580,12 @@ data coeff / &
 eps2 = eps**2
 d = eps
 o = 1
-do 10 l = 1, nC1
+do l = 1, nC1
   m = (nC1 - l) / 2
   c(l) = d * polval(m, coeff(o), eps2) / coeff(o + m + 1)
   o = o + m + 2
   d = d * eps
-10 continue
+end do
 
 end subroutine C1f
 
@@ -1613,12 +1613,12 @@ data coeff / &
 eps2 = eps**2
 d = eps
 o = 1
-do 10 l = 1, nC1p
+do l = 1, nC1p
   m = (nC1p - l) / 2
   c(l) = d * polval(m, coeff(o), eps2) / coeff(o + m + 1)
   o = o + m + 2
   d = d * eps
-10 continue
+end do
 
 end subroutine C1pf
 
@@ -1664,12 +1664,12 @@ data coeff / &
 eps2 = eps**2
 d = eps
 o = 1
-do 10 l = 1, nC2
+do l = 1, nC2
   m = (nC2 - l) / 2
   c(l) = d * polval(m, coeff(o), eps2) / coeff(o + m + 1)
   o = o + m + 2
   d = d * eps
-10 continue
+end do
 
 end subroutine C2f
 
@@ -1695,12 +1695,12 @@ data coeff / &
 
 o = 1
 k = 0
-do 10 j = nA3 - 1, 0, -1
+do j = nA3 - 1, 0, -1
   m = min(nA3 - j - 1, j)
   A3x(k) = polval(m, coeff(o), n) / coeff(o + m + 1)
   k = k + 1
   o = o + m + 2
-10 continue
+end do
 
 end subroutine A3cof
 
@@ -1735,14 +1735,14 @@ data coeff / &
 
 o = 1
 k = 0
-do 20 l = 1, nC3 - 1
-  do 10 j = nC3 - 1, l, -1
+do l = 1, nC3 - 1
+  do j = nC3 - 1, l, -1
     m = min(nC3 - j - 1, j)
     C3x(k) = polval(m, coeff(o), n) / coeff(o + m + 1)
     k = k + 1
     o = o + m + 2
-10   continue
-20 continue
+  end do
+end do
 
 end subroutine C3cof
 
@@ -1774,14 +1774,14 @@ data coeff / &
 
 o = 1
 k = 0
-do 20 l = 0, nC4 - 1
-  do 10 j = nC4 - 1, l, -1
+do l = 0, nC4 - 1
+  do j = nC4 - 1, l, -1
     m = nC4 - j - 1
     C4x(k) = polval(m, coeff(o), n) / coeff(o + m + 1)
     k = k + 1
     o = o + m + 2
-10   continue
-20 continue
+  end do
+end do
 
 end subroutine C4cof
 
@@ -1977,11 +1977,11 @@ else
 end if
 y1 = 0
 ! Now n2 is even
-do 10 k = n2, 2, -2
-! Unroll loop x 2, so accumulators return to their original role
+do k = n2, 2, -2
+  ! Unroll loop x 2, so accumulators return to their original role
   y1 = ar * y0 - y1 + c(k)
   y0 = ar * y1 - y0 + c(k-1)
-10 continue
+end do
 if (sinp) then
 ! sin(2 * x) * y0
   TrgSum = 2 * sinx * cosx * y0
@@ -2166,9 +2166,9 @@ if (N < 0) then
 else
   polval = p(0)
 end if
-do 10 i = 1, N
+do i = 1, N
   polval = polval * x + p(i)
-10 continue
+end do
 
 end function polval
 
