@@ -124,44 +124,46 @@ module geodesic_module
 
   implicit none
 
-  real(wp),parameter,private :: zero = 0.0_wp
-  real(wp),parameter,private :: one = 1.0_wp
-  real(wp),parameter,private :: two = 2.0_wp
-  real(wp),parameter,private :: three = 3.0_wp
+  private
 
-  integer,parameter,private :: maxit1 = 20
-  integer,parameter,private :: maxit2 = maxit1 + digits(one) + 10
+  real(wp),parameter :: zero = 0.0_wp
+  real(wp),parameter :: one = 1.0_wp
+  real(wp),parameter :: two = 2.0_wp
+  real(wp),parameter :: three = 3.0_wp
 
-  real(wp),parameter,private :: dblmin = tiny(one) !! 0.5d0**1022
-  real(wp),parameter,private :: dbleps = epsilon(one) !! 0.5d0**(digits-1)
+  integer,parameter :: maxit1 = 20
+  integer,parameter :: maxit2 = maxit1 + digits(one) + 10
 
-  real(wp),parameter,private :: pi = atan2(zero, -one)
-  real(wp),parameter,private :: degree = pi/180.0_wp
-  real(wp),parameter,private :: twopi = two * pi
-  real(wp),parameter,private :: halfpi = pi / two
+  real(wp),parameter :: dblmin = tiny(one) !! 0.5d0**1022
+  real(wp),parameter :: dbleps = epsilon(one) !! 0.5d0**(digits-1)
+
+  real(wp),parameter :: pi = atan2(zero, -one)
+  real(wp),parameter :: degree = pi/180.0_wp
+  real(wp),parameter :: twopi = two * pi
+  real(wp),parameter :: halfpi = pi / two
 
   ! This is about cbrt(dblmin).  With other implementations, sqrt(dblmin)
   ! is used.  The larger value is used here to avoid complaints about a
   ! IEEE_UNDERFLOW_FLAG IEEE_DENORMAL signal.  This is triggered when
   ! invers is called with points at opposite poles.
-  real(wp),parameter,private :: tiny2 = dblmin**(one/three) !! 0.5d0**((1022+1)/3)
-  real(wp),parameter,private :: tol0 = dbleps
+  real(wp),parameter :: tiny2 = dblmin**(one/three) !! 0.5d0**((1022+1)/3)
+  real(wp),parameter :: tol0 = dbleps
 
   ! Increase multiplier in defn of tol1 from 100 to 200 to fix inverse
   ! case 52.784459512564 0 -52.784459512563990912 179.634407464943777557
   ! which otherwise failed for Visual Studio 10 (Release and Debug)
-  real(wp),parameter,private :: tol1 = 200.0_wp * tol0
-  real(wp),parameter,private :: tol2 = sqrt(tol0)
+  real(wp),parameter :: tol1 = 200.0_wp * tol0
+  real(wp),parameter :: tol2 = sqrt(tol0)
 
   ! Check on bisection interval
-  real(wp),parameter,private :: tolb = tol0 * tol2
-  real(wp),parameter,private :: xthrsh = 1000.0_wp * tol2
+  real(wp),parameter :: tolb = tol0 * tol2
+  real(wp),parameter :: xthrsh = 1000.0_wp * tol2
 
   public :: direct
   public :: invers
   public :: direct_vincenty
   public :: inverse_vincenty
-
+  public :: area
   public :: heikkinen
   public :: olson
   public :: cartesian_to_geodetic_triaxial
@@ -233,7 +235,7 @@ subroutine direct(a, f, lat1, lon1, azi1, s12a12, flags, &
   real(wp), intent(out) :: m12 !! reduced length of geodesic (meters).
   real(wp), intent(out) :: MM12 !! geodesic scale of point 2 relative to point 1 (dimensionless).
   real(wp), intent(out) :: MM21 !! geodesic scale of point 1 relative to point 2 (dimensionless).
-  real(wp), intent(out) :: SS12 !! area under the geodesic (meters<sup>2</sup>).
+  real(wp), intent(out) :: SS12 !! area under the geodesic (\(m^2\)).
 
 integer ord, nC1, nC1p, nC2, nA3, nA3x, nC3, nC3x, nC4, nC4x
 parameter (ord = 6, nC1 = ord, nC1p = ord, &
@@ -554,7 +556,7 @@ real(wp), intent(out) :: a12 !! arc length from point 1 to point 2 (degrees).
 real(wp), intent(out) :: m12 !! reduced length of geodesic (meters).
 real(wp), intent(out) :: MM12 !! MM12 geodesic scale of point 2 relative to point 1 (dimensionless).
 real(wp), intent(out) :: MM21 !! MM21 geodesic scale of point 1 relative to point 2 (dimensionless).
-real(wp), intent(out) :: SS12 !! SS12 area under the geodesic (meters<sup>2</sup>).
+real(wp), intent(out) :: SS12 !! SS12 area under the geodesic (\(m^2\)).
 
 integer ord, nA3, nA3x, nC3, nC3x, nC4, nC4x, nC
 parameter (ord = 6, nA3 = ord, nA3x = nA3, &
@@ -954,30 +956,28 @@ if (arcp) a12 = a12x
 
 end subroutine invers
 
-!> Determine the area of a geodesic polygon
-!!
-!! @param[in] a the equatorial radius (meters).
-!! @param[in] f the flattening of the ellipsoid.  Setting \e f = 0 gives
-!!   a sphere.  Negative \e f gives a prolate ellipsoid.
-!! @param[in] lats an array of the latitudes of the vertices (degrees).
-!! @param[in] lons an array of the longitudes of the vertices (degrees).
-!! @param[in] n the number of vertices.
-!! @param[out] AA the (signed) area of the polygon (meters<sup>2</sup>).
-!! @param[out] PP the perimeter of the polygon.
-!!
-!! \e lats should be in the range [-90 deg, 90 deg].
-!!
-!! Arbitrarily complex polygons are allowed.  In the case of
-!! self-intersecting polygons the area is accumulated "algebraically",
-!! e.g., the areas of the 2 loops in a figure-8 polygon will partially
-!! cancel.  There's no need to "close" the polygon by repeating the
-!! first vertex.  The area returned is signed with counter-clockwise
-!! traversal being treated as positive.
+!*****************************************************************************************
+!>
+!  Determine the area of a geodesic polygon
+!
+!  Arbitrarily complex polygons are allowed.  In the case of
+!  self-intersecting polygons the area is accumulated "algebraically",
+!  e.g., the areas of the 2 loops in a figure-8 polygon will partially
+!  cancel.  There's no need to "close" the polygon by repeating the
+!  first vertex.  The area returned is signed with counter-clockwise
+!  traversal being treated as positive.
 
 subroutine area(a, f, lats, lons, n, AA, PP)
-  integer, intent(in) :: n
-  real(wp), intent(in) :: a, f, lats(n), lons(n)
-  real(wp), intent(out) :: AA, PP
+
+  integer, intent(in) :: n !! number of points
+  real(wp), intent(in) :: a !! the equatorial radius (meters).
+  real(wp), intent(in) :: f !! the flattening of the ellipsoid.  Setting `f = 0` gives
+                            !! a sphere.  Negative `f` gives a prolate ellipsoid.
+  real(wp), intent(in) :: lats(n) !! an array of the latitudes of the vertices (degrees).
+                                  !! lats should be in the range [-90 deg, 90 deg].
+  real(wp), intent(in) :: lons(n) !! an array of the longitudes of the vertices (degrees).
+  real(wp), intent(out) :: AA !! the (signed) area of the polygon (\(m^2\)).
+  real(wp), intent(out) :: PP !! the perimeter of the polygon.
 
 integer i, omask, cross
 real(wp) s12, azi1, azi2, dummy, SS12, b, e2, c2, area0, &
@@ -1022,23 +1022,6 @@ end if
 AA = Aacc(1)
 
 end subroutine area
-
-!> Return the version numbers for this package.
-!!
-!! @param[out] major the major version number.
-!! @param[out] minor the minor version number.
-!! @param[out] patch the patch number.
-!!
-!! This subroutine was added with version 1.44.
-
-subroutine geover(major, minor, patch)
-  integer, intent(out) :: major, minor, patch
-
-major = 2
-minor = 0
-patch = 0
-
-end subroutine geover
 
 subroutine Lengs(eps, sig12, ssig1, csig1, dn1, ssig2, csig2, dn2, &
     cbet1, cbet2, omask, &
