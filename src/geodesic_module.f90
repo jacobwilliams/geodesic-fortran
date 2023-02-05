@@ -135,8 +135,8 @@ module geodesic_module
   integer,parameter :: maxit1 = 20
   integer,parameter :: maxit2 = maxit1 + digits(one) + 10
 
-  real(wp),parameter :: dblmin = tiny(one) !! 0.5d0**1022
-  real(wp),parameter :: dbleps = epsilon(one) !! 0.5d0**(digits-1)
+  real(wp),parameter :: dblmin = tiny(one) !! 0.5_wp**1022
+  real(wp),parameter :: dbleps = epsilon(one) !! 0.5_wp**(digits-1)
 
   real(wp),parameter :: pi = atan2(zero, -one)
   real(wp),parameter :: degree = pi/180.0_wp
@@ -147,7 +147,7 @@ module geodesic_module
   ! is used.  The larger value is used here to avoid complaints about a
   ! IEEE_UNDERFLOW_FLAG IEEE_DENORMAL signal.  This is triggered when
   ! invers is called with points at opposite poles.
-  real(wp),parameter :: tiny2 = dblmin**(one/three) !! 0.5d0**((1022+1)/3)
+  real(wp),parameter :: tiny2 = dblmin**(one/three) !! 0.5_wp**((1022+1)/3)
   real(wp),parameter :: tol0 = dbleps
 
   ! Increase multiplier in defn of tol1 from 100 to 200 to fix inverse
@@ -1031,17 +1031,19 @@ AA = Aacc(1)
 
 end subroutine area
 
+!*****************************************************************************************
+!>
+!
+
 subroutine Lengs(eps, sig12, ssig1, csig1, dn1, ssig2, csig2, dn2, &
     cbet1, cbet2, omask, &
     s12b, m12b, m0, MM12, MM21, ep2, Ca)
-! input
-real(wp) eps, sig12, ssig1, csig1, dn1, ssig2, csig2, dn2, &
-    cbet1, cbet2, ep2
-integer omask
-! optional output
-real(wp) s12b, m12b, m0, MM12, MM21
-! temporary storage
-real(wp) Ca(*)
+
+real(wp),intent(in) :: eps, sig12, ssig1, csig1, dn1, ssig2, csig2, dn2, &
+                       cbet1, cbet2, ep2
+integer,intent(in) :: omask
+real(wp),intent(out) :: s12b, m12b, m0, MM12, MM21
+real(wp) :: Ca(*) !! temporary storage
 
 integer ord, nC1, nC2
 parameter (ord = 6, nC1 = ord, nC2 = ord)
@@ -1108,14 +1110,17 @@ end if
 
 end subroutine Lengs
 
-real(wp) function Astrd(x, y)
-! Solve k^4+2*k^3-(x^2+y^2-1)*k^2-2*y^2*k-y^2 = 0 for positive root k.
-! This solution is adapted from Geocentric::Reverse.
-! input
-real(wp) x, y
+!*****************************************************************************************
+!>
+!  Solve `k^4+2*k^3-(x^2+y^2-1)*k^2-2*y^2*k-y^2 = 0` for positive root `k`.
+!  This solution is adapted from `Geocentric::Reverse`.
 
-real(wp) k, p, q, r, S, r2, r3, disc, u, &
-    T3, T, ang, v, uv, w
+real(wp) function Astrd(x, y)
+
+real(wp),intent(in) :: x, y
+
+real(wp) :: k, p, q, r, S, r2, r3, disc, u, &
+            T3, T, ang, v, uv, w
 
 p = x**2
 q = y**2
@@ -1180,26 +1185,28 @@ Astrd = k
 
 end function Astrd
 
-real(wp) function InvSta(sbet1, cbet1, dn1, &
-    sbet2, cbet2, dn2, lam12, slam12, clam12, f, A3x, &
-    salp1, calp1, salp2, calp2, dnm, &
-    Ca)
-! Return a starting point for Newton's method in salp1 and calp1
-! (function value is -1).  If Newton's method doesn't need to be used,
-! return also salp2, calp2, and dnm and function value is sig12.
-! input
-real(wp) sbet1, cbet1, dn1, sbet2, cbet2, dn2, &
-    lam12, slam12, clam12, f, A3x(*)
-! output
-real(wp) salp1, calp1, salp2, calp2, dnm
-! temporary
-real(wp) Ca(*)
+!*****************************************************************************************
+!>
+!  Return a starting point for Newton's method in salp1 and calp1
+!  (function value is -1).  If Newton's method doesn't need to be used,
+!  return also salp2, calp2, and dnm and function value is sig12.
 
-logical shortp
-real(wp) f1, e2, ep2, n, etol2, k2, eps, sig12, &
-    sbet12, cbet12, sbt12a, omg12, somg12, comg12, ssig12, csig12, &
-    x, y, lamscl, betscl, cbt12a, bt12a, m12b, m0, dummy, &
-    k, omg12a, sbetm2, lam12x
+real(wp) function InvSta(sbet1, cbet1, dn1, &
+                         sbet2, cbet2, dn2, lam12, slam12, clam12, f, A3x, &
+                         salp1, calp1, salp2, calp2, dnm, &
+                         Ca)
+
+real(wp),intent(in) :: sbet1, cbet1, dn1, sbet2, cbet2, dn2, &
+                       lam12, slam12, clam12, f
+real(wp),intent(inout) :: A3x(*)
+real(wp),intent(out) :: salp1, calp1, salp2, calp2, dnm
+real(wp) :: Ca(*) !! temporary
+
+logical :: shortp
+real(wp) :: f1, e2, ep2, n, etol2, k2, eps, sig12, &
+            sbet12, cbet12, sbt12a, omg12, somg12, comg12, ssig12, csig12, &
+            x, y, lamscl, betscl, cbt12a, bt12a, m12b, m0, dummy, &
+            k, omg12a, sbetm2, lam12x
 
 f1 = 1 - f
 e2 = f * (2 - f)
@@ -1225,8 +1232,8 @@ sbet12 = sbet2 * cbet1 - cbet2 * sbet1
 cbet12 = cbet2 * cbet1 + sbet2 * sbet1
 sbt12a = sbet2 * cbet1 + cbet2 * sbet1
 
-shortp = cbet12 >= 0 .and. sbet12 < 0.5d0 .and. &
-    cbet2 * lam12 < 0.5d0
+shortp = cbet12 >= 0 .and. sbet12 < 0.5_wp .and. &
+    cbet2 * lam12 < 0.5_wp
 
 if (shortp) then
   sbetm2 = (sbet1 + sbet2)**2
@@ -1373,28 +1380,31 @@ InvSta = sig12
 
 end function InvSta
 
+!*****************************************************************************************
+!>
+!
+
 real(wp) function Lam12f(sbet1, cbet1, dn1, &
-    sbet2, cbet2, dn2, salp1, calp1, slm120, clm120, f, A3x, C3x, &
-    salp2, calp2, sig12, ssig1, csig1, ssig2, csig2, eps, &
-    domg12, diffp, dlam12, Ca)
-! input
-real(wp) sbet1, cbet1, dn1, sbet2, cbet2, dn2, &
-    salp1, calp1, slm120, clm120, f, A3x(*), C3x(*)
-logical diffp
-! output
-real(wp) salp2, calp2, sig12, ssig1, csig1, ssig2, csig2, &
-    eps, domg12
-! optional output
-real(wp) dlam12
-! temporary
-real(wp) Ca(*)
+                         sbet2, cbet2, dn2, salp1, calp1, slm120, clm120, f, A3x, C3x, &
+                         salp2, calp2, sig12, ssig1, csig1, ssig2, csig2, eps, &
+                         domg12, diffp, dlam12, Ca)
 
-integer ord, nC3
-parameter (ord = 6, nC3 = ord)
+real(wp),intent(in) :: sbet1, cbet1, dn1, sbet2, cbet2, dn2, &
+                       salp1, slm120, clm120, f, C3x(*)
+real(wp),intent(inout) :: A3x(*)
+real(wp),intent(inout) :: calp1
+logical,intent(in) :: diffp
+real(wp),intent(out) :: salp2, calp2, sig12, ssig1, csig1, ssig2, csig2, &
+                        eps, domg12
+real(wp),intent(out) :: dlam12
+real(wp) :: Ca(*)
 
-real(wp) f1, e2, ep2, salp0, calp0, &
-    somg1, comg1, somg2, comg2, somg12, comg12, &
-    lam12, eta, B312, k2, dummy
+integer,parameter :: ord = 6
+integer,parameter :: nC3 = ord
+
+real(wp) :: f1, e2, ep2, salp0, calp0, &
+            somg1, comg1, somg2, comg2, somg12, comg12, &
+            lam12, eta, B312, k2, dummy
 
 f1 = 1 - f
 e2 = f * (2 - f)
@@ -1481,316 +1491,359 @@ Lam12f = lam12
 
 end function Lam12f
 
-real(wp) function A3f(eps, A3x)
-! Evaluate A3
-integer ord, nA3, nA3x
-parameter (ord = 6, nA3 = ord, nA3x = nA3)
+!*****************************************************************************************
+!>
+!  Evaluate A3
 
-! input
-real(wp) eps
-! output
-real(wp) A3x(0: nA3x-1)
+    real(wp) function A3f(eps, A3x)
 
-A3f = polval(nA3 - 1, A3x, eps)
+    integer,parameter :: ord = 6
+    integer,parameter :: nA3 = ord
+    integer,parameter :: nA3x = nA3
 
-end function A3f
+    real(wp),intent(in) :: eps
+    real(wp),intent(out) :: A3x(0: nA3x-1)
 
-subroutine C3f(eps, C3x, c)
-! Evaluate C3 coeffs
-! Elements c[1] thru c[nC3-1] are set
-integer ord, nC3, nC3x
-parameter (ord = 6, nC3 = ord, nC3x = (nC3 * (nC3 - 1)) / 2)
+    A3f = polval(nA3 - 1, A3x, eps)
 
-! input
-real(wp) eps, C3x(0:nC3x-1)
-! output
-real(wp) c(nC3-1)
+    end function A3f
+!*****************************************************************************************
 
-integer o, m, l
-real(wp) mult
+!*****************************************************************************************
+!>
+!  Evaluate C3 coeffs.
+!  Elements c[1] thru c[nC3-1] are set
 
-mult = 1
-o = 0
-do l = 1, nC3 - 1
-  m = nC3 - l - 1
-  mult = mult * eps
-  c(l) = mult * polval(m, C3x(o), eps)
-  o = o + m + 1
-end do
+    subroutine C3f(eps, C3x, c)
 
-end subroutine C3f
+    integer,parameter :: ord = 6
+    integer,parameter :: nC3 = ord
+    integer,parameter :: nC3x = (nC3 * (nC3 - 1)) / 2
 
-subroutine C4f(eps, C4x, c)
-! Evaluate C4
-! Elements c[0] thru c[nC4-1] are set
-integer ord, nC4, nC4x
-parameter (ord = 6, nC4 = ord, nC4x = (nC4 * (nC4 + 1)) / 2)
+    real(wp),intent(in) :: eps, C3x(0:nC3x-1)
+    real(wp),intent(out) :: c(nC3-1)
 
-! input
-real(wp) eps, C4x(0:nC4x-1)
-!output
-real(wp) c(0:nC4-1)
+    integer :: o, m, l
+    real(wp) :: mult
 
-integer o, m, l
-real(wp) mult
+    mult = 1
+    o = 0
+    do l = 1, nC3 - 1
+        m = nC3 - l - 1
+        mult = mult * eps
+        c(l) = mult * polval(m, C3x(o), eps)
+        o = o + m + 1
+    end do
 
-mult = 1
-o = 0
-do l = 0, nC4 - 1
-  m = nC4 - l - 1
-  c(l) = mult * polval(m, C4x(o), eps)
-  o = o + m + 1
-  mult = mult * eps
-end do
+    end subroutine C3f
+!*****************************************************************************************
 
-end subroutine C4f
+!*****************************************************************************************
+!>
+!  Evaluate C4
+!  Elements c[0] thru c[nC4-1] are set
 
-real(wp) function A1m1f(eps)
-! The scale factor A1-1 = mean value of (d/dsigma)I1 - 1
-! input
-real(wp) eps
+    subroutine C4f(eps, C4x, c)
 
-real(wp) t
-integer ord, nA1, o, m
-parameter (ord = 6, nA1 = ord)
-real(wp) coeff(nA1/2 + 2)
-data coeff /1, 4, 64, 0, 256/
+    integer,parameter :: ord = 6
+    integer,parameter :: nC4 = ord
+    integer,parameter :: nC4x = (nC4 * (nC4 + 1)) / 2
 
-o = 1
-m = nA1/2
-t = polval(m, coeff(o), eps**2) / coeff(o + m + 1)
-A1m1f = (t + eps) / (1 - eps)
+    real(wp),intent(in) :: eps, C4x(0:nC4x-1)
+    real(wp),intent(out) :: c(0:nC4-1)
 
-end function A1m1f
+    integer :: o, m, l
+    real(wp) :: mult
 
-subroutine C1f(eps, c)
-! The coefficients C1[l] in the Fourier expansion of B1
-integer ord, nC1
-parameter (ord = 6, nC1 = ord)
+    mult = 1
+    o = 0
+    do l = 0, nC4 - 1
+    m = nC4 - l - 1
+    c(l) = mult * polval(m, C4x(o), eps)
+    o = o + m + 1
+    mult = mult * eps
+    end do
 
-! input
-real(wp) eps
-! output
-real(wp) c(nC1)
+    end subroutine C4f
+!*****************************************************************************************
 
-real(wp) eps2, d
-integer o, m, l
-real(wp) coeff((nC1**2 + 7*nC1 - 2*(nC1/2))/4)
-data coeff / &
-    -1, 6, -16, 32, &
-    -9, 64, -128, 2048, &
-    9, -16, 768, &
-    3, -5, 512, &
-    -7, 1280, &
-    -7, 2048/
+!*****************************************************************************************
+!>
+!  The scale factor A1-1 = mean value of (d/dsigma)I1 - 1
 
-eps2 = eps**2
-d = eps
-o = 1
-do l = 1, nC1
-  m = (nC1 - l) / 2
-  c(l) = d * polval(m, coeff(o), eps2) / coeff(o + m + 1)
-  o = o + m + 2
-  d = d * eps
-end do
+    real(wp) function A1m1f(eps)
 
-end subroutine C1f
+    integer, parameter :: ord = 6
+    integer, parameter :: nA1 = ord
 
-subroutine C1pf(eps, c)
-! The coefficients C1p[l] in the Fourier expansion of B1p
-integer ord, nC1p
-parameter (ord = 6, nC1p = ord)
+    real(wp),intent(in) :: eps
+    real(wp),dimension(nA1/2 + 2),parameter :: coeff = [1, 4, 64, 0, 256]
 
-! input
-real(wp) eps
-! output
-real(wp) c(nC1p)
+    real(wp) :: t
+    integer :: o, m
 
-real(wp) eps2, d
-integer o, m, l
-real(wp) coeff((nC1p**2 + 7*nC1p - 2*(nC1p/2))/4)
-data coeff / &
-    205, -432, 768, 1536, &
-    4005, -4736, 3840, 12288, &
-    -225, 116, 384, &
-    -7173, 2695, 7680, &
-    3467, 7680, &
-    38081, 61440/
+    o = 1
+    m = nA1/2
+    t = polval(m, coeff(o), eps**2) / coeff(o + m + 1)
+    A1m1f = (t + eps) / (1 - eps)
 
-eps2 = eps**2
-d = eps
-o = 1
-do l = 1, nC1p
-  m = (nC1p - l) / 2
-  c(l) = d * polval(m, coeff(o), eps2) / coeff(o + m + 1)
-  o = o + m + 2
-  d = d * eps
-end do
+    end function A1m1f
+!*****************************************************************************************
 
-end subroutine C1pf
+!*****************************************************************************************
+!>
+!  The coefficients C1[l] in the Fourier expansion of B1
 
-! The scale factor A2-1 = mean value of (d/dsigma)I2 - 1
-real(wp) function A2m1f(eps)
-! input
-real(wp) eps
+    subroutine C1f(eps, c)
 
-real(wp) t
-integer ord, nA2, o, m
-parameter (ord = 6, nA2 = ord)
-real(wp) coeff(nA2/2 + 2)
-data coeff /-11, -28, -192, 0, 256/
+    integer,parameter :: ord = 6
+    integer,parameter :: nC1 = ord
+    integer,parameter :: ncoeff = (nC1**2 + 7*nC1 - 2*(nC1/2))/4
 
-o = 1
-m = nA2/2
-t = polval(m, coeff(o), eps**2) / coeff(o + m + 1)
-A2m1f = (t - eps) / (1 + eps)
+    real(wp),intent(in) :: eps
+    real(wp),intent(out) :: c(nC1)
 
-end function A2m1f
+    real(wp) :: eps2, d
+    integer :: o, m, l
 
-subroutine C2f(eps, c)
-! The coefficients C2[l] in the Fourier expansion of B2
-integer ord, nC2
-parameter (ord = 6, nC2 = ord)
+    real(wp),dimension(ncoeff),parameter :: coeff = [ -1, 6, -16, 32, &
+                                                      -9, 64, -128, 2048, &
+                                                      9, -16, 768, &
+                                                      3, -5, 512, &
+                                                      -7, 1280, &
+                                                      -7, 2048 ]
 
-! input
-real(wp) eps
-! output
-real(wp) c(nC2)
+    eps2 = eps**2
+    d = eps
+    o = 1
+    do l = 1, nC1
+        m = (nC1 - l) / 2
+        c(l) = d * polval(m, coeff(o), eps2) / coeff(o + m + 1)
+        o = o + m + 2
+        d = d * eps
+    end do
 
-real(wp) eps2, d
-integer o, m, l
-real(wp) coeff((nC2**2 + 7*nC2 - 2*(nC2/2))/4)
-data coeff / &
-    1, 2, 16, 32, &
-    35, 64, 384, 2048, &
-    15, 80, 768, &
-    7, 35, 512, &
-    63, 1280, &
-    77, 2048/
+    end subroutine C1f
+!*****************************************************************************************
 
-eps2 = eps**2
-d = eps
-o = 1
-do l = 1, nC2
-  m = (nC2 - l) / 2
-  c(l) = d * polval(m, coeff(o), eps2) / coeff(o + m + 1)
-  o = o + m + 2
-  d = d * eps
-end do
+!*****************************************************************************************
+!>
+!  The coefficients C1p[l] in the Fourier expansion of B1p
 
-end subroutine C2f
+    subroutine C1pf(eps, c)
 
-subroutine A3cof(n, A3x)
-! The scale factor A3 = mean value of (d/dsigma)I3
-integer ord, nA3, nA3x
-parameter (ord = 6, nA3 = ord, nA3x = nA3)
+    integer,parameter :: ord = 6
+    integer,parameter :: nC1p = ord
+    integer,parameter :: ncoeff = (nC1p**2 + 7*nC1p - 2*(nC1p/2))/4
 
-! input
-real(wp) n
-! output
-real(wp) A3x(0:nA3x-1)
+    real(wp),intent(in) :: eps
+    real(wp),intent(out) :: c(nC1p)
 
-integer o, m, k, j
-real(wp) coeff((nA3**2 + 7*nA3 - 2*(nA3/2))/4)
-data coeff / &
-    -3, 128, &
-    -2, -3, 64, &
-    -1, -3, -1, 16, &
-    3, -1, -2, 8, &
-    1, -1, 2, &
-    1, 1/
+    real(wp) :: eps2, d
+    integer :: o, m, l
 
-o = 1
-k = 0
-do j = nA3 - 1, 0, -1
-  m = min(nA3 - j - 1, j)
-  A3x(k) = polval(m, coeff(o), n) / coeff(o + m + 1)
-  k = k + 1
-  o = o + m + 2
-end do
+    real(wp),dimension(ncoeff),parameter :: coeff = [ 205, -432, 768, 1536, &
+                                                      4005, -4736, 3840, 12288, &
+                                                      -225, 116, 384, &
+                                                      -7173, 2695, 7680, &
+                                                      3467, 7680, &
+                                                      38081, 61440 ]
 
-end subroutine A3cof
+    eps2 = eps**2
+    d = eps
+    o = 1
+    do l = 1, nC1p
+        m = (nC1p - l) / 2
+        c(l) = d * polval(m, coeff(o), eps2) / coeff(o + m + 1)
+        o = o + m + 2
+        d = d * eps
+    end do
 
-subroutine C3cof(n, C3x)
-! The coefficients C3[l] in the Fourier expansion of B3
-integer ord, nC3, nC3x
-parameter (ord = 6, nC3 = ord, nC3x = (nC3 * (nC3 - 1)) / 2)
+    end subroutine C1pf
+!*****************************************************************************************
 
-! input
-real(wp) n
-! output
-real(wp) C3x(0:nC3x-1)
+!*****************************************************************************************
+!>
+!  The scale factor A2-1 = mean value of (d/dsigma)I2 - 1
 
-integer o, m, l, j, k
-real(wp) coeff(((nC3-1)*(nC3**2 + 7*nC3 - 2*(nC3/2)))/8)
-data coeff / &
-    3, 128, &
-    2, 5, 128, &
-    -1, 3, 3, 64, &
-    -1, 0, 1, 8, &
-    -1, 1, 4, &
-    5, 256, &
-    1, 3, 128, &
-    -3, -2, 3, 64, &
-    1, -3, 2, 32, &
-    7, 512, &
-    -10, 9, 384, &
-    5, -9, 5, 192, &
-    7, 512, &
-    -14, 7, 512, &
-    21, 2560/
+    real(wp) function A2m1f(eps)
 
-o = 1
-k = 0
-do l = 1, nC3 - 1
-  do j = nC3 - 1, l, -1
-    m = min(nC3 - j - 1, j)
-    C3x(k) = polval(m, coeff(o), n) / coeff(o + m + 1)
-    k = k + 1
-    o = o + m + 2
-  end do
-end do
+    real(wp),intent(in) :: eps
 
-end subroutine C3cof
+    real(wp) :: t
+    integer :: o, m
 
-subroutine C4cof(n, C4x)
-! The coefficients C4[l] in the Fourier expansion of I4
-integer ord, nC4, nC4x
-parameter (ord = 6, nC4 = ord, nC4x = (nC4 * (nC4 + 1)) / 2)
+    integer,parameter :: ord = 6
+    integer,parameter :: nA2 = ord
+    integer,parameter :: ncoeff = nA2/2 + 2
 
-! input
-real(wp) n
-! output
-real(wp) C4x(0:nC4x-1)
+    real(wp),dimension(ncoeff),parameter :: coeff = [-11, -28, -192, 0, 256]
 
-integer o, m, l, j, k
-real(wp) coeff((nC4 * (nC4 + 1) * (nC4 + 5)) / 6)
-data coeff / &
-    97, 15015,   1088, 156, 45045,   -224, -4784, 1573, 45045, &
-    -10656, 14144, -4576, -858, 45045, &
-    64, 624, -4576, 6864, -3003, 15015, &
-    100, 208, 572, 3432, -12012, 30030, 45045, &
-    1, 9009,   -2944, 468, 135135,   5792, 1040, -1287, 135135, &
-    5952, -11648, 9152, -2574, 135135, &
-    -64, -624, 4576, -6864, 3003, 135135, &
-    8, 10725,   1856, -936, 225225,   -8448, 4992, -1144, 225225, &
-    -1440, 4160, -4576, 1716, 225225, &
-    -136, 63063,   1024, -208, 105105, &
-    3584, -3328, 1144, 315315, &
-    -128, 135135,   -2560, 832, 405405,   128, 99099/
+    o = 1
+    m = nA2/2
+    t = polval(m, coeff(o), eps**2) / coeff(o + m + 1)
+    A2m1f = (t - eps) / (1 + eps)
 
-o = 1
-k = 0
-do l = 0, nC4 - 1
-  do j = nC4 - 1, l, -1
-    m = nC4 - j - 1
-    C4x(k) = polval(m, coeff(o), n) / coeff(o + m + 1)
-    k = k + 1
-    o = o + m + 2
-  end do
-end do
+    end function A2m1f
+!*****************************************************************************************
 
-end subroutine C4cof
+!*****************************************************************************************
+!>
+!  The coefficients C2[l] in the Fourier expansion of B2
+
+    subroutine C2f(eps, c)
+
+    integer,parameter :: ord = 6
+    integer,parameter :: nC2 = ord
+    integer,parameter :: ncoeff = (nC2**2 + 7*nC2 - 2*(nC2/2))/4
+
+    real(wp),intent(in) :: eps
+    real(wp),intent(out) :: c(nC2)
+
+    real(wp) :: eps2, d
+    integer :: o, m, l
+
+    real(wp),dimension(ncoeff),parameter :: coeff = [ 1, 2, 16, 32, &
+                                                      35, 64, 384, 2048, &
+                                                      15, 80, 768, &
+                                                      7, 35, 512, &
+                                                      63, 1280, &
+                                                      77, 2048 ]
+
+    eps2 = eps**2
+    d = eps
+    o = 1
+    do l = 1, nC2
+        m = (nC2 - l) / 2
+        c(l) = d * polval(m, coeff(o), eps2) / coeff(o + m + 1)
+        o = o + m + 2
+        d = d * eps
+    end do
+
+    end subroutine C2f
+!*****************************************************************************************
+
+!*****************************************************************************************
+!>
+!  The scale factor A3 = mean value of (d/dsigma)I3
+
+    subroutine A3cof(n, A3x)
+
+    integer,parameter :: ord = 6
+    integer,parameter :: nA3 = ord
+    integer,parameter :: nA3x = nA3
+    integer,parameter :: ncoeff = (nA3**2 + 7*nA3 - 2*(nA3/2))/4
+
+    real(wp),intent(in) :: n
+    real(wp),intent(out) :: A3x(0:nA3x-1)
+
+    integer :: o, m, k, j
+    real(wp),dimension(ncoeff),parameter :: coeff = [ -3, 128, &
+                                                      -2, -3, 64, &
+                                                      -1, -3, -1, 16, &
+                                                      3, -1, -2, 8, &
+                                                      1, -1, 2, &
+                                                      1, 1 ]
+
+    o = 1
+    k = 0
+    do j = nA3 - 1, 0, -1
+        m = min(nA3 - j - 1, j)
+        A3x(k) = polval(m, coeff(o), n) / coeff(o + m + 1)
+        k = k + 1
+        o = o + m + 2
+    end do
+
+    end subroutine A3cof
+!*****************************************************************************************
+
+!*****************************************************************************************
+!>
+!  The coefficients C3[l] in the Fourier expansion of B3
+
+    subroutine C3cof(n, C3x)
+
+    integer,parameter :: ord = 6
+    integer,parameter :: nC3 = ord
+    integer,parameter :: nC3x = (nC3 * (nC3 - 1)) / 2
+    integer,parameter :: ncoeff = ((nC3-1)*(nC3**2 + 7*nC3 - 2*(nC3/2)))/8
+
+    real(wp),intent(in) :: n
+    real(wp),intent(out) :: C3x(0:nC3x-1)
+
+    integer :: o, m, l, j, k
+    real(wp),dimension(ncoeff),parameter :: coeff = [ 3, 128, &
+                                                    2, 5, 128, &
+                                                    -1, 3, 3, 64, &
+                                                    -1, 0, 1, 8, &
+                                                    -1, 1, 4, &
+                                                    5, 256, &
+                                                    1, 3, 128, &
+                                                    -3, -2, 3, 64, &
+                                                    1, -3, 2, 32, &
+                                                    7, 512, &
+                                                    -10, 9, 384, &
+                                                    5, -9, 5, 192, &
+                                                    7, 512, &
+                                                    -14, 7, 512, &
+                                                    21, 2560 ]
+
+    o = 1
+    k = 0
+    do l = 1, nC3 - 1
+        do j = nC3 - 1, l, -1
+            m = min(nC3 - j - 1, j)
+            C3x(k) = polval(m, coeff(o), n) / coeff(o + m + 1)
+            k = k + 1
+            o = o + m + 2
+        end do
+    end do
+
+    end subroutine C3cof
+!*****************************************************************************************
+
+!*****************************************************************************************
+!>
+!  The coefficients C4[l] in the Fourier expansion of I4
+
+    subroutine C4cof(n, C4x)
+
+    integer,parameter :: ord = 6
+    integer,parameter :: nC4 = ord
+    integer,parameter :: nC4x = (nC4 * (nC4 + 1)) / 2
+    integer,parameter :: ncoeff = (nC4 * (nC4 + 1) * (nC4 + 5)) / 6
+
+    real(wp),intent(in) :: n
+    real(wp),intent(out) :: C4x(0:nC4x-1)
+
+    integer :: o, m, l, j, k
+    real(wp),dimension(ncoeff),parameter :: coeff = [ &
+        97, 15015,   1088, 156, 45045,   -224, -4784, 1573, 45045, &
+        -10656, 14144, -4576, -858, 45045, &
+        64, 624, -4576, 6864, -3003, 15015, &
+        100, 208, 572, 3432, -12012, 30030, 45045, &
+        1, 9009,   -2944, 468, 135135,   5792, 1040, -1287, 135135, &
+        5952, -11648, 9152, -2574, 135135, &
+        -64, -624, 4576, -6864, 3003, 135135, &
+        8, 10725,   1856, -936, 225225,   -8448, 4992, -1144, 225225, &
+        -1440, 4160, -4576, 1716, 225225, &
+        -136, 63063,   1024, -208, 105105, &
+        3584, -3328, 1144, 315315, &
+        -128, 135135,   -2560, 832, 405405,   128, 99099 ]
+
+    o = 1
+    k = 0
+    do l = 0, nC4 - 1
+    do j = nC4 - 1, l, -1
+        m = nC4 - j - 1
+        C4x(k) = polval(m, coeff(o), n) / coeff(o + m + 1)
+        k = k + 1
+        o = o + m + 2
+    end do
+    end do
+
+    end subroutine C4cof
+!*****************************************************************************************
 
 !*****************************************************************************************
 !>
@@ -1827,9 +1880,9 @@ end subroutine C4cof
 
     remx = mod(x, y)
     if (remx < -y/2.0_wp) then
-    remx = remx + y
+        remx = remx + y
     else if (remx > +y/2.0_wp) then
-    remx = remx - y
+        remx = remx - y
     end if
 
     end function remx
@@ -1882,11 +1935,11 @@ end subroutine C4cof
     d = sumx(remx(-x, 360.0_wp), remx(y, 360.0_wp), t)
     d = sumx(remx(d, 360.0_wp), t, e)
     if (d == 0 .or. abs(d) == 180) then
-    if (e == 0) then
-        d = sign(d, y - x)
-    else
-        d = sign(d, -e)
-    end if
+        if (e == 0) then
+            d = sign(d, y - x)
+        else
+            d = sign(d, -e)
+        end if
     end if
     AngDif = d
 
