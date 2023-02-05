@@ -1,21 +1,20 @@
 !*****************************************************************************************
 !>
-!  Implementation of geodesic routines in Fortran
+!  Implementation of geodesic routines in modern Fortran
 !
-! The subroutines in this files are documented at
-! https://geodesic_module.sourceforge.io/html/Fortran/
+!### See also
+!  * This module contains modernized versions of the Fortran
+!    code from [geographiclib-fortran](https://github.com/geographiclib/geographiclib-fortran).
+!    The `geographiclib` subroutines are documented at:
+!    [sourceforge](https://geographiclib.sourceforge.io/html/Fortran/)
+!    These are Fortran implementation of the geodesic algorithms described in:
+!    C. F. F. Karney, [Algorithms for geodesics](https://doi.org/10.1007/s00190-012-0578-z),
+!    J. Geodesy 87, 43--55 (2013). [Apr 23, 2022 version]
+!  * Some of the code was also split off from the
+!    [Fortran Astrodynamics Toolkit](https://github.com/jacobwilliams/Fortran-Astrodynamics-Toolkit)
+!    (see `geodesy_module.f90`). [Nov 6, 2022 version]
 !
-! This is a Fortran implementation of the geodesic algorithms described in:
-! - C. F. F. Karney,
-!   <a href="https://doi.org/10.1007/s00190-012-0578-z">
-!   Algorithms for geodesics</a>,
-!   J. Geodesy <b>87</b>, 43--55 (2013);
-!   DOI: <a href="https://doi.org/10.1007/s00190-012-0578-z">
-!   10.1007/s00190-012-0578-z</a>;
-!   <a href=
-!   "https://geodesic_module.sourceforge.io/geod-addenda.html">
-!   addenda</a>.
-!
+!### geographiclib Notes
 ! The principal advantages of these algorithms over previous ones
 ! (e.g., Vincenty, 1975) are
 ! - accurate to round off for |<i>f</i>| &lt; 1/50;
@@ -114,9 +113,11 @@
 ! restructuring the internals of the Fortran code since this may make
 ! porting fixes from the C++ code more difficult.
 !
-! Copyright (c) Charles Karney (2012-2022) <charles@karney.com> and
-! licensed under the MIT/X11 License.  For more information, see
-! https://geodesic_module.sourceforge.io/
+!### License
+!
+!  `geographiclib-fortran` Copyright (c) Charles Karney (2012-2022) <charles@karney.com> and
+!  licensed under the MIT/X11 License.  For more information, see
+!  https://geodesic_module.sourceforge.io/
 
 module geodesic_module
 
@@ -176,7 +177,7 @@ module geodesic_module
   public :: geocentric_radius
 
   ! other routines
-  public :: AngDif,AngNm,sumx,LatFix,atn2dx,AngRnd,sncsdx
+  public :: AngDif,AngNormalize,sumx,LatFix,atn2dx,AngRound,sncsdx
 
 contains
 !*****************************************************************************************
@@ -240,23 +241,29 @@ subroutine direct(a, f, lat1, lon1, azi1, s12a12, flags, &
   real(wp), intent(out) :: MM21 !! geodesic scale of point 1 relative to point 2 (dimensionless).
   real(wp), intent(out) :: SS12 !! area under the geodesic (\(m^2\)).
 
-integer ord, nC1, nC1p, nC2, nA3, nA3x, nC3, nC3x, nC4, nC4x
-parameter (ord = 6, nC1 = ord, nC1p = ord, &
-    nC2 = ord, nA3 = ord, nA3x = nA3, &
-    nC3 = ord, nC3x = (nC3 * (nC3 - 1)) / 2, &
-    nC4 = ord, nC4x = (nC4 * (nC4 + 1)) / 2)
-real(wp) A3x(0:nA3x-1), C3x(0:nC3x-1), C4x(0:nC4x-1), &
-    C1a(nC1), C1pa(nC1p), C2a(nC2), C3a(nC3-1), C4a(0:nC4-1)
+  integer,parameter :: ord = 6
+  integer,parameter :: nC1 = ord
+  integer,parameter :: nC1p = ord
+  integer,parameter :: nC2 = ord
+  integer,parameter :: nA3 = ord
+  integer,parameter :: nA3x = nA3
+  integer,parameter :: nC3 = ord
+  integer,parameter :: nC3x = (nC3 * (nC3 - 1)) / 2
+  integer,parameter :: nC4 = ord
+  integer,parameter :: nC4x = (nC4 * (nC4 + 1)) / 2
 
-logical arcmod, unroll, arcp, redlp, scalp, areap
-real(wp) e2, f1, ep2, n, b, c2, &
-    salp0, calp0, k2, eps, &
-    salp1, calp1, ssig1, csig1, cbet1, sbet1, dn1, somg1, comg1, &
-    salp2, calp2, ssig2, csig2, sbet2, cbet2, dn2, somg2, comg2, &
-    ssig12, csig12, salp12, calp12, omg12, lam12, lon12, &
-    sig12, stau1, ctau1, tau12, t, s, c, serr, E, &
-    A1m1, A2m1, A3c, A4, AB1, AB2, &
-    B11, B12, B21, B22, B31, B41, B42, J12
+  real(wp) :: A3x(0:nA3x-1), C3x(0:nC3x-1), C4x(0:nC4x-1), &
+              C1a(nC1), C1pa(nC1p), C2a(nC2), C3a(nC3-1), C4a(0:nC4-1)
+
+  logical :: arcmod, unroll, arcp, redlp, scalp, areap
+  real(wp) :: e2, f1, ep2, n, b, c2, &
+              salp0, calp0, k2, eps, &
+              salp1, calp1, ssig1, csig1, cbet1, sbet1, dn1, somg1, comg1, &
+              salp2, calp2, ssig2, csig2, sbet2, cbet2, dn2, somg2, comg2, &
+              ssig12, csig12, salp12, calp12, omg12, lam12, lon12, &
+              sig12, stau1, ctau1, tau12, t, s, c, serr, E, &
+              A1m1, A2m1, A3c, A4, AB1, AB2, &
+              B11, B12, B21, B22, B31, B41, B42, J12
 
 e2 = f * (2 - f)
 ep2 = e2 / (1 - e2)
@@ -288,9 +295,9 @@ call C3cof(n, C3x)
 if (areap) call C4cof(n, C4x)
 
 ! Guard against underflow in salp0
-call sncsdx(AngRnd(azi1), salp1, calp1)
+call sncsdx(AngRound(azi1), salp1, calp1)
 
-call sncsdx(AngRnd(LatFix(lat1)), sbet1, cbet1)
+call sncsdx(AngRound(LatFix(lat1)), sbet1, cbet1)
 sbet1 = f1 * sbet1
 call norm2x(sbet1, cbet1)
 ! Ensure cbet1 = +dbleps at poles
@@ -382,7 +389,7 @@ else
   sig12 = tau12 - (B12 - B11)
   ssig12 = sin(sig12)
   csig12 = cos(sig12)
-  if (abs(f) > 0.01d0) then
+  if (abs(f) > 0.01_wp) then
 ! Reverted distance series is inaccurate for |f| > 1/100, so correct
 ! sig12 with 1 Newton iteration.  The following table shows the
 ! approximate maximum error for a = WGS_a() and various f relative to
@@ -419,7 +426,7 @@ end if
 ssig2 = ssig1 * csig12 + csig1 * ssig12
 csig2 = csig1 * csig12 - ssig1 * ssig12
 dn2 = sqrt(1 + k2 * ssig2**2)
-if (arcmod .or. abs(f) > 0.01d0) &
+if (arcmod .or. abs(f) > 0.01_wp) &
     B12 = TrgSum(.true., ssig2, csig2, C1a, nC1)
 AB1 = (1 + A1m1) * (B12 - B11)
 
@@ -441,7 +448,7 @@ comg2 = csig2
 salp2 = salp0
 calp2 = calp0 * csig2
 ! East or west going?
-E = sign(1d0, salp0)
+E = sign(1.0_wp, salp0)
 ! omg12 = omg2 - omg1
 if (unroll) then
   omg12 = E * (sig12 &
@@ -459,7 +466,7 @@ lon12 = lam12 / degree
 if (unroll) then
   lon2 = lon1 + lon12
 else
-  lon2 = AngNm(AngNm(lon1) + AngNm(lon12))
+  lon2 = AngNormalize(AngNormalize(lon1) + AngNormalize(lon12))
 end if
 lat2 = atn2dx(sbet2, f1 * cbet2)
 azi2 = atn2dx(salp2, calp2)
@@ -621,7 +628,7 @@ if (areap) call C4cof(n, C4x)
 ! If very close to being on the same half-meridian, then make it so.
 lon12 = AngDif(lon1, lon2, lon12s)
 ! Make longitude difference positive.
-lonsgn = int(sign(1d0, lon12))
+lonsgn = int(sign(1.0_wp, lon12))
 lon12 = lonsgn * lon12
 lon12s = lonsgn * lon12s
 lam12 = lon12 * degree
@@ -631,8 +638,8 @@ call sncsde(lon12, lon12s, slam12, clam12)
 lon12s = (180 - lon12) - lon12s
 
 ! If really close to the equator, treat as on equator.
-lat1x = AngRnd(LatFix(lat1))
-lat2x = AngRnd(LatFix(lat2))
+lat1x = AngRound(LatFix(lat1))
+lat2x = AngRound(LatFix(lat2))
 ! Swap points so that point with higher (abs) latitude is point 1
 ! If one latitude is a nan, then it becomes lat1.
 if (abs(lat1x) < abs(lat2x) .or. lat2x /= lat2x) then
@@ -645,7 +652,7 @@ if (swapp < 0) then
   call swap(lat1x, lat2x)
 end if
 ! Make lat1 <= 0
-latsgn = int(sign(1d0, -lat1x))
+latsgn = int(sign(1.0_wp, -lat1x))
 lat1x = lat1x * latsgn
 lat2x = lat2x * latsgn
 ! Now we have
@@ -1208,8 +1215,8 @@ n = f / (2 - f)
 ! sig12 = etol2.  Here 0.1 is a safety factor (error decreased by 100)
 ! and max(0.001, abs(f)) stops etol2 getting too large in the nearly
 ! spherical case.
-etol2 = 0.1d0 * tol2 / &
-    sqrt( max(0.001d0, abs(f)) * min(1d0, 1 - f/2) / 2 )
+etol2 = 0.1_wp * tol2 / &
+    sqrt( max(0.001_wp, abs(f)) * min(1.0_wp, 1 - f/2) / 2 )
 
 ! Return value
 sig12 = -1
@@ -1257,7 +1264,7 @@ if (shortp .and. ssig12 < etol2) then
   call norm2x(salp2, calp2)
 ! Set return value
   sig12 = atan2(ssig12, csig12)
-else if (abs(n) > 0.1d0 .or. csig12 >= 0 .or. &
+else if (abs(n) > 0.1_wp .or. csig12 >= 0 .or. &
       ssig12 >= 6 * abs(n) * pi * cbet1**2) then
 ! Nothing to do, zeroth order spherical approximation is OK
 else
@@ -1283,7 +1290,7 @@ else
         sbet1, -cbet1, dn1, sbet2, cbet2, dn2, cbet1, cbet2, 2, &
         dummy, m12b, m0, dummy, dummy, ep2, Ca)
     x = -1 + m12b / (cbet1 * cbet2 * m0 * pi)
-    if (x < -0.01d0) then
+    if (x < -0.01_wp) then
       betscl = sbt12a / x
     else
       betscl = -f * cbet1**2 * pi
@@ -1295,7 +1302,7 @@ else
   if (y > -tol1 .and. x > -1 - xthrsh) then
 ! strip near cut
     if (f >= 0) then
-      salp1 = min(1d0, -x)
+      salp1 = min(1.0_wp, -x)
       calp1 = - sqrt(1 - salp1**2)
     else
       if (x > -tol1) then
@@ -1785,116 +1792,146 @@ end do
 
 end subroutine C4cof
 
-real(wp) function sumx(u, v, t)
-! input
-real(wp) u, v
-! output
-real(wp) t
+!*****************************************************************************************
+!>
+!
+    real(wp) function sumx(u, v, t)
 
-real(wp) up, vpp
-sumx = u + v
-up = sumx - v
-vpp = sumx - up
-up = up - u
-vpp = vpp - v
-if (sumx == 0) then
-  t = sumx
-else
-  t = 0d0 - (up + vpp)
-end if
+    real(wp),intent(in) :: u, v
+    real(wp),intent(out) :: t
 
-end function sumx
+    real(wp) :: up, vpp
 
-real(wp) function remx(x, y)
-! the remainder function but not worrying how ties are handled
-! y must be positive
-! input
-real(wp) x, y
+    sumx = u + v
+    up = sumx - v
+    vpp = sumx - up
+    up = up - u
+    vpp = vpp - v
+    if (sumx == 0.0_wp) then
+        t = sumx
+    else
+        t = 0.0_wp - (up + vpp)
+    end if
 
-remx = mod(x, y)
-if (remx < -y/2) then
-  remx = remx + y
-else if (remx > +y/2) then
-  remx = remx - y
-end if
+    end function sumx
+!*****************************************************************************************
 
-end function remx
+!*****************************************************************************************
+!>
+!  the remainder function but not worrying how ties are handled
+!  y must be positive
 
-real(wp) function AngNm(x)
-! input
-real(wp) x
+    real(wp) function remx(x, y)
 
-AngNm = remx(x, 360d0)
-if (abs(AngNm) == 180) then
-  AngNm = sign(180d0, x)
-end if
+    real(wp),intent(in) :: x, y
 
-end function AngNm
+    remx = mod(x, y)
+    if (remx < -y/2.0_wp) then
+    remx = remx + y
+    else if (remx > +y/2.0_wp) then
+    remx = remx - y
+    end if
 
-real(wp) function LatFix(x)
-! input
-real(wp) x
+    end function remx
+!*****************************************************************************************
 
-LatFix = x
-if (.not. (abs(x) > 90)) return
-! concoct a NaN
-LatFix = sqrt(90 - abs(x))
+!*****************************************************************************************
+!>
+!
+    real(wp) function AngNormalize(x)
 
-end function LatFix
+    real(wp),intent(in) :: x
 
-real(wp) function AngDif(x, y, e)
-! Compute y - x.  x and y must both lie in [-180, 180].  The result is
-! equivalent to computing the difference exactly, reducing it to (-180,
-! 180] and rounding the result.  Note that this prescription allows -180
-! to be returned (e.g., if x is tiny and negative and y = 180).  The
-! error in the difference is returned in e
-! input
-real(wp) x, y
-! output
-real(wp) e
+    AngNormalize = remx(x, 360.0_wp)
+    if (abs(AngNormalize) == 180.0_wp) then
+        AngNormalize = sign(180.0_wp, x)
+    end if
 
-real(wp) d, t
-d = sumx(remx(-x, 360d0), remx(y, 360d0), t)
-d = sumx(remx(d, 360d0), t, e)
-if (d == 0 .or. abs(d) == 180) then
-  if (e == 0) then
-    d = sign(d, y - x)
-  else
-    d = sign(d, -e)
-  end if
-end if
-AngDif = d
+    end function AngNormalize
+!*****************************************************************************************
 
-end function AngDif
+!*****************************************************************************************
+!>
+    real(wp) function LatFix(x)
 
-real(wp) function AngRnd(x)
-! The makes the smallest gap in x = 1/16 - nextafter(1/16, 0) = 1/2^57
-! for reals = 0.7 pm on the earth if x is an angle in degrees.  (This is
-! about 1000 times more resolution than we get with angles around 90
-! degrees.)  We use this to avoid having to deal with near singular
-! cases when x is non-zero but tiny (e.g., 1.0e-200).
-! input
-real(wp) x
+    real(wp),intent(in) :: x
 
-real(wp) y, z
-z = 1/16d0
-y = abs(x)
-! The compiler mustn't "simplify" z - (z - y) to y
-if (y < z) y = z - (z - y)
-AngRnd = sign(y, x)
+    LatFix = x
+    if (.not. (abs(x) > 90.0_wp)) return
+    ! concoct a NaN
+    LatFix = sqrt(90.0_wp - abs(x))
 
-end function AngRnd
+    end function LatFix
+!*****************************************************************************************
 
-subroutine swap(x, y)
-! input/output
-real(wp) x, y
+!*****************************************************************************************
+!>
+!  Compute y - x.  x and y must both lie in [-180, 180].  The result is
+!  equivalent to computing the difference exactly, reducing it to (-180,
+!  180] and rounding the result.  Note that this prescription allows -180
+!  to be returned (e.g., if x is tiny and negative and y = 180).  The
+!  error in the difference is returned in e
 
-real(wp) z
-z = x
-x = y
-y = z
+    real(wp) function AngDif(x, y, e)
 
-end subroutine swap
+    real(wp),intent(in) :: x, y
+    real(wp),intent(out) :: e
+
+    real(wp) d, t
+
+    d = sumx(remx(-x, 360.0_wp), remx(y, 360.0_wp), t)
+    d = sumx(remx(d, 360.0_wp), t, e)
+    if (d == 0 .or. abs(d) == 180) then
+    if (e == 0) then
+        d = sign(d, y - x)
+    else
+        d = sign(d, -e)
+    end if
+    end if
+    AngDif = d
+
+    end function AngDif
+!*****************************************************************************************
+
+!*****************************************************************************************
+!>
+!  The makes the smallest gap in x = 1/16 - nextafter(1/16, 0) = 1/2^57
+!  for reals = 0.7 pm on the earth if x is an angle in degrees.  (This is
+!  about 1000 times more resolution than we get with angles around 90
+!  degrees.)  We use this to avoid having to deal with near singular
+!  cases when x is non-zero but tiny (e.g., 1.0e-200).
+
+    real(wp) function AngRound(x)
+
+    real(wp),intent(in) :: x
+
+    real(wp) :: y, z
+
+    z = 1.0_wp/16.0_wp
+    y = abs(x)
+    ! The compiler mustn't "simplify" z - (z - y) to y
+    if (y < z) y = z - (z - y)
+    AngRound = sign(y, x)
+
+    end function AngRound
+!*****************************************************************************************
+
+!*****************************************************************************************
+!>
+!  Swap two real values
+
+    subroutine swap(x, y)
+
+    real(wp),intent(inout) :: x, y
+
+    real(wp) :: z
+
+    z = x
+    x = y
+    y = z
+
+    end subroutine swap
+!*****************************************************************************************
 
 real(wp) function hypotx(x, y)
 ! input
@@ -1998,8 +2035,8 @@ real(wp) lon1, lon2
 
 real(wp) lon1x, lon2x, lon12, e
 lon12 = AngDif(lon1, lon2, e)
-lon1x = AngNm(lon1)
-lon2x = AngNm(lon2)
+lon1x = AngNormalize(lon1)
+lon2x = AngNormalize(lon2)
 if (lon12 > 0 .and. ((lon1x < 0 .and. lon2x >= 0) .or. &
                         (lon1x > 0 .and. lon2x == 0))) then
   trnsit = 1
@@ -2051,42 +2088,46 @@ call accadd(s, 0d0)
 
 end subroutine accrem
 
-subroutine sncsdx(x, sinx, cosx)
-! Compute sin(x) and cos(x) with x in degrees
-! input
-real(wp) x
-! input/output
-real(wp) sinx, cosx
+!*****************************************************************************************
+!>
+!  Compute `sin(x)` and `cos(x)` with `x` in degrees
 
-real(wp) r, s, c
-integer q
-r = mod(x, 360d0)
-q = nint(r / 90)
-r = (r - 90 * q) * degree
-s = sin(r)
-c = cos(r)
-q = mod(q + 4, 4)
-if (q == 0) then
-  sinx =  s
-  cosx =  c
-else if (q == 1) then
-  sinx =  c
-  cosx = -s
-else if (q == 2) then
-  sinx = -s
-  cosx = -c
-else
-! q == 3
-  sinx = -c
-  cosx =  s
-end if
+    pure subroutine sncsdx(x, sinx, cosx)
 
-if (sinx == 0) then
-  sinx = sign(sinx, x)
-end if
-cosx = 0d0 + cosx
+    real(wp),intent(in) :: x
+    real(wp),intent(out) :: sinx, cosx
 
-end subroutine sncsdx
+    real(wp) :: r, s, c
+    integer :: q
+
+    r = mod(x, 360.0_wp)
+    q = nint(r / 90.0_wp)
+    r = (r - 90.0_wp * q) * degree
+    s = sin(r)
+    c = cos(r)
+    q = mod(q + 4, 4)
+    select case (q)
+    case(0)
+        sinx =  s
+        cosx =  c
+    case(1)
+        sinx =  c
+        cosx = -s
+    case(2)
+        sinx = -s
+        cosx = -c
+    case(3)
+        sinx = -c
+        cosx =  s
+    end select
+
+    if (sinx == 0.0_wp) then
+        sinx = sign(sinx, x)
+    end if
+    cosx = 0.0_wp + cosx
+
+    end subroutine sncsdx
+!*****************************************************************************************
 
 subroutine sncsde(x, t, sinx, cosx)
 ! Compute sin(x+t) and cos(x+t) with x in degrees
@@ -2099,7 +2140,7 @@ real(wp) r, s, c
 integer q
 q = nint(x / 90)
 r = x - 90 * q
-r = AngRnd(r + t) * degree
+r = AngRound(r + t) * degree
 s = sin(r)
 c = cos(r)
 q = mod(q + 4, 4)
@@ -2146,7 +2187,7 @@ if (xx < 0) then
 end if
 atn2dx = atan2(yy, xx) / degree
 if (q == 1) then
-  atn2dx = sign(180d0, y) - atn2dx
+  atn2dx = sign(180.0_wp, y) - atn2dx
 else if (q == 2) then
   atn2dx =       90       - atn2dx
 else if (q == 3) then
@@ -2177,9 +2218,7 @@ end function polval
 !    A3coeff       A3cof
 !    C3coeff       C3cof
 !    C4coeff       C4cof
-!    AngNormalize  AngNm
 !    AngDiff       AngDif
-!    AngRound      AngRnd
 !    arcmode       arcmod
 !    Astroid       Astrd
 !    betscale      betscl
@@ -2207,7 +2246,6 @@ end function polval
 !    sincosd       sncsdx
 !    sincosde      sncsde
 !    atan2d        atn2dx
-!> @endcond SKIP
 
 
 !*****************************************************************************************
@@ -2215,7 +2253,7 @@ end function polval
 !
 !  Heikkinen routine for cartesian to geodetic transformation
 !
-!# References
+!### References
 !  1. M. Heikkinen, "Geschlossene formeln zur berechnung raumlicher
 !     geodatischer koordinaten aus rechtwinkligen Koordinaten".
 !     Z. Ermess., 107 (1982), 207-211 (in German).

@@ -134,7 +134,7 @@ end
 integer function chrnd0(x, y)
 double precision x, y, z
 
-z = AngRnd(x)
+z = AngRound(x)
 chrnd0 = equiv(z, y)
 if (chrnd0 > 0) then
   print 10, x, z, y
@@ -344,7 +344,7 @@ end
 integer function chnm0(x, y)
 double precision x, y, yy
 
-yy = AngNm(x)
+yy = AngNormalize(x)
 chnm0 = equiv(yy, y)
 if (chnm0 > 0) print 10, x, yy, y
 10 format(1x, 'AngNormalize(', g10.3, ') = ', g10.3, &
