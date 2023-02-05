@@ -510,58 +510,51 @@ end if
 
 end subroutine direct
 
-!> Solve the inverse geodesic problem.
-!!
-!! @param[in] a the equatorial radius (meters).
-!! @param[in] f the flattening of the ellipsoid.  Setting \e f = 0 gives
-!!   a sphere.  Negative \e f gives a prolate ellipsoid.
-!! @param[in] lat1 latitude of point 1 (degrees).
-!! @param[in] lon1 longitude of point 1 (degrees).
-!! @param[in] lat2 latitude of point 2 (degrees).
-!! @param[in] lon2 longitude of point 2 (degrees).
-!! @param[out] s12 distance from point 1 to point 2 (meters).
-!! @param[out] azi1 azimuth at point 1 (degrees).
-!! @param[out] azi2 (forward) azimuth at point 2 (degrees).
-!! @param[in] omask a bitor'ed combination of mask values
-!!   specifying which of the following parameters should be set.
-!! @param[out] a12 arc length from point 1 to point 2 (degrees).
-!! @param[out] m12 reduced length of geodesic (meters).
-!! @param[out] MM12 geodesic scale of point 2 relative to point 1
-!!   (dimensionless).
-!! @param[out] MM21 geodesic scale of point 1 relative to point 2
-!!   (dimensionless).
-!! @param[out] SS12 area under the geodesic (meters<sup>2</sup>).
-!!
-!! \e omask is an integer in [0, 16) whose binary bits are interpreted
-!! as follows
-!! - 1 return \e a12
-!! - 2 return \e m12
-!! - 4 return \e MM12 and \e MM21
-!! - 8 return \e SS12
-!!
-!! \e lat1 and \e lat2 should be in the range [-90 deg, 90 deg].
-!! The values of \e azi1 and \e azi2 returned are in the range
-!! [-180 deg, 180 deg].
-!!
-!! If either point is at a pole, the azimuth is defined by keeping the
-!! longitude fixed, writing \e lat = &plusmn;(90 deg -
-!! &epsilon;), and taking the limit &epsilon; &rarr; 0+.
-!!
-!! The solution to the inverse problem is found using Newton's method.
-!! If this fails to converge (this is very unlikely in geodetic
-!! applications but does occur for very eccentric ellipsoids), then the
-!! bisection method is used to refine the solution.
-!!
-!! Example of use:
-!! \include geodinverse.for
+!*****************************************************************************************
+!>
+!  Solve the inverse geodesic problem.
+!
+!  `lat1` and  `lat2` should be in the range [-90 deg, 90 deg].
+!  The values of `azi1` and `azi2` returned are in the range
+!  [-180 deg, 180 deg].
+!
+!## Notes
+!  If either point is at a pole, the azimuth is defined by keeping the
+!  longitude fixed, writing `lat = +/- (90 deg - Epsilon),
+!  and taking the limit Epsilon --> 0+.
+!
+!  The solution to the inverse problem is found using Newton's method.
+!  If this fails to converge (this is very unlikely in geodetic
+!  applications but does occur for very eccentric ellipsoids), then the
+!  bisection method is used to refine the solution.
 
 subroutine invers(a, f, lat1, lon1, lat2, lon2, &
                   s12, azi1, azi2, omask, a12, m12, MM12, MM21, SS12)
 
-real(wp), intent(in) :: a, f, lat1, lon1, lat2, lon2
-integer, intent(in) :: omask
-real(wp), intent(out) :: s12, azi1, azi2
-real(wp), intent(out) :: a12, m12, MM12, MM21, SS12
+real(wp), intent(in)  :: a !! the equatorial radius (meters).
+real(wp), intent(in)  :: f !! the flattening of the ellipsoid.  Setting `f = 0` gives
+                           !! a sphere.  Negative `f` gives a prolate ellipsoid.
+real(wp), intent(in)  :: lat1 !! latitude of point 1 (degrees).
+real(wp), intent(in)  :: lon1 !! longitude of point 1 (degrees).
+real(wp), intent(in)  :: lat2 !! latitude of point 2 (degrees).
+real(wp), intent(in)  :: lon2 !! longitude of point 2 (degrees).
+integer, intent(in)   :: omask !! a bitor'ed combination of mask values
+                               !! specifying which of the following parameters should be set.
+                               !! `omask` is an integer in [0, 16) whose binary bits are interpreted
+                               !! as follows:
+                               !!
+                               !!  *  1 return `a12`
+                               !!  *  2 return `m12`
+                               !!  *  4 return `MM12` and `MM21`
+                               !!  *  8 return `SS12`
+real(wp), intent(out) :: s12 !! distance from point 1 to point 2 (meters).
+real(wp), intent(out) :: azi1 !! azimuth at point 1 (degrees).
+real(wp), intent(out) :: azi2 !! (forward) azimuth at point 2 (degrees).
+real(wp), intent(out) :: a12 !! arc length from point 1 to point 2 (degrees).
+real(wp), intent(out) :: m12 !! reduced length of geodesic (meters).
+real(wp), intent(out) :: MM12 !! MM12 geodesic scale of point 2 relative to point 1 (dimensionless).
+real(wp), intent(out) :: MM21 !! MM21 geodesic scale of point 1 relative to point 2 (dimensionless).
+real(wp), intent(out) :: SS12 !! SS12 area under the geodesic (meters<sup>2</sup>).
 
 integer ord, nA3, nA3x, nC3, nC3x, nC4, nC4x, nC
 parameter (ord = 6, nA3 = ord, nA3x = nA3, &
@@ -807,8 +800,8 @@ else if (.not. merid) then
     tripn = .false.
     tripb = .false.
     do 10 numit = 0, maxit2-1
-! the WGS84 test set: mean = 1.47, sd = 1.25, max = 16
-! WGS84 and random input: mean = 2.85, sd = 0.60
+    ! the WGS84 test set: mean = 1.47, sd = 1.25, max = 16
+    ! WGS84 and random input: mean = 2.85, sd = 0.60
       v = Lam12f(sbet1, cbet1, dn1, sbet2, cbet2, dn2, &
           salp1, calp1, slam12, clam12, f, A3x, C3x, salp2, calp2, &
           sig12, ssig1, csig1, ssig2, csig2, &
