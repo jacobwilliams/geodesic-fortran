@@ -101,7 +101,7 @@
 !   &rarr; [\e azi1, \e azi2] + [\e d, \e d], for arbitrary \e d.
 !
 ! These routines are a simple transcription of the corresponding C++
-! classes in <a href="https://geodesic_module.sourceforge.io">
+! classes in <a href="https://geographiclib.sourceforge.io">
 ! geodesic_module</a>.  Because of the limitations of Fortran 77, the
 ! classes have been replaced by simple subroutines with no attempt to
 ! save "state" across subroutine calls.  Most of the internal comments
@@ -117,7 +117,7 @@
 !
 !  `geographiclib-fortran` Copyright (c) Charles Karney (2012-2022) <charles@karney.com> and
 !  licensed under the MIT/X11 License.  For more information, see
-!  https://geodesic_module.sourceforge.io/
+!  https://geographiclib.sourceforge.io/
 
 module geodesic_module
 

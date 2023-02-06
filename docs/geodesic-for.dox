@@ -5,7 +5,7 @@
  *
  * Written by Charles Karney <charles@karney.com> and licensed under the
  * MIT/X11 License.  For more information, see
- * https://geodesic_module.sourceforge.io/
+ * https://geographiclib.sourceforge.io/
  **********************************************************************/
 
 /**
@@ -33,13 +33,13 @@ This an implementation in Fortran of the geodesic algorithms described in
 .
 Other links
 - Library documentation (all versions):
-  <a href="../">https://geodesic_module.sourceforge.io/Fortran</a>
+  <a href="../">https://geographiclib.sourceforge.io/Fortran</a>
 - GIT repository: https://github.com/geodesic_module/geodesic_module-fortran
   Releases are tagged in git as, e.g., v1.52, v2.0, etc.
 - Source distribution:
   https://sourceforge.net/projects/geodesic_module/files/distrib-Fortran
 - geodesic_module:
-  <a href="../../index.html">https://geodesic_module.sourceforge.io</a>
+  <a href="../../index.html">https://geographiclib.sourceforge.io</a>
 - The library has been implemented in a few other <a
   href="../../doc/library.html#languages">languages</a>.
 
