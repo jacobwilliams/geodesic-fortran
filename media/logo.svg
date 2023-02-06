@@ -15,8 +15,8 @@
    inkscape:version="1.0.2 (e86c8708, 2021-01-15)"
    sodipodi:docname="logo.svg"
    inkscape:export-filename="logo.png"
-   inkscape:export-xdpi="48.330002"
-   inkscape:export-ydpi="48.330002">
+   inkscape:export-xdpi="58.009998"
+   inkscape:export-ydpi="58.009998">
   <defs
      id="defs2">
     <marker
@@ -68,15 +68,15 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.35939664"
-     inkscape:cx="49.134321"
-     inkscape:cy="669.6855"
+     inkscape:zoom="0.52241545"
+     inkscape:cx="439.85314"
+     inkscape:cy="312.4887"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      inkscape:document-rotation="0"
      showgrid="true"
      inkscape:window-width="1440"
-     inkscape:window-height="791"
+     inkscape:window-height="790"
      inkscape:window-x="0"
      inkscape:window-y="25"
      inkscape:window-maximized="0"
@@ -107,6 +107,14 @@
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(-37.929817,-153.00904)">
+    <rect
+       style="opacity:1;fill:#e6e6e6;fill-opacity:1;stroke:#ffffff;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+       id="rect1074"
+       width="280.45831"
+       height="37.041668"
+       x="26.45833"
+       y="209.0692"
+       ry="7.8891349" />
     <circle
        style="opacity:1;fill:#000080;fill-opacity:1;stroke:#ffffff;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
        id="circle851"
