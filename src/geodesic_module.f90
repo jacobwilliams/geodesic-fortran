@@ -541,7 +541,7 @@ end subroutine direct
 !  bisection method is used to refine the solution.
 
 subroutine inverse(a, f, lat1, lon1, lat2, lon2, &
-                  s12, azi1, azi2, outmask, a12, m12, MM12, MM21, SS12)
+                   s12, azi1, azi2, outmask, a12, m12, MM12, MM21, SS12)
 
 real(wp), intent(in)  :: a !! the equatorial radius (meters).
 real(wp), intent(in)  :: f !! the flattening of the ellipsoid.  Setting `f = 0` gives
