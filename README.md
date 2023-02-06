@@ -1,3 +1,7 @@
+
+![geodesic-fortran](media/logo.png)
+============
+
 Implementation of geodesic routines in modern Fortran
 
 [![GitHub release](https://img.shields.io/github/release/jacobwilliams/geodesic-fortran.svg?style=plastic)](https://github.com/jacobwilliams/geodesic-fortran/releases/latest)
