@@ -1,6 +1,6 @@
 !b::inverse
 !
-program inverse
+program ngsinverse
   use geodesic_module
 !
 !********1*********2*********3*********4*********5*********6*********7**
@@ -80,7 +80,7 @@ program inverse
 !
 !    this module calls:      elipss, getdeg, inver1, todmsp
 !    gethem, trim,   bufdms, gvalr8, gvali4, fixdms, gpnhri ***********
-!    gethem, trim,   bufdms, gvalr8, gvali4, fixdms, invers <----------
+!    gethem, trim,   bufdms, gvalr8, gvali4, fixdms, inverse <----------
 !    datan,  write,  read,   dabs,   open,   stop
 !
 !    include files used:     n/a
@@ -106,7 +106,7 @@ program inverse
 !::              - added logical nowebb
 !::200208.xx, sjf, program version number 2.0
 !::201105.xx, dgm, program version number 3.0
-!::              - replaced sub gpnarc, gpnloa, gpnhri with invers
+!::              - replaced sub gpnarc, gpnloa, gpnhri with inverse
 !::              - tested for valid antipodal solutions (+/- 0.1 mm)
 !::              - tested for polar solutions (+/- 0.1 mm)
 !::              - needs improvement for long-line/antipodal boundary
@@ -326,7 +326,7 @@ endif
 !
 !     compute the geodetic inverse
 !
-call invers(a, f, p1, e1, p2, e2, &
+call inverse(a, f, p1, e1, p2, e2, &
     edist, faz, baz, 0, dummy, dummy, dummy, dummy, dummy)
 if (baz >= 0) then
   baz = baz - 180
@@ -511,4 +511,4 @@ else
 endif
 
 !     stop
-end
+end program ngsinverse

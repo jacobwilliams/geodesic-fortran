@@ -202,7 +202,7 @@ end
 integer function chsc0(x, s, c)
 double precision x, s, c, ss, cc
 
-call sncsdx(x, ss, cc)
+call sincosd(x, ss, cc)
 chsc0 = equiv(ss, s) + equiv(cc, c)
 if (chsc0 > 0) then
   print 10, x, ss, cc, s, c
@@ -245,9 +245,9 @@ i = i + chsc0(+810d0, +1d0, +0d0)
 i = i + chsc0(+  inf,  nan,  nan)
 i = i + chsc0(   nan,  nan,  nan)
 
-call sncsdx(         9d0, s1, c1)
-call sncsdx(        81d0, s2, c2)
-call sncsdx(-123456789d0, s3, c3)
+call sincosd(         9d0, s1, c1)
+call sincosd(        81d0, s2, c2)
+call sincosd(-123456789d0, s3, c3)
 j = equiv(s1, c2) + equiv(s1, s3) + equiv(c1, s2) + equiv(c1, -c3)
 if (j > 0) print *, 'sincos accuracy failure'
 i = i + j
@@ -259,7 +259,7 @@ end
 integer function chat0(y, x, a)
 double precision y, x, a, aa
 
-aa = atn2dx(y, x)
+aa = atan2d(y, x)
 chat0 = equiv(aa, a)
 if (chat0 > 0) then
   print 10, y, x, aa, a
@@ -306,7 +306,7 @@ i = i + chat0(  nan, +1d0 ,    nan)
 i = i + chat0(+1d0 ,   nan,    nan)
 
 s = 7d-16
-j = equiv(atn2dx(s, -1d0), 180 - atn2dx(s, 1d0));
+j = equiv(atan2d(s, -1d0), 180 - atan2d(s, 1d0));
 if (j > 0) print *, 'atan2d accuracy failure'
 i = i + j
 
@@ -377,7 +377,7 @@ end
 integer function chdf0(x, y, d)
 double precision x, y, d, dd, t
 
-dd = AngDif(x, y, t)
+dd = AngDiff(x, y, t)
 chdf0 = equiv(dd, d)
 if (chdf0 > 0) print 10, x, y, dd, d
 10 format(1x, 'AngDiff(', g10.3, ',', g10.3, ') = ', g10.3, &
@@ -407,7 +407,7 @@ i = i + chdf0( -eps , -180d0, -180d0 )
 
 x = 138 + 128 * eps
 y = -164
-j = equiv( AngDif(x, y, t), 58 - 128 * eps )
+j = equiv( AngDiff(x, y, t), 58 - 128 * eps )
 if ( j > 0 ) print *, 'AngDiff accuracy failure'
 i = i + j
 
@@ -435,7 +435,7 @@ f = 1/298.257223563d0
 i = 0
 
 do k = 1, 2
-  call invers(a, f, C(1, k), 0d0, C(2, k), 0d0, &
+  call inverse(a, f, C(1, k), 0d0, C(2, k), 0d0, &
       s12, azi1, azi2, 0, a12, m12, MM12, MM21, SS12)
   i = i + equiv(azi1, C(3, k)) + equiv(azi2, C(3, k))
 end do
@@ -463,7 +463,7 @@ f = 1/298.257223563d0
 i = 0
 
 do k = 1, 2
-  call invers(a, f, C(1, k), 0d0, C(2, k), 179.5d0, &
+  call inverse(a, f, C(1, k), 0d0, C(2, k), 179.5d0, &
       s12, azi1, azi2, 0, a12, m12, MM12, MM21, SS12)
   i = i + assert(azi1, C(3, k), 1d0) + assert(azi2, C(4, k), 1d0)
 end do
@@ -493,7 +493,7 @@ f = 1/298.257223563d0
 i = 0
 
 do k = 1, 4
-  call invers(a, f, C(1, k), 0d0, C(2, k), C(3, k), &
+  call inverse(a, f, C(1, k), 0d0, C(2, k), C(3, k), &
       s12, azi1, azi2, 0, a12, m12, MM12, MM21, SS12)
   i = i + equiv(azi1, C(4, k)) + equiv(azi2, C(5, k))
 end do
@@ -520,7 +520,7 @@ f = -1/300d0
 i = 0
 
 do k = 1, 2
-  call invers(a, f, 0d0, 0d0, 0d0, C(1, k), &
+  call inverse(a, f, 0d0, 0d0, 0d0, C(1, k), &
       s12, azi1, azi2, 0, a12, m12, MM12, MM21, SS12)
   i = i + equiv(azi1, C(2, k)) + equiv(azi2, C(2, k))
 end do

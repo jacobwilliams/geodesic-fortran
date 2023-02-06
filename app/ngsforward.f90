@@ -1,6 +1,6 @@
 !b::forward
 !
-program forward
+program ngsforward
   use geodesic_module
 
 !
@@ -489,4 +489,4 @@ else
 endif
 !
 !     stop
-end
+end program ngsforward

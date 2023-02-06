@@ -41,7 +41,7 @@
     write(*,*) 'lon error: ', glon2_ - glon2
     write(*,*) 'baz error: ', baz_ - baz
 
-    ! call invers(a,rf,glat1,glon1,glat2,glon2,faz,baz,s,it,sig,lam,kind) ! fix these ...
+    ! call inverse(a,rf,glat1,glon1,glat2,glon2,faz,baz,s,it,sig,lam,kind) ! fix these ...
     ! call direct(a,f,glat1,glon1,faz,s,glat2_,glon2_,baz_)
 
     ! write(*,*) ' geodeticlib:'

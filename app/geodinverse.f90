@@ -1,5 +1,5 @@
 !> @file geodinverse.for
-!! @brief A test program for invers()
+!! @brief A test program for inverse()
 
 !> A simple program to solve the inverse geodesic problem.
 !!
@@ -12,18 +12,18 @@ implicit none
 
 double precision a, f, lat1, lon1, azi1, lat2, lon2, azi2, s12, &
     dummy1, dummy2, dummy3, dummy4, dummy5
-integer omask
+integer outmask
 
 ! WGS84 values
 a = 6378137d0
 f = 1/298.257223563d0
 
-omask = 0
+outmask = 0
 
 10 continue
 read(*, *, end=90, err=90) lat1, lon1, lat2, lon2
-call invers(a, f, lat1, lon1, lat2, lon2, &
-    s12, azi1, azi2, omask, &
+call inverse(a, f, lat1, lon1, lat2, lon2, &
+    s12, azi1, azi2, outmask, &
     dummy1, dummy2, dummy3, dummy4, dummy5)
 print 20, azi1, azi2, s12
 20 format(1x, f20.15, 1x, f20.15, 1x, f19.10)

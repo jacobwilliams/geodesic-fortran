@@ -403,13 +403,13 @@ double precision lat1, lon1, azi1, lat2, lon2, azi2, &
 double precision azi1a, azi2a, s12a, a12a, &
     m12a, MM12a, MM21a, SS12a
 double precision a, f
-integer r, i, omask
+integer r, i, outmask
 
 
 ! WGS84 values
 a = 6378137d0
 f = 1/298.257223563d0
-omask = 1 + 2 + 4 + 8
+outmask = 1 + 2 + 4 + 8
 r = 0
 
 do 10 i = 1,20
@@ -425,8 +425,8 @@ do 10 i = 1,20
   MM12 = tstdat(i, 10)
   MM21 = tstdat(i, 11)
   SS12 = tstdat(i, 12)
-  call invers(a, f, lat1, lon1, lat2, lon2, &
-      s12a, azi1a, azi2a, omask, a12a, m12a, MM12a, MM21a, SS12a)
+  call inverse(a, f, lat1, lon1, lat2, lon2, &
+      s12a, azi1a, azi2a, outmask, a12a, m12a, MM12a, MM21a, SS12a)
   r = r + assert(azi1, azi1a, 1d-13)
   r = r + assert(azi2, azi2a, 1d-13)
   r = r + assert(s12, s12a, 1d-8)
@@ -449,13 +449,13 @@ double precision lat1, lon1, azi1, lat2, lon2, azi2, &
 double precision lat2a, lon2a, azi2a, a12a, &
     m12a, MM12a, MM21a, SS12a
 double precision a, f
-integer r, i, omask, flags
+integer r, i, outmask, flags
 
 
 ! WGS84 values
 a = 6378137d0
 f = 1/298.257223563d0
-omask = 1 + 2 + 4 + 8
+outmask = 1 + 2 + 4 + 8
 flags = 2
 r = 0
 
@@ -473,7 +473,7 @@ do 10 i = 1,20
   MM21 = tstdat(i, 11)
   SS12 = tstdat(i, 12)
   call direct(a, f, lat1, lon1, azi1, s12, flags, &
-    lat2a, lon2a, azi2a, omask, a12a, m12a, MM12a, MM21a, SS12a)
+    lat2a, lon2a, azi2a, outmask, a12a, m12a, MM12a, MM21a, SS12a)
   r = r + assert(lat2, lat2a, 1d-13)
   r = r + assert(lon2, lon2a, 1d-13)
   r = r + assert(azi2, azi2a, 1d-13)
@@ -496,13 +496,13 @@ double precision lat1, lon1, azi1, lat2, lon2, azi2, &
 double precision lat2a, lon2a, azi2a, s12a, &
     m12a, MM12a, MM21a, SS12a
 double precision a, f
-integer r, i, omask, flags
+integer r, i, outmask, flags
 
 
 ! WGS84 values
 a = 6378137d0
 f = 1/298.257223563d0
-omask = 1 + 2 + 4 + 8
+outmask = 1 + 2 + 4 + 8
 flags = 1 + 2
 r = 0
 
@@ -520,7 +520,7 @@ do 10 i = 1,20
   MM21 = tstdat(i, 11)
   SS12 = tstdat(i, 12)
   call direct(a, f, lat1, lon1, azi1, a12, flags, &
-    lat2a, lon2a, azi2a, omask, s12a, m12a, MM12a, MM21a, SS12a)
+    lat2a, lon2a, azi2a, outmask, s12a, m12a, MM12a, MM21a, SS12a)
   r = r + assert(lat2, lat2a, 1d-13)
   r = r + assert(lon2, lon2a, 1d-13)
   r = r + assert(azi2, azi2a, 1d-13)
@@ -538,16 +538,16 @@ end
 integer function tstg0()
 double precision azi1, azi2, s12, a12, m12, MM12, MM21, SS12
 double precision a, f
-integer r, omask
+integer r, outmask
 
 
 ! WGS84 values
 a = 6378137d0
 f = 1/298.257223563d0
-omask = 0
+outmask = 0
 r = 0
-call invers(a, f, 40.6d0, -73.8d0, 49.01666667d0, 2.55d0, &
-    s12, azi1, azi2, omask, a12, m12, MM12, MM21, SS12)
+call inverse(a, f, 40.6d0, -73.8d0, 49.01666667d0, 2.55d0, &
+    s12, azi1, azi2, outmask, a12, m12, MM12, MM21, SS12)
 r = r + assert(azi1, 53.47022d0, 0.5d-5)
 r = r + assert(azi2, 111.59367d0, 0.5d-5)
 r = r + assert(s12, 5853226d0, 0.5d0)
@@ -559,17 +559,17 @@ end
 integer function tstg1()
 double precision lat2, lon2, azi2, a12, m12, MM12, MM21, SS12
 double precision a, f
-integer r, omask, flags
+integer r, outmask, flags
 
 
 ! WGS84 values
 a = 6378137d0
 f = 1/298.257223563d0
-omask = 0
+outmask = 0
 flags = 0
 r = 0
 call direct(a, f, 40.63972222d0, -73.77888889d0, 53.5d0, 5850d3, &
-    flags, lat2, lon2, azi2, omask, a12, m12, MM12, MM21, SS12)
+    flags, lat2, lon2, azi2, outmask, a12, m12, MM12, MM21, SS12)
 r = r + assert(lat2, 49.01467d0, 0.5d-5)
 r = r + assert(lon2, 2.56106d0, 0.5d-5)
 r = r + assert(azi2, 111.62947d0, 0.5d-5)
@@ -582,20 +582,20 @@ integer function tstg2()
 ! Check fix for antipodal prolate bug found 2010-09-04
 double precision azi1, azi2, s12, a12, m12, MM12, MM21, SS12
 double precision a, f
-integer r, omask
+integer r, outmask
 
 
 a = 6.4d6
 f = -1/150d0
-omask = 0
+outmask = 0
 r = 0
-call invers(a, f, 0.07476d0, 0d0, -0.07476d0, 180d0, &
-    s12, azi1, azi2, omask, a12, m12, MM12, MM21, SS12)
+call inverse(a, f, 0.07476d0, 0d0, -0.07476d0, 180d0, &
+    s12, azi1, azi2, outmask, a12, m12, MM12, MM21, SS12)
 r = r + assert(azi1, 90.00078d0, 0.5d-5)
 r = r + assert(azi2, 90.00078d0, 0.5d-5)
 r = r + assert(s12, 20106193d0, 0.5d0)
-call invers(a, f, 0.1d0, 0d0, -0.1d0, 180d0, &
-    s12, azi1, azi2, omask, a12, m12, MM12, MM21, SS12)
+call inverse(a, f, 0.1d0, 0d0, -0.1d0, 180d0, &
+    s12, azi1, azi2, outmask, a12, m12, MM12, MM21, SS12)
 r = r + assert(azi1, 90.00105d0, 0.5d-5)
 r = r + assert(azi2, 90.00105d0, 0.5d-5)
 r = r + assert(s12, 20106193d0, 0.5d0)
@@ -608,17 +608,17 @@ integer function tstg4()
 ! Check fix for short line bug found 2010-05-21
 double precision azi1, azi2, s12, a12, m12, MM12, MM21, SS12
 double precision a, f
-integer r, omask
+integer r, outmask
 
 
 ! WGS84 values
 a = 6378137d0
 f = 1/298.257223563d0
-omask = 0
+outmask = 0
 r = 0
-call invers(a, f, &
+call inverse(a, f, &
     36.493349428792d0, 0d0, 36.49334942879201d0, .0000008d0, &
-    s12, azi1, azi2, omask, a12, m12, MM12, MM21, SS12)
+    s12, azi1, azi2, outmask, a12, m12, MM12, MM21, SS12)
 r = r + assert(s12, 0.072d0, 0.5d-3)
 
 tstg4 = r
@@ -628,17 +628,17 @@ end
 integer function tstg5()
 double precision lat2, lon2, azi2, a12, m12, MM12, MM21, SS12
 double precision a, f
-integer r, omask, flags
+integer r, outmask, flags
 
 
 ! WGS84 values
 a = 6378137d0
 f = 1/298.257223563d0
-omask = 0
+outmask = 0
 flags = 0
 r = 0
 call direct(a, f, 0.01777745589997d0, 30d0, 0d0, 10d6, &
-    flags, lat2, lon2, azi2, omask, a12, m12, MM12, MM21, SS12)
+    flags, lat2, lon2, azi2, outmask, a12, m12, MM12, MM21, SS12)
 if (lon2 < 0) then
   r = r + assert(lon2, -150d0, 0.5d-5)
   r = r + assert(abs(azi2), 180d0, 0.5d-5)
@@ -656,25 +656,25 @@ integer function tstg6()
 ! x86 -O3).  Found again on 2012-03-27 with tdm-mingw32 (g++ 4.6d0.1d0).
 double precision azi1, azi2, s12, a12, m12, MM12, MM21, SS12
 double precision a, f
-integer r, omask
+integer r, outmask
 
 
 ! WGS84 values
 a = 6378137d0
 f = 1/298.257223563d0
-omask = 0
+outmask = 0
 r = 0
-call invers(a, f, 88.202499451857d0, 0d0, &
+call inverse(a, f, 88.202499451857d0, 0d0, &
     -88.202499451857d0, 179.981022032992859592d0, &
-    s12, azi1, azi2, omask, a12, m12, MM12, MM21, SS12)
+    s12, azi1, azi2, outmask, a12, m12, MM12, MM21, SS12)
 r = r + assert(s12, 20003898.214d0, 0.5d-3)
-call invers(a, f, 89.262080389218d0, 0d0, &
+call inverse(a, f, 89.262080389218d0, 0d0, &
     -89.262080389218d0, 179.992207982775375662d0, &
-    s12, azi1, azi2, omask, a12, m12, MM12, MM21, SS12)
+    s12, azi1, azi2, outmask, a12, m12, MM12, MM21, SS12)
 r = r + assert(s12, 20003925.854d0, 0.5d-3)
-call invers(a, f, 89.333123580033d0, 0d0, &
+call inverse(a, f, 89.333123580033d0, 0d0, &
     -89.333123580032997687d0, 179.99295812360148422d0, &
-    s12, azi1, azi2, omask, a12, m12, MM12, MM21, SS12)
+    s12, azi1, azi2, outmask, a12, m12, MM12, MM21, SS12)
 r = r + assert(s12, 20003926.881d0, 0.5d-3)
 
 tstg6 = r
@@ -685,17 +685,17 @@ integer function tstg9()
 ! Check fix for volatile x bug found 2011-06-25 (gcc 4.4d0.4d0 x86 -O3)
 double precision azi1, azi2, s12, a12, m12, MM12, MM21, SS12
 double precision a, f
-integer r, omask
+integer r, outmask
 
 
 ! WGS84 values
 a = 6378137d0
 f = 1/298.257223563d0
-omask = 0
+outmask = 0
 r = 0
-call invers(a, f, 56.320923501171d0, 0d0, &
+call inverse(a, f, 56.320923501171d0, 0d0, &
     -56.320923501171d0, 179.664747671772880215d0, &
-    s12, azi1, azi2, omask, a12, m12, MM12, MM21, SS12)
+    s12, azi1, azi2, outmask, a12, m12, MM12, MM21, SS12)
 r = r + assert(s12, 19993558.287d0, 0.5d-3)
 
 tstg9 = r
@@ -707,17 +707,17 @@ integer function tstg10()
 ! + debug)
 double precision azi1, azi2, s12, a12, m12, MM12, MM21, SS12
 double precision a, f
-integer r, omask
+integer r, outmask
 
 
 ! WGS84 values
 a = 6378137d0
 f = 1/298.257223563d0
-omask = 0
+outmask = 0
 r = 0
-call invers(a, f, 52.784459512564d0, 0d0, &
+call inverse(a, f, 52.784459512564d0, 0d0, &
     -52.784459512563990912d0, 179.634407464943777557d0, &
-    s12, azi1, azi2, omask, a12, m12, MM12, MM21, SS12)
+    s12, azi1, azi2, outmask, a12, m12, MM12, MM21, SS12)
 r = r + assert(s12, 19991596.095d0, 0.5d-3)
 
 tstg10 = r
@@ -729,17 +729,17 @@ integer function tstg11()
 ! + debug)
 double precision azi1, azi2, s12, a12, m12, MM12, MM21, SS12
 double precision a, f
-integer r, omask
+integer r, outmask
 
 
 ! WGS84 values
 a = 6378137d0
 f = 1/298.257223563d0
-omask = 0
+outmask = 0
 r = 0
-call invers(a, f, 48.522876735459d0, 0d0, &
+call inverse(a, f, 48.522876735459d0, 0d0, &
     -48.52287673545898293d0, 179.599720456223079643d0, &
-    s12, azi1, azi2, omask, a12, m12, MM12, MM21, SS12)
+    s12, azi1, azi2, outmask, a12, m12, MM12, MM21, SS12)
 r = r + assert(s12, 19989144.774d0, 0.5d-3)
 
 tstg11 = r
@@ -752,15 +752,15 @@ integer function tstg12()
 ! 2012-10-07
 double precision azi1, azi2, s12, a12, m12, MM12, MM21, SS12
 double precision a, f
-integer r, omask
+integer r, outmask
 
 
 a = 89.8d0
 f = -1.83d0
-omask = 0
+outmask = 0
 r = 0
-call invers(a, f, 0d0, 0d0, -10d0, 160d0, &
-    s12, azi1, azi2, omask, a12, m12, MM12, MM21, SS12)
+call inverse(a, f, 0d0, 0d0, -10d0, 160d0, &
+    s12, azi1, azi2, outmask, a12, m12, MM12, MM21, SS12)
 r = r + assert(azi1, 120.27d0, 1d-2)
 r = r + assert(azi2, 105.15d0, 1d-2)
 r = r + assert(s12, 266.7d0, 1d-1)
@@ -773,16 +773,16 @@ integer function tstg14()
 ! Check fix for inverse ignoring lon12 = nan
 double precision azi1, azi2, s12, a12, m12, MM12, MM21, SS12
 double precision a, f
-integer r, omask
+integer r, outmask
 
 
 ! WGS84 values
 a = 6378137d0
 f = 1/298.257223563d0
-omask = 0
+outmask = 0
 r = 0
-call invers(a, f, 0d0, 0d0, 1d0, LatFix(91d0), &
-    s12, azi1, azi2, omask, a12, m12, MM12, MM21, SS12)
+call inverse(a, f, 0d0, 0d0, 1d0, LatFix(91d0), &
+    s12, azi1, azi2, outmask, a12, m12, MM12, MM21, SS12)
 r = r + chknan(azi1)
 r = r + chknan(azi2)
 r = r + chknan(s12)
@@ -796,16 +796,16 @@ integer function tstg15()
 ! checks that this is fixed.
 double precision lat2, lon2, azi2, a12, m12, MM12, MM21, SS12
 double precision a, f
-integer r, omask, flags
+integer r, outmask, flags
 
 
 a = 6.4d6
 f = -1/150.0d0
-omask = 8
+outmask = 8
 flags = 0
 r = 0
 call direct(a, f, 1d0, 2d0, 3d0, 4d0, &
-    flags, lat2, lon2, azi2, omask, a12, m12, MM12, MM21, SS12)
+    flags, lat2, lon2, azi2, outmask, a12, m12, MM12, MM21, SS12)
 r = r + assert(SS12, 23700d0, 0.5d0)
 
 tstg15 = r
@@ -816,23 +816,23 @@ integer function tstg17()
 ! Check fix for LONG_UNROLL bug found on 2015-05-07
 double precision lat2, lon2, azi2, a12, m12, MM12, MM21, SS12
 double precision a, f
-integer r, omask, flags
+integer r, outmask, flags
 
 
 ! WGS84 values
 a = 6378137d0
 f = 1/298.257223563d0
-omask = 0
+outmask = 0
 flags = 2
 r = 0
 call direct(a, f, 40d0, -75d0, -10d0, 2d7, &
-    flags, lat2, lon2, azi2, omask, a12, m12, MM12, MM21, SS12)
+    flags, lat2, lon2, azi2, outmask, a12, m12, MM12, MM21, SS12)
 r = r + assert(lat2, -39d0, 1d0)
 r = r + assert(lon2, -254d0, 1d0)
 r = r + assert(azi2, -170d0, 1d0)
 flags = 0
 call direct(a, f, 40d0, -75d0, -10d0, 2d7, &
-    flags, lat2, lon2, azi2, omask, a12, m12, MM12, MM21, SS12)
+    flags, lat2, lon2, azi2, outmask, a12, m12, MM12, MM21, SS12)
 r = r + assert(lat2, -39d0, 1d0)
 r = r + assert(lon2, 105d0, 1d0)
 r = r + assert(azi2, -170d0, 1d0)
@@ -845,15 +845,15 @@ integer function tstg26()
 ! Check 0/0 problem with area calculation on sphere 2015-09-08
 double precision azi1, azi2, s12, a12, m12, MM12, MM21, SS12
 double precision a, f
-integer r, omask
+integer r, outmask
 
 
 a = 6.4d6
 f = 0
-omask = 8
+outmask = 8
 r = 0
-call invers(a, f, 1d0, 2d0, 3d0, 4d0, &
-    s12, azi1, azi2, omask, a12, m12, MM12, MM21, SS12)
+call inverse(a, f, 1d0, 2d0, 3d0, 4d0, &
+    s12, azi1, azi2, outmask, a12, m12, MM12, MM21, SS12)
 r = r + assert(SS12, 49911046115.0d0, 0.5d0)
 
 tstg26 = r
@@ -864,16 +864,16 @@ integer function tstg28()
 ! Check fix for LONG_UNROLL bug found on 2015-05-07
 double precision lat2, lon2, azi2, a12, m12, MM12, MM21, SS12
 double precision a, f
-integer r, omask, flags
+integer r, outmask, flags
 
 
 a = 6.4d6
 f = 0.1d0
-omask = 1 + 2 + 4 + 8
+outmask = 1 + 2 + 4 + 8
 flags = 0
 r = 0
 call direct(a, f, 1d0, 2d0, 10d0, 5d6, &
-    flags, lat2, lon2, azi2, omask, a12, m12, MM12, MM21, SS12)
+    flags, lat2, lon2, azi2, outmask, a12, m12, MM12, MM21, SS12)
 r = r + assert(a12, 48.55570690d0, 0.5d-8)
 
 tstg28 = r
@@ -886,70 +886,70 @@ integer function tstg33()
 ! fmod(-0.0, 360.0) = +0.0.
 double precision azi1, azi2, s12, a12, m12, MM12, MM21, SS12
 double precision a, f
-integer r, omask
+integer r, outmask
 
 
 ! WGS84 values
 a = 6378137d0
 f = 1/298.257223563d0
-omask = 0
+outmask = 0
 r = 0
-call invers(a, f, 0d0, 0d0, 0d0, 179d0, &
-    s12, azi1, azi2, omask, a12, m12, MM12, MM21, SS12)
+call inverse(a, f, 0d0, 0d0, 0d0, 179d0, &
+    s12, azi1, azi2, outmask, a12, m12, MM12, MM21, SS12)
 r = r + assert(azi1, 90.00000d0, 0.5d-5)
 r = r + assert(azi2, 90.00000d0, 0.5d-5)
 r = r + assert(s12, 19926189d0, 0.5d0)
-call invers(a, f, 0d0, 0d0, 0d0, 179.5d0, &
-    s12, azi1, azi2, omask, a12, m12, MM12, MM21, SS12)
+call inverse(a, f, 0d0, 0d0, 0d0, 179.5d0, &
+    s12, azi1, azi2, outmask, a12, m12, MM12, MM21, SS12)
 r = r + assert(azi1, 55.96650d0, 0.5d-5)
 r = r + assert(azi2, 124.03350d0, 0.5d-5)
 r = r + assert(s12, 19980862d0, 0.5d0)
-call invers(a, f, 0d0, 0d0, 0d0, 180d0, &
-    s12, azi1, azi2, omask, a12, m12, MM12, MM21, SS12)
+call inverse(a, f, 0d0, 0d0, 0d0, 180d0, &
+    s12, azi1, azi2, outmask, a12, m12, MM12, MM21, SS12)
 r = r + assert(azi1, 0.00000d0, 0.5d-5)
 r = r + assert(abs(azi2), 180.00000d0, 0.5d-5)
 r = r + assert(s12, 20003931d0, 0.5d0)
-call invers(a, f, 0d0, 0d0, 1d0, 180d0, &
-    s12, azi1, azi2, omask, a12, m12, MM12, MM21, SS12)
+call inverse(a, f, 0d0, 0d0, 1d0, 180d0, &
+    s12, azi1, azi2, outmask, a12, m12, MM12, MM21, SS12)
 r = r + assert(azi1, 0.00000d0, 0.5d-5)
 r = r + assert(abs(azi2), 180.00000d0, 0.5d-5)
 r = r + assert(s12, 19893357d0, 0.5d0)
 a = 6.4d6
 f = 0
-call invers(a, f, 0d0, 0d0, 0d0, 179d0, &
-    s12, azi1, azi2, omask, a12, m12, MM12, MM21, SS12)
+call inverse(a, f, 0d0, 0d0, 0d0, 179d0, &
+    s12, azi1, azi2, outmask, a12, m12, MM12, MM21, SS12)
 r = r + assert(azi1, 90.00000d0, 0.5d-5)
 r = r + assert(azi2, 90.00000d0, 0.5d-5)
 r = r + assert(s12, 19994492d0, 0.5d0)
-call invers(a, f, 0d0, 0d0, 0d0, 180d0, &
-    s12, azi1, azi2, omask, a12, m12, MM12, MM21, SS12)
+call inverse(a, f, 0d0, 0d0, 0d0, 180d0, &
+    s12, azi1, azi2, outmask, a12, m12, MM12, MM21, SS12)
 r = r + assert(azi1, 0.00000d0, 0.5d-5)
 r = r + assert(abs(azi2), 180.00000d0, 0.5d-5)
 r = r + assert(s12, 20106193d0, 0.5d0)
-call invers(a, f, 0d0, 0d0, 1d0, 180d0, &
-    s12, azi1, azi2, omask, a12, m12, MM12, MM21, SS12)
+call inverse(a, f, 0d0, 0d0, 1d0, 180d0, &
+    s12, azi1, azi2, outmask, a12, m12, MM12, MM21, SS12)
 r = r + assert(azi1, 0.00000d0, 0.5d-5)
 r = r + assert(abs(azi2), 180.00000d0, 0.5d-5)
 r = r + assert(s12, 19994492d0, 0.5d0)
 a = 6.4d6
 f = -1/300.0d0
-call invers(a, f, 0d0, 0d0, 0d0, 179d0, &
-    s12, azi1, azi2, omask, a12, m12, MM12, MM21, SS12)
+call inverse(a, f, 0d0, 0d0, 0d0, 179d0, &
+    s12, azi1, azi2, outmask, a12, m12, MM12, MM21, SS12)
 r = r + assert(azi1, 90.00000d0, 0.5d-5)
 r = r + assert(azi2, 90.00000d0, 0.5d-5)
 r = r + assert(s12, 19994492d0, 0.5d0)
-call invers(a, f, 0d0, 0d0, 0d0, 180d0, &
-    s12, azi1, azi2, omask, a12, m12, MM12, MM21, SS12)
+call inverse(a, f, 0d0, 0d0, 0d0, 180d0, &
+    s12, azi1, azi2, outmask, a12, m12, MM12, MM21, SS12)
 r = r + assert(azi1, 90.00000d0, 0.5d-5)
 r = r + assert(azi2, 90.00000d0, 0.5d-5)
 r = r + assert(s12, 20106193d0, 0.5d0)
-call invers(a, f, 0d0, 0d0, 0.5d0, 180d0, &
-    s12, azi1, azi2, omask, a12, m12, MM12, MM21, SS12)
+call inverse(a, f, 0d0, 0d0, 0.5d0, 180d0, &
+    s12, azi1, azi2, outmask, a12, m12, MM12, MM21, SS12)
 r = r + assert(azi1, 33.02493d0, 0.5d-5)
 r = r + assert(azi2, 146.97364d0, 0.5d-5)
 r = r + assert(s12, 20082617d0, 0.5d0)
-call invers(a, f, 0d0, 0d0, 1d0, 180d0, &
-    s12, azi1, azi2, omask, a12, m12, MM12, MM21, SS12)
+call inverse(a, f, 0d0, 0d0, 1d0, 180d0, &
+    s12, azi1, azi2, outmask, a12, m12, MM12, MM21, SS12)
 r = r + assert(azi1, 0.00000d0, 0.5d-5)
 r = r + assert(abs(azi2), 180.00000d0, 0.5d-5)
 r = r + assert(s12, 20027270d0, 0.5d0)
@@ -963,21 +963,21 @@ integer function tstg55()
 ! Geodesic::Inverse, found 2015-09-23.
 double precision azi1, azi2, s12, a12, m12, MM12, MM21, SS12
 double precision a, f
-integer r, omask
+integer r, outmask
 
 
 ! WGS84 values
 a = 6378137d0
 f = 1/298.257223563d0
-omask = 0
+outmask = 0
 r = 0
-call invers(a, f, 91d0, 0d0, 0d0, 90d0, &
-    s12, azi1, azi2, omask, a12, m12, MM12, MM21, SS12)
+call inverse(a, f, 91d0, 0d0, 0d0, 90d0, &
+    s12, azi1, azi2, outmask, a12, m12, MM12, MM21, SS12)
 r = r + chknan(azi1)
 r = r + chknan(azi2)
 r = r + chknan(s12)
-call invers(a, f, 91d0, 0d0, 90d0, 9d0, &
-    s12, azi1, azi2, omask, a12, m12, MM12, MM21, SS12)
+call inverse(a, f, 91d0, 0d0, 90d0, 9d0, &
+    s12, azi1, azi2, outmask, a12, m12, MM12, MM21, SS12)
 r = r + chknan(azi1)
 r = r + chknan(azi2)
 r = r + chknan(s12)
@@ -990,16 +990,16 @@ integer function tstg59()
 ! Check for points close with longitudes close to 180 deg apart.
 double precision azi1, azi2, s12, a12, m12, MM12, MM21, SS12
 double precision a, f
-integer r, omask
+integer r, outmask
 
 
 ! WGS84 values
 a = 6378137d0
 f = 1/298.257223563d0
-omask = 0
+outmask = 0
 r = 0
-call invers(a, f, 5d0, 0.00000000000001d0, 10d0, 180d0, &
-    s12, azi1, azi2, omask, a12, m12, MM12, MM21, SS12)
+call inverse(a, f, 5d0, 0.00000000000001d0, 10d0, 180d0, &
+    s12, azi1, azi2, outmask, a12, m12, MM12, MM21, SS12)
 r = r + assert(azi1, 0.000000000000035d0, 1.5d-14)
 r = r + assert(azi2, 179.99999999999996d0, 1.5d-14)
 r = r + assert(s12, 18345191.174332713d0, 5d-9)
@@ -1012,17 +1012,17 @@ integer function tstg61()
 ! Make sure small negative azimuths are west-going
 double precision lat2, lon2, azi2, a12, m12, MM12, MM21, SS12
 double precision a, f
-integer r, omask, flags
+integer r, outmask, flags
 
 
 ! WGS84 values
 a = 6378137d0
 f = 1/298.257223563d0
-omask = 0
+outmask = 0
 flags = 2
 r = 0
 call direct(a, f, 45d0, 0d0, -0.000000000000000003d0, 1d7, &
-    flags, lat2, lon2, azi2, omask, a12, m12, MM12, MM21, SS12)
+    flags, lat2, lon2, azi2, outmask, a12, m12, MM12, MM21, SS12)
 r = r + assert(lat2, 45.30632d0, 0.5d-5)
 r = r + assert(lon2, -180d0, 0.5d-5)
 r = r + assert(abs(azi2), 180d0, 0.5d-5)
@@ -1039,17 +1039,17 @@ integer function tstg73()
 ! (converting -0.0 to +0.0).
 double precision lat2, lon2, azi2, a12, m12, MM12, MM21, SS12
 double precision a, f
-integer r, omask, flags
+integer r, outmask, flags
 
 
 ! WGS84 values
 a = 6378137d0
 f = 1/298.257223563d0
-omask = 0
+outmask = 0
 flags = 0
 r = 0
 call direct(a, f, 90d0, 10d0, 180d0, -1d6, &
-    flags, lat2, lon2, azi2, omask, a12, m12, MM12, MM21, SS12)
+    flags, lat2, lon2, azi2, outmask, a12, m12, MM12, MM21, SS12)
 r = r + assert(lat2, 81.04623d0, 0.5d-5)
 r = r + assert(lon2, -170d0, 0.5d-5)
 r = r + assert(azi2, 0d0, 0d0)
@@ -1064,16 +1064,16 @@ integer function tstg74()
 ! 2015-10-16.
 double precision azi1, azi2, s12, a12, m12, MM12, MM21, SS12
 double precision a, f
-integer r, omask
+integer r, outmask
 
 
 ! WGS84 values
 a = 6378137d0
 f = 1/298.257223563d0
-omask = 1 + 2 + 4 + 8
+outmask = 1 + 2 + 4 + 8
 r = 0
-call invers(a, f, 54.1589d0, 15.3872d0, 54.1591d0, 15.3877d0, &
-    s12, azi1, azi2, omask, a12, m12, MM12, MM21, SS12)
+call inverse(a, f, 54.1589d0, 15.3872d0, 54.1591d0, 15.3877d0, &
+    s12, azi1, azi2, outmask, a12, m12, MM12, MM21, SS12)
 r = r + assert(azi1, 55.723110355d0, 5d-9)
 r = r + assert(azi2, 55.723515675d0, 5d-9)
 r = r + assert(s12,  39.527686385d0, 5d-9)
@@ -1092,17 +1092,17 @@ integer function tstg76()
 ! Vincenty
 double precision azi1, azi2, s12, a12, m12, MM12, MM21, SS12
 double precision a, f
-integer r, omask
+integer r, outmask
 
 
 ! WGS84 values
 a = 6378137d0
 f = 1/298.257223563d0
-omask = 0
+outmask = 0
 r = 0
-call invers(a, f, &
+call inverse(a, f, &
     -(41+19/60d0), 174+49/60d0, 40+58/60d0, -(5+30/60d0), &
-    s12, azi1, azi2, omask, a12, m12, MM12, MM21, SS12)
+    s12, azi1, azi2, outmask, a12, m12, MM12, MM21, SS12)
 r = r + assert(azi1, 160.39137649664d0, 0.5d-11)
 r = r + assert(azi2,  19.50042925176d0, 0.5d-11)
 r = r + assert(s12,  19960543.857179d0, 0.5d-6)
@@ -1115,16 +1115,16 @@ integer function tstg78()
 ! An example where the NGS calculator fails to converge
 double precision azi1, azi2, s12, a12, m12, MM12, MM21, SS12
 double precision a, f
-integer r, omask
+integer r, outmask
 
 
 ! WGS84 values
 a = 6378137d0
 f = 1/298.257223563d0
-omask = 0
+outmask = 0
 r = 0
-call invers(a, f, 27.2d0, 0d0, -27.1d0, 179.5d0, &
-    s12, azi1, azi2, omask, a12, m12, MM12, MM21, SS12)
+call inverse(a, f, 27.2d0, 0d0, -27.1d0, 179.5d0, &
+    s12, azi1, azi2, outmask, a12, m12, MM12, MM21, SS12)
 r = r + assert(azi1,  45.82468716758d0, 0.5d-11)
 r = r + assert(azi2, 134.22776532670d0, 0.5d-11)
 r = r + assert(s12,  19974354.765767d0, 0.5d-6)
@@ -1138,28 +1138,28 @@ integer function tstg80()
 ! zero length geodesic (includes GeodSolve80 - GeodSolve83).
 double precision azi1, azi2, s12, a12, m12, MM12, MM21, SS12
 double precision a, f
-integer r, omask
+integer r, outmask
 
 
 ! WGS84 values
 a = 6378137d0
 f = 1/298.257223563d0
-omask = 4
+outmask = 4
 r = 0
 
-call invers(a, f, 0d0, 0d0, 0d0, 90d0, &
-    s12, azi1, azi2, omask, a12, m12, MM12, MM21, SS12)
+call inverse(a, f, 0d0, 0d0, 0d0, 90d0, &
+    s12, azi1, azi2, outmask, a12, m12, MM12, MM21, SS12)
 r = r + assert(MM12, -0.00528427534d0, 0.5d-10)
 r = r + assert(MM21, -0.00528427534d0, 0.5d-10)
 
-call invers(a, f, 0d0, 0d0, 1d-6, 1d-6, &
-    s12, azi1, azi2, omask, a12, m12, MM12, MM21, SS12)
+call inverse(a, f, 0d0, 0d0, 1d-6, 1d-6, &
+    s12, azi1, azi2, outmask, a12, m12, MM12, MM21, SS12)
 r = r + assert(MM12, 1d0, 0.5d-10)
 r = r + assert(MM21, 1d0, 0.5d-10)
 
-omask = 15
-call invers(a, f, 20.001d0, 0d0, 20.001d0, 0d0, &
-    s12, azi1, azi2, omask, a12, m12, MM12, MM21, SS12)
+outmask = 15
+call inverse(a, f, 20.001d0, 0d0, 20.001d0, 0d0, &
+    s12, azi1, azi2, outmask, a12, m12, MM12, MM21, SS12)
 r = r + assert(a12, 0d0, 1d-13)
 r = r + assert(s12, 0d0, 1d-8)
 r = r + assert(azi1, 180d0, 1d-13)
@@ -1172,8 +1172,8 @@ r = r + assert(sign(1d0, a12), 1d0, 0d0)
 r = r + assert(sign(1d0, s12), 1d0, 0d0)
 r = r + assert(sign(1d0, m12), 1d0, 0d0)
 
-call invers(a, f, 90d0, 0d0, 90d0, 180d0, &
-    s12, azi1, azi2, omask, a12, m12, MM12, MM21, SS12)
+call inverse(a, f, 90d0, 0d0, 90d0, 180d0, &
+    s12, azi1, azi2, outmask, a12, m12, MM12, MM21, SS12)
 r = r + assert(a12, 0d0, 1d-13)
 r = r + assert(s12, 0d0, 1d-8)
 r = r + assert(azi1, 0d0, 1d-13)
@@ -1192,54 +1192,54 @@ integer function tstg84()
 ! {fmod,sin,cos}(inf) (includes GeodSolve84 - GeodSolve86).
 double precision lat2, lon2, azi2, a12, m12, MM12, MM21, SS12
 double precision a, f, nan, inf
-integer r, omask, flags
+integer r, outmask, flags
 
 
 ! WGS84 values
 a = 6378137d0
 f = 1/298.257223563d0
-omask = 0
+outmask = 0
 flags = 0
 inf = 1d0/LatFix(0d0)
 nan = LatFix(91d0)
 r = 0
 call direct(a, f, 0d0, 0d0, 90d0, inf, &
-    flags, lat2, lon2, azi2, omask, a12, m12, MM12, MM21, SS12)
+    flags, lat2, lon2, azi2, outmask, a12, m12, MM12, MM21, SS12)
 r = r + chknan(lat2)
 r = r + chknan(lon2)
 r = r + chknan(azi2)
 call direct(a, f, 0d0, 0d0, 90d0, nan, &
-    flags, lat2, lon2, azi2, omask, a12, m12, MM12, MM21, SS12)
+    flags, lat2, lon2, azi2, outmask, a12, m12, MM12, MM21, SS12)
 r = r + chknan(lat2)
 r = r + chknan(lon2)
 r = r + chknan(azi2)
 call direct(a, f, 0d0, 0d0, inf, 1000d0, &
-    flags, lat2, lon2, azi2, omask, a12, m12, MM12, MM21, SS12)
+    flags, lat2, lon2, azi2, outmask, a12, m12, MM12, MM21, SS12)
 r = r + chknan(lat2)
 r = r + chknan(lon2)
 r = r + chknan(azi2)
 call direct(a, f, 0d0, 0d0, nan, 1000d0, &
-    flags, lat2, lon2, azi2, omask, a12, m12, MM12, MM21, SS12)
+    flags, lat2, lon2, azi2, outmask, a12, m12, MM12, MM21, SS12)
 r = r + chknan(lat2)
 r = r + chknan(lon2)
 r = r + chknan(azi2)
 call direct(a, f, 0d0, inf, 90d0, 1000d0, &
-    flags, lat2, lon2, azi2, omask, a12, m12, MM12, MM21, SS12)
+    flags, lat2, lon2, azi2, outmask, a12, m12, MM12, MM21, SS12)
 r = r + assert(lat2, 0d0, 0d0)
 r = r + chknan(lon2)
 r = r + assert(azi2, 90d0, 0d0)
 call direct(a, f, 0d0, nan, 90d0, 1000d0, &
-    flags, lat2, lon2, azi2, omask, a12, m12, MM12, MM21, SS12)
+    flags, lat2, lon2, azi2, outmask, a12, m12, MM12, MM21, SS12)
 r = r + assert(lat2, 0d0, 0d0)
 r = r + chknan(lon2)
 r = r + assert(azi2, 90d0, 0d0)
 call direct(a, f, inf, 0d0, 90d0, 1000d0, &
-    flags, lat2, lon2, azi2, omask, a12, m12, MM12, MM21, SS12)
+    flags, lat2, lon2, azi2, outmask, a12, m12, MM12, MM21, SS12)
 r = r + chknan(lat2)
 r = r + chknan(lon2)
 r = r + chknan(azi2)
 call direct(a, f, nan, 0d0, 90d0, 1000d0, &
-    flags, lat2, lon2, azi2, omask, a12, m12, MM12, MM21, SS12)
+    flags, lat2, lon2, azi2, outmask, a12, m12, MM12, MM21, SS12)
 r = r + chknan(lat2)
 r = r + chknan(lon2)
 r = r + chknan(azi2)
@@ -1254,18 +1254,18 @@ integer function tstg92()
 ! https://bugs.python.org/issue43088
 double precision azi1, azi2, s12, a12, m12, MM12, MM21, SS12
 double precision a, f
-integer r, omask
+integer r, outmask
 
 
 ! WGS84 values
 a = 6378137d0
 f = 1/298.257223563d0
-omask = 0
+outmask = 0
 r = 0
-call invers(a, f, &
+call inverse(a, f, &
     37.757540000000006d0, -122.47018d0, &
     37.75754d0,           -122.470177d0, &
-    s12, azi1, azi2, omask, a12, m12, MM12, MM21, SS12)
+    s12, azi1, azi2, outmask, a12, m12, MM12, MM21, SS12)
 r = r + assert(azi1, 89.99999923d0, 1d-7  )
 r = r + assert(azi2, 90.00000106d0, 1d-7  )
 r = r + assert(s12,   0.264d0,      0.5d-3)
@@ -1280,16 +1280,16 @@ integer function tstg94()
 
 double precision azi1, azi2, s12, a12, m12, MM12, MM21, SS12
 double precision a, f
-integer r, omask
+integer r, outmask
 
 
 ! WGS84 values
 a = 6378137d0
 f = 1/298.257223563d0
-omask = 0
+outmask = 0
 r = 0
-call invers(a, f, 0d0, 0d0, LatFix(91d0), 90d0, &
-    s12, azi1, azi2, omask, a12, m12, MM12, MM21, SS12)
+call inverse(a, f, 0d0, 0d0, LatFix(91d0), 90d0, &
+    s12, azi1, azi2, outmask, a12, m12, MM12, MM21, SS12)
 r = r + chknan(azi1)
 r = r + chknan(azi2)
 r = r + chknan(s12)
@@ -1306,15 +1306,15 @@ integer function tstg96()
 
 double precision azi1, azi2, s12, a12, m12, MM12, MM21, SS12
 double precision a, f
-integer r, omask
+integer r, outmask
 
 
 a = 6378137d0
 f = 1/298.257222101d0
-omask = 8
+outmask = 8
 r = 0
-call invers(a,f, 0d0,0d0, 60.0832522871723d0, 89.8492185074635d0, &
-    s12, azi1, azi2, omask, a12, m12, MM12, MM21, SS12)
+call inverse(a,f, 0d0,0d0, 60.0832522871723d0, 89.8492185074635d0, &
+    s12, azi1, azi2, outmask, a12, m12, MM12, MM21, SS12)
 r = r + assert(SS12, 42426932221845d0, 0.5d0)
 
 tstg96 = r

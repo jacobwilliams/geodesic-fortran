@@ -224,7 +224,7 @@ The documention of the library is given in the file, geodesic.for.
 
 Here is a brief summary of the functions.
 - Call direct() to solve the direct geodesic problme.
-- Call invers() to solve the inverse geodesic problem.
+- Call inverse() to solve the inverse geodesic problem.
 - Call area() to find the area of a geodesic polygon.
 - geover() returns the version numbers of the library.
 

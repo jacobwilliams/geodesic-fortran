@@ -32,7 +32,7 @@
 !   subroutine direct().
 ! - the inverse problem -- given \e lat1, \e lon1, \e lat2, \e lon2,
 !   determine \e s12, \e azi1, and \e azi2.  This is solved by the
-!   subroutine invers().
+!   subroutine inverse().
 !
 ! The ellipsoid is specified by its equatorial radius \e a (typically
 ! in meters) and flattening \e f.  The routines are accurate to round
@@ -146,7 +146,7 @@ module geodesic_module
   ! This is about cbrt(dblmin).  With other implementations, sqrt(dblmin)
   ! is used.  The larger value is used here to avoid complaints about a
   ! IEEE_UNDERFLOW_FLAG IEEE_DENORMAL signal.  This is triggered when
-  ! invers is called with points at opposite poles.
+  ! inverse is called with points at opposite poles.
   real(wp),parameter :: tiny2 = dblmin**(one/three) !! 0.5_wp**((1022+1)/3)
   real(wp),parameter :: tol0 = dbleps
 
@@ -158,10 +158,10 @@ module geodesic_module
 
   ! Check on bisection interval
   real(wp),parameter :: tolb = tol0 * tol2
-  real(wp),parameter :: xthrsh = 1000.0_wp * tol2
+  real(wp),parameter :: xthresh = 1000.0_wp * tol2
 
   public :: direct
-  public :: invers
+  public :: inverse
   public :: direct_vincenty
   public :: inverse_vincenty
   public :: area
@@ -177,7 +177,7 @@ module geodesic_module
   public :: geocentric_radius
 
   ! other routines
-  public :: AngDif,AngNormalize,sumx,LatFix,atn2dx,AngRound,sncsdx
+  public :: AngDiff,AngNormalize,sumx,LatFix,atan2d,AngRound,sincosd
 
 contains
 !*****************************************************************************************
@@ -203,7 +203,7 @@ contains
 !  180 deg.)
 
 subroutine direct(a, f, lat1, lon1, azi1, s12a12, flags, &
-                  lat2, lon2, azi2, omask, a12s12, m12, MM12, MM21, SS12)
+                  lat2, lon2, azi2, outmask, a12s12, m12, MM12, MM21, SS12)
 
   real(wp), intent(in) :: a !! the equatorial radius (meters).
   real(wp), intent(in) :: f !! the flattening of the ellipsoid.  Setting `f = 0` gives
@@ -220,10 +220,10 @@ subroutine direct(a, f, lat1, lon1, azi1, s12a12, flags, &
                                !!
                                !!  * 1 the `arcmode` flag
                                !!  * 2 the `unroll` flag
-  integer, intent(in) :: omask !! a bitor'ed combination of mask values
+  integer, intent(in) :: outmask !! a bitor'ed combination of mask values
                                !! specifying which of the following parameters should be set.
                                !!
-                               !! omask is an integer in [0, 16) whose binary bits are interpreted
+                               !! outmask is an integer in [0, 16) whose binary bits are interpreted
                                !! as follows:
                                !!
                                !!  * 1 return `a12`
@@ -255,7 +255,7 @@ subroutine direct(a, f, lat1, lon1, azi1, s12a12, flags, &
   real(wp) :: A3x(0:nA3x-1), C3x(0:nC3x-1), C4x(0:nC4x-1), &
               C1a(nC1), C1pa(nC1p), C2a(nC2), C3a(nC3-1), C4a(0:nC4-1)
 
-  logical :: arcmod, unroll, arcp, redlp, scalp, areap
+  logical :: arcmode, unroll, arcp, redlp, scalp, areap
   real(wp) :: e2, f1, ep2, n, b, c2, &
               salp0, calp0, k2, eps, &
               salp1, calp1, ssig1, csig1, cbet1, sbet1, dn1, somg1, comg1, &
@@ -272,34 +272,34 @@ n = f / (2 - f)
 b = a * f1
 c2 = 0
 
-arcmod = mod(flags/1, 2) == 1
+arcmode = mod(flags/1, 2) == 1
 unroll = mod(flags/2, 2) == 1
 
-arcp = mod(omask/1, 2) == 1
-redlp = mod(omask/2, 2) == 1
-scalp = mod(omask/4, 2) == 1
-areap = mod(omask/8, 2) == 1
+arcp = mod(outmask/1, 2) == 1
+redlp = mod(outmask/2, 2) == 1
+scalp = mod(outmask/4, 2) == 1
+areap = mod(outmask/8, 2) == 1
 
 if (areap) then
   if (e2 == 0) then
     c2 = a**2
   else if (e2 > 0) then
-    c2 = (a**2 + b**2 * atanhx(sqrt(e2)) / sqrt(e2)) / 2
+    c2 = (a**2 + b**2 * atanh(sqrt(e2)) / sqrt(e2)) / 2
   else
     c2 = (a**2 + b**2 * atan(sqrt(abs(e2))) / sqrt(abs(e2))) / 2
   end if
 end if
 
-call A3cof(n, A3x)
-call C3cof(n, C3x)
-if (areap) call C4cof(n, C4x)
+call A3coeff(n, A3x)
+call C3coeff(n, C3x)
+if (areap) call C4coeff(n, C4x)
 
 ! Guard against underflow in salp0
-call sncsdx(AngRound(azi1), salp1, calp1)
+call sincosd(AngRound(azi1), salp1, calp1)
 
-call sncsdx(AngRound(LatFix(lat1)), sbet1, cbet1)
+call sincosd(AngRound(LatFix(lat1)), sbet1, cbet1)
 sbet1 = f1 * sbet1
-call norm2x(sbet1, cbet1)
+call norm(sbet1, cbet1)
 ! Ensure cbet1 = +dbleps at poles
 cbet1 = max(tiny2, cbet1)
 dn1 = sqrt(1 + ep2 * sbet1**2)
@@ -309,7 +309,7 @@ dn1 = sqrt(1 + ep2 * sbet1**2)
 salp0 = salp1 * cbet1
 ! Alt: calp0 = hypot(sbet1, calp1 * cbet1).  The following
 ! is slightly better (consider the case salp1 = 0).
-calp0 = hypotx(calp1, salp1 * sbet1)
+calp0 = hypot(calp1, salp1 * sbet1)
 ! Evaluate sig with tan(bet1) = tan(sig1) * cos(alp1).
 ! sig = 0 is nearest northward crossing of equator.
 ! With bet1 = 0, alp1 = pi/2, we have sig1 = 0 (equatorial line).
@@ -328,29 +328,29 @@ else
 end if
 comg1 = csig1
 ! sig1 in (-pi, pi]
-call norm2x(ssig1, csig1)
-! norm2x(somg1, comg1); -- don't need to normalize!
+call norm(ssig1, csig1)
+! norm(somg1, comg1); -- don't need to normalize!
 
 k2 = calp0**2 * ep2
 eps = k2 / (2 * (1 + sqrt(1 + k2)) + k2)
 
 A1m1 = A1m1f(eps)
 call C1f(eps, C1a)
-B11 = TrgSum(.true., ssig1, csig1, C1a, nC1)
+B11 = SinCosSeries(.true., ssig1, csig1, C1a, nC1)
 s = sin(B11)
 c = cos(B11)
 ! tau1 = sig1 + B11
 stau1 = ssig1 * c + csig1 * s
 ctau1 = csig1 * c - ssig1 * s
 ! Not necessary because C1pa reverts C1a
-!    B11 = -TrgSum(true, stau1, ctau1, C1pa, nC1p)
+!    B11 = -SinCosSeries(true, stau1, ctau1, C1pa, nC1p)
 
-if (.not. arcmod) call C1pf(eps, C1pa)
+if (.not. arcmode) call C1pf(eps, C1pa)
 
 if (redlp .or. scalp) then
   A2m1 = A2m1f(eps)
   call C2f(eps, C2a)
-  B21 = TrgSum(.true., ssig1, csig1, C2a, nC2)
+  B21 = SinCosSeries(.true., ssig1, csig1, C2a, nC2)
 else
 ! Suppress bogus warnings about unitialized variables
   A2m1 = 0
@@ -359,23 +359,23 @@ end if
 
 call C3f(eps, C3x, C3a)
 A3c = -f * salp0 * A3f(eps, A3x)
-B31 = TrgSum(.true., ssig1, csig1, C3a, nC3-1)
+B31 = SinCosSeries(.true., ssig1, csig1, C3a, nC3-1)
 
 if (areap) then
   call C4f(eps, C4x, C4a)
 ! Multiplier = a^2 * e^2 * cos(alpha0) * sin(alpha0)
   A4 = a**2 * calp0 * salp0 * e2
-  B41 = TrgSum(.false., ssig1, csig1, C4a, nC4)
+  B41 = SinCosSeries(.false., ssig1, csig1, C4a, nC4)
 else
 ! Suppress bogus warnings about unitialized variables
   A4 = 0
   B41 = 0
 end if
 
-if (arcmod) then
+if (arcmode) then
 ! Interpret s12a12 as spherical arc length
   sig12 = s12a12 * degree
-  call sncsdx(s12a12, ssig12, csig12)
+  call sincosd(s12a12, ssig12, csig12)
 ! Suppress bogus warnings about unitialized variables
   B12 = 0
 else
@@ -384,7 +384,7 @@ else
   s = sin(tau12)
   c = cos(tau12)
 ! tau2 = tau1 + tau12
-  B12 = - TrgSum(.true., &
+  B12 = - SinCosSeries(.true., &
       stau1 * c + ctau1 * s, ctau1 * c - stau1 * s, C1pa, nC1p)
   sig12 = tau12 - (B12 - B11)
   ssig12 = sin(sig12)
@@ -413,7 +413,7 @@ else
 !      1/5   157e6 3.8e9 280e6
     ssig2 = ssig1 * csig12 + csig1 * ssig12
     csig2 = csig1 * csig12 - ssig1 * ssig12
-    B12 = TrgSum(.true., ssig2, csig2, C1a, nC1)
+    B12 = SinCosSeries(.true., ssig2, csig2, C1a, nC1)
     serr = (1 + A1m1) * (sig12 + (B12 - B11)) - s12a12 / b
     sig12 = sig12 - serr / sqrt(1 + k2 * ssig2**2)
     ssig12 = sin(sig12)
@@ -426,14 +426,14 @@ end if
 ssig2 = ssig1 * csig12 + csig1 * ssig12
 csig2 = csig1 * csig12 - ssig1 * ssig12
 dn2 = sqrt(1 + k2 * ssig2**2)
-if (arcmod .or. abs(f) > 0.01_wp) &
-    B12 = TrgSum(.true., ssig2, csig2, C1a, nC1)
+if (arcmode .or. abs(f) > 0.01_wp) &
+    B12 = SinCosSeries(.true., ssig2, csig2, C1a, nC1)
 AB1 = (1 + A1m1) * (B12 - B11)
 
 ! sin(bet2) = cos(alp0) * sin(sig2)
 sbet2 = calp0 * ssig2
 ! Alt: cbet2 = hypot(csig2, salp0 * ssig2)
-cbet2 = hypotx(salp0, calp0 * csig2)
+cbet2 = hypot(salp0, calp0 * csig2)
 if (cbet2 == 0) then
 ! I.e., salp0 = 0, csig2 = 0.  Break the degeneracy in this case
   cbet2 = tiny2
@@ -460,7 +460,7 @@ else
 end if
 
 lam12 = omg12 + A3c * &
-    ( sig12 + (TrgSum(.true., ssig2, csig2, C3a, nC3-1) &
+    ( sig12 + (SinCosSeries(.true., ssig2, csig2, C3a, nC3-1) &
     - B31))
 lon12 = lam12 / degree
 if (unroll) then
@@ -468,11 +468,11 @@ if (unroll) then
 else
   lon2 = AngNormalize(AngNormalize(lon1) + AngNormalize(lon12))
 end if
-lat2 = atn2dx(sbet2, f1 * cbet2)
-azi2 = atn2dx(salp2, calp2)
+lat2 = atan2d(sbet2, f1 * cbet2)
+azi2 = atan2d(salp2, calp2)
 
 if (redlp .or. scalp) then
-  B22 = TrgSum(.true., ssig2, csig2, C2a, nC2)
+  B22 = SinCosSeries(.true., ssig2, csig2, C2a, nC2)
   AB2 = (1 + A2m1) * (B22 - B21)
   J12 = (A1m1 - A2m1) * sig12 + (AB1 - AB2)
 end if
@@ -487,7 +487,7 @@ if (scalp) then
 end if
 
 if (areap) then
-  B42 = TrgSum(.false., ssig2, csig2, C4a, nC4)
+  B42 = SinCosSeries(.false., ssig2, csig2, C4a, nC4)
   if (calp0 == 0 .or. salp0 == 0) then
 ! alp12 = alp2 - alp1, used in atan2 so no need to normalize
     salp12 = salp2 * calp1 - calp2 * salp1
@@ -513,7 +513,7 @@ if (areap) then
 end if
 
 if (arcp) then
-  if (arcmod) then
+  if (arcmode) then
     a12s12 = b * ((1 + A1m1) * sig12 + AB1)
   else
     a12s12 = sig12 / degree
@@ -540,8 +540,8 @@ end subroutine direct
 !  applications but does occur for very eccentric ellipsoids), then the
 !  bisection method is used to refine the solution.
 
-subroutine invers(a, f, lat1, lon1, lat2, lon2, &
-                  s12, azi1, azi2, omask, a12, m12, MM12, MM21, SS12)
+subroutine inverse(a, f, lat1, lon1, lat2, lon2, &
+                  s12, azi1, azi2, outmask, a12, m12, MM12, MM21, SS12)
 
 real(wp), intent(in)  :: a !! the equatorial radius (meters).
 real(wp), intent(in)  :: f !! the flattening of the ellipsoid.  Setting `f = 0` gives
@@ -550,9 +550,9 @@ real(wp), intent(in)  :: lat1 !! latitude of point 1 (degrees).
 real(wp), intent(in)  :: lon1 !! longitude of point 1 (degrees).
 real(wp), intent(in)  :: lat2 !! latitude of point 2 (degrees).
 real(wp), intent(in)  :: lon2 !! longitude of point 2 (degrees).
-integer, intent(in)   :: omask !! a bitor'ed combination of mask values
+integer, intent(in)   :: outmask !! a bitor'ed combination of mask values
                                !! specifying which of the following parameters should be set.
-                               !! `omask` is an integer in [0, 16) whose binary bits are interpreted
+                               !! `outmask` is an integer in [0, 16) whose binary bits are interpreted
                                !! as follows:
                                !!
                                !!  *  1 return `a12`
@@ -576,8 +576,8 @@ parameter (ord = 6, nA3 = ord, nA3x = nA3, &
 real(wp) A3x(0:nA3x-1), C3x(0:nC3x-1), C4x(0:nC4x-1), &
     Ca(nC)
 
-integer latsgn, lonsgn, swapp, numit
-logical arcp, redlp, scalp, areap, merid, tripn, tripb
+integer latsign, lonsign, swapp, numit
+logical arcp, redlp, scalp, areap, meridian, tripn, tripb
 
 real(wp) e2, f1, ep2, n, b, c2, &
     lat1x, lat2x, salp0, calp0, k2, eps, &
@@ -598,10 +598,10 @@ n = f / ( 2 - f)
 b = a * f1
 c2 = 0
 
-arcp = mod(omask/1, 2) == 1
-redlp = mod(omask/2, 2) == 1
-scalp = mod(omask/4, 2) == 1
-areap = mod(omask/8, 2) == 1
+arcp = mod(outmask/1, 2) == 1
+redlp = mod(outmask/2, 2) == 1
+scalp = mod(outmask/4, 2) == 1
+areap = mod(outmask/8, 2) == 1
 if (scalp) then
   lmask = 16 + 2 + 4
 else
@@ -612,28 +612,28 @@ if (areap) then
   if (e2 == 0) then
     c2 = a**2
   else if (e2 > 0) then
-    c2 = (a**2 + b**2 * atanhx(sqrt(e2)) / sqrt(e2)) / 2
+    c2 = (a**2 + b**2 * atanh(sqrt(e2)) / sqrt(e2)) / 2
   else
     c2 = (a**2 + b**2 * atan(sqrt(abs(e2))) / sqrt(abs(e2))) / 2
   end if
 end if
 
-call A3cof(n, A3x)
-call C3cof(n, C3x)
-if (areap) call C4cof(n, C4x)
+call A3coeff(n, A3x)
+call C3coeff(n, C3x)
+if (areap) call C4coeff(n, C4x)
 
 ! Compute longitude difference (AngDiff does this carefully).  Result is
 ! in [-180, 180] but -180 is only for west-going geodesics.  180 is for
 ! east-going and meridional geodesics.
 ! If very close to being on the same half-meridian, then make it so.
-lon12 = AngDif(lon1, lon2, lon12s)
+lon12 = AngDiff(lon1, lon2, lon12s)
 ! Make longitude difference positive.
-lonsgn = int(sign(1.0_wp, lon12))
-lon12 = lonsgn * lon12
-lon12s = lonsgn * lon12s
+lonsign = int(sign(1.0_wp, lon12))
+lon12 = lonsign * lon12
+lon12s = lonsign * lon12s
 lam12 = lon12 * degree
 ! Calculate sincos of lon12 + error (this applies AngRound internally).
-call sncsde(lon12, lon12s, slam12, clam12)
+call sincosde(lon12, lon12s, slam12, clam12)
 ! the supplementary longitude difference
 lon12s = (180 - lon12) - lon12s
 
@@ -648,34 +648,34 @@ else
   swapp = 1
 end if
 if (swapp < 0) then
-  lonsgn = -lonsgn
+  lonsign = -lonsign
   call swap(lat1x, lat2x)
 end if
 ! Make lat1 <= 0
-latsgn = int(sign(1.0_wp, -lat1x))
-lat1x = lat1x * latsgn
-lat2x = lat2x * latsgn
+latsign = int(sign(1.0_wp, -lat1x))
+lat1x = lat1x * latsign
+lat2x = lat2x * latsign
 ! Now we have
 !
 !     0 <= lon12 <= 180
 !     -90 <= lat1 <= 0
 !     lat1 <= lat2 <= -lat1
 !
-! longsign, swapp, latsgn register the transformation to bring the
+! longsign, swapp, latsign register the transformation to bring the
 ! coordinates to this canonical form.  In all cases, 1 means no change
 ! was made.  We make these transformations so that there are few cases
 ! to check, e.g., on verifying quadrants in atan2.  In addition, this
 ! enforces some symmetries in the results returned.
 
-call sncsdx(lat1x, sbet1, cbet1)
+call sincosd(lat1x, sbet1, cbet1)
 sbet1 = f1 * sbet1
-call norm2x(sbet1, cbet1)
+call norm(sbet1, cbet1)
 ! Ensure cbet1 = +dbleps at poles
 cbet1 = max(tiny2, cbet1)
 
-call sncsdx(lat2x, sbet2, cbet2)
+call sincosd(lat2x, sbet2, cbet2)
 sbet2 = f1 * sbet2
-call norm2x(sbet2, cbet2)
+call norm(sbet2, cbet2)
 ! Ensure cbet2 = +dbleps at poles
 cbet2 = max(tiny2, cbet2)
 
@@ -699,9 +699,9 @@ dn2 = sqrt(1 + ep2 * sbet2**2)
 
 ! Suppress bogus warnings about unitialized variables
 a12x = 0
-merid = lat1x == -90 .or. slam12 == 0
+meridian = lat1x == -90 .or. slam12 == 0
 
-if (merid) then
+if (meridian) then
 
 ! Endpoints are on a single full meridian, so the geodesic might lie on
 ! a meridian.
@@ -722,7 +722,7 @@ if (merid) then
 ! sig12 = sig2 - sig1
   sig12 = atan2(max(0d0, csig1 * ssig2 - ssig1 * csig2) + 0d0, &
                          csig1 * csig2 + ssig1 * ssig2)
-  call Lengs(n, sig12, ssig1, csig1, dn1, ssig2, csig2, dn2, &
+  call Lengths(n, sig12, ssig1, csig1, dn1, ssig2, csig2, dn2, &
       cbet1, cbet2, lmask, &
       s12x, m12x, dummy, MM12, MM21, ep2, Ca)
 
@@ -747,7 +747,7 @@ if (merid) then
     a12x = sig12 / degree
   else
 ! m12 < 0, i.e., prolate and too close to anti-podal
-    merid = .false.
+    meridian = .false.
   end if
 end if
 
@@ -755,7 +755,7 @@ omg12 = 0
 ! somg12 = 2 marks that it needs to be calculated
 somg12 = 2
 comg12 = 0
-if (.not. merid .and. sbet1 == 0 .and. &
+if (.not. meridian .and. sbet1 == 0 .and. &
     (f <= 0 .or. lon12s >= f * 180)) then
 
 ! Geodesic runs along equator
@@ -772,16 +772,16 @@ if (.not. merid .and. sbet1 == 0 .and. &
     MM21 = MM12
   end if
   a12x = lon12 / f1
-else if (.not. merid) then
+else if (.not. meridian) then
 ! Now point1 and point2 belong within a hemisphere bounded by a
 ! meridian and geodesic is neither meridional or equatorial.
 
 ! Figure a starting point for Newton's method
-  sig12 = InvSta(sbet1, cbet1, dn1, sbet2, cbet2, dn2, lam12, &
+  sig12 = InverseStart(sbet1, cbet1, dn1, sbet2, cbet2, dn2, lam12, &
       slam12, clam12, f, A3x, salp1, calp1, salp2, calp2, dnm, Ca)
 
   if (sig12 >= 0) then
-! Short lines (InvSta sets salp2, calp2, dnm)
+! Short lines (InverseStart sets salp2, calp2, dnm)
     s12x = sig12 * b * dnm
     m12x = dnm**2 * b * sin(sig12 / dnm)
     if (scalp) then
@@ -814,7 +814,7 @@ else if (.not. merid) then
     do numit = 0, maxit2-1
       ! the WGS84 test set: mean = 1.47, sd = 1.25, max = 16
       ! WGS84 and random input: mean = 2.85, sd = 0.60
-      v = Lam12f(sbet1, cbet1, dn1, sbet2, cbet2, dn2, &
+      v = Lambda12(sbet1, cbet1, dn1, sbet2, cbet2, dn2, &
           salp1, calp1, slam12, clam12, f, A3x, C3x, salp2, calp2, &
           sig12, ssig1, csig1, ssig2, csig2, &
           eps, domg12, numit < maxit1, dv, Ca)
@@ -843,7 +843,7 @@ else if (.not. merid) then
         if (nsalp1 > 0 .and. abs(dalp1) < pi) then
           calp1 = calp1 * cdalp1 - salp1 * sdalp1
           salp1 = nsalp1
-          call norm2x(salp1, calp1)
+          call norm(salp1, calp1)
           ! In some regimes we don't get quadratic convergence because
           ! slope -> 0.  So use convergence conditions based on dbleps
           ! instead of sqrt(dbleps).
@@ -861,12 +861,12 @@ else if (.not. merid) then
       ! WGS84 and random input: mean = 4.74, sd = 0.99
       salp1 = (salp1a + salp1b)/2
       calp1 = (calp1a + calp1b)/2
-      call norm2x(salp1, calp1)
+      call norm(salp1, calp1)
       tripn = .false.
       tripb = abs(salp1a - salp1) + (calp1a - calp1) < tolb &
           .or. abs(salp1 - salp1b) + (calp1 - calp1b) < tolb
     end do
-    call Lengs(eps, sig12, ssig1, csig1, dn1, ssig2, csig2, dn2, &
+    call Lengths(eps, sig12, ssig1, csig1, dn1, ssig2, csig2, dn2, &
         cbet1, cbet2, lmask, &
         s12x, m12x, dummy, MM12, MM21, ep2, Ca)
     m12x = m12x * b
@@ -888,7 +888,7 @@ if (redlp) m12 = 0 + m12x
 if (areap) then
 ! From Lambda12: sin(alp1) * cos(bet1) = sin(alp0)
   salp0 = salp1 * cbet1
-  calp0 = hypotx(calp1, salp1 * sbet1)
+  calp0 = hypot(calp1, salp1 * sbet1)
   if (calp0 /= 0 .and. salp0 /= 0) then
 ! From Lambda12: tan(bet) = tan(sig) * cos(alp)
     ssig1 = sbet1
@@ -899,23 +899,23 @@ if (areap) then
     eps = k2 / (2 * (1 + sqrt(1 + k2)) + k2)
 ! Multiplier = a^2 * e^2 * cos(alpha0) * sin(alpha0).
     A4 = a**2 * calp0 * salp0 * e2
-    call norm2x(ssig1, csig1)
-    call norm2x(ssig2, csig2)
+    call norm(ssig1, csig1)
+    call norm(ssig2, csig2)
     call C4f(eps, C4x, Ca)
-    B41 = TrgSum(.false., ssig1, csig1, Ca, nC4)
-    B42 = TrgSum(.false., ssig2, csig2, Ca, nC4)
+    B41 = SinCosSeries(.false., ssig1, csig1, Ca, nC4)
+    B42 = SinCosSeries(.false., ssig2, csig2, Ca, nC4)
     SS12 = A4 * (B42 - B41)
   else
 ! Avoid problems with indeterminate sig1, sig2 on equator
     SS12 = 0
   end if
 
-  if (.not. merid .and. somg12 == 2) then
+  if (.not. meridian .and. somg12 == 2) then
     somg12 = sin(omg12)
     comg12 = cos(omg12)
   end if
 
-  if (.not. merid .and. comg12 >= 0.7071d0 &
+  if (.not. meridian .and. comg12 >= 0.7071d0 &
       .and. sbet2 - sbet1 < 1.75d0) then
 ! Use tan(Gamma/2) = tan(omg12/2)
 ! * (tan(bet1/2)+tan(bet2/2))/(1+tan(bet1/2)*tan(bet2/2))
@@ -940,29 +940,29 @@ if (areap) then
     alp12 = atan2(salp12, calp12)
   end if
   SS12 = SS12 + c2 * alp12
-  SS12 = SS12 * swapp * lonsgn * latsgn
+  SS12 = SS12 * swapp * lonsign * latsign
 ! Convert -0 to 0
   SS12 = 0 + SS12
 end if
 
-! Convert calp, salp to azimuth accounting for lonsgn, swapp, latsgn.
+! Convert calp, salp to azimuth accounting for lonsign, swapp, latsign.
 if (swapp < 0) then
   call swap(salp1, salp2)
   call swap(calp1, calp2)
   if (scalp) call swap(MM12, MM21)
 end if
 
-salp1 = salp1 * swapp * lonsgn
-calp1 = calp1 * swapp * latsgn
-salp2 = salp2 * swapp * lonsgn
-calp2 = calp2 * swapp * latsgn
+salp1 = salp1 * swapp * lonsign
+calp1 = calp1 * swapp * latsign
+salp2 = salp2 * swapp * lonsign
+calp2 = calp2 * swapp * latsign
 
-azi1 = atn2dx(salp1, calp1)
-azi2 = atn2dx(salp2, calp2)
+azi1 = atan2d(salp1, calp1)
+azi2 = atan2d(salp2, calp2)
 
 if (arcp) a12 = a12x
 
-end subroutine invers
+end subroutine inverse
 
 !*****************************************************************************************
 !>
@@ -987,21 +987,21 @@ subroutine area(a, f, lats, lons, n, AA, PP)
   real(wp), intent(out) :: AA !! the (signed) area of the polygon (\(m^2\)).
   real(wp), intent(out) :: PP !! the perimeter of the polygon.
 
-integer i, omask, cross
+integer i, outmask, cross
 real(wp) s12, azi1, azi2, dummy, SS12, b, e2, c2, area0, &
                  Aacc(2), Pacc(2)
 
-omask = 8
-call accini(Aacc)
-call accini(Pacc)
+outmask = 8
+Aacc = 0.0_wp
+Pacc = 0.0_wp
 cross = 0
 do i = 0, n-1
-  call invers(a, f, lats(i+1), lons(i+1), &
+  call inverse(a, f, lats(i+1), lons(i+1), &
       lats(mod(i+1,n)+1), lons(mod(i+1,n)+1), &
-      s12, azi1, azi2, omask, dummy, dummy, dummy, dummy, SS12)
+      s12, azi1, azi2, outmask, dummy, dummy, dummy, dummy, SS12)
   call accadd(Pacc, s12)
   call accadd(Aacc, -SS12)
-  cross = cross + trnsit(lons(i+1), lons(mod(i+1,n)+1))
+  cross = cross + transit(lons(i+1), lons(mod(i+1,n)+1))
 end do
 PP = Pacc(1)
 b = a * (1 - f)
@@ -1009,7 +1009,7 @@ e2 = f * (2 - f)
 if (e2 == 0) then
   c2 = a**2
 else if (e2 > 0) then
-  c2 = (a**2 + b**2 * atanhx(sqrt(e2)) / sqrt(e2)) / 2
+  c2 = (a**2 + b**2 * atanh(sqrt(e2)) / sqrt(e2)) / 2
 else
   c2 = (a**2 + b**2 * atan(sqrt(abs(e2))) / sqrt(abs(e2))) / 2
 end if
@@ -1035,13 +1035,13 @@ end subroutine area
 !>
 !
 
-subroutine Lengs(eps, sig12, ssig1, csig1, dn1, ssig2, csig2, dn2, &
-    cbet1, cbet2, omask, &
+subroutine Lengths(eps, sig12, ssig1, csig1, dn1, ssig2, csig2, dn2, &
+    cbet1, cbet2, outmask, &
     s12b, m12b, m0, MM12, MM21, ep2, Ca)
 
 real(wp),intent(in) :: eps, sig12, ssig1, csig1, dn1, ssig2, csig2, dn2, &
                        cbet1, cbet2, ep2
-integer,intent(in) :: omask
+integer,intent(in) :: outmask
 real(wp),intent(out) :: s12b, m12b, m0, MM12, MM21
 real(wp) :: Ca(*) !! temporary storage
 
@@ -1055,9 +1055,9 @@ integer l
 ! Return m12b = (reduced length)/b; also calculate s12b = distance/b,
 ! and m0 = coefficient of secular term in expression for reduced length.
 
-distp = (mod(omask/16, 2) == 1)
-redlp = (mod(omask/2, 2) == 1)
-scalp = (mod(omask/4, 2) == 1)
+distp = (mod(outmask/16, 2) == 1)
+redlp = (mod(outmask/2, 2) == 1)
+scalp = (mod(outmask/4, 2) == 1)
 
 ! Suppress compiler warnings
 m0x = 0
@@ -1076,13 +1076,13 @@ if (distp .or. redlp .or. scalp) then
   A1 = 1 + A1
 end if
 if (distp) then
-  B1 = TrgSum(.true., ssig2, csig2, Ca, nC1) - &
-      TrgSum(.true., ssig1, csig1, Ca, nC1)
+  B1 = SinCosSeries(.true., ssig2, csig2, Ca, nC1) - &
+      SinCosSeries(.true., ssig1, csig1, Ca, nC1)
 ! Missing a factor of b
   s12b = A1 * (sig12 + B1)
   if (redlp .or. scalp) then
-    B2 = Trgsum(.true., ssig2, csig2, Cb, nC2) - &
-        TrgSum(.true., ssig1, csig1, Cb, nC2)
+    B2 = SinCosSeries(.true., ssig2, csig2, Cb, nC2) - &
+        SinCosSeries(.true., ssig1, csig1, Cb, nC2)
     J12 = m0x * sig12 + (A1 * B1 - A2 * B2)
   end if
 else if (redlp .or. scalp) then
@@ -1090,8 +1090,8 @@ else if (redlp .or. scalp) then
   do l = 1, nC2
     Cb(l) = A1 * Ca(l) - A2 * Cb(l)
   end do
-  J12 = m0x * sig12 + (TrgSum(.true., ssig2, csig2, Cb, nC2) - &
-      TrgSum(.true., ssig1, csig1, Cb, nC2))
+  J12 = m0x * sig12 + (SinCosSeries(.true., ssig2, csig2, Cb, nC2) - &
+      SinCosSeries(.true., ssig1, csig1, Cb, nC2))
 end if
 if (redlp) then
   m0 = m0x
@@ -1108,14 +1108,14 @@ if (scalp) then
   MM21 = csig12 - (t * ssig1 - csig1 * J12) * ssig2 / dn2
 end if
 
-end subroutine Lengs
+end subroutine Lengths
 
 !*****************************************************************************************
 !>
 !  Solve `k^4+2*k^3-(x^2+y^2-1)*k^2-2*y^2*k-y^2 = 0` for positive root `k`.
 !  This solution is adapted from `Geocentric::Reverse`.
 
-real(wp) function Astrd(x, y)
+real(wp) function Astroid(x, y)
 
 real(wp),intent(in) :: x, y
 
@@ -1181,9 +1181,9 @@ else
 ! for y small, positive root is k = abs(y)/sqrt(1-x^2)
   k = 0
 end if
-Astrd = k
+Astroid = k
 
-end function Astrd
+end function Astroid
 
 !*****************************************************************************************
 !>
@@ -1191,7 +1191,7 @@ end function Astrd
 !  (function value is -1).  If Newton's method doesn't need to be used,
 !  return also salp2, calp2, and dnm and function value is sig12.
 
-real(wp) function InvSta(sbet1, cbet1, dn1, &
+real(wp) function InverseStart(sbet1, cbet1, dn1, &
                          sbet2, cbet2, dn2, lam12, slam12, clam12, f, A3x, &
                          salp1, calp1, salp2, calp2, dnm, &
                          Ca)
@@ -1202,10 +1202,10 @@ real(wp),intent(inout) :: A3x(*)
 real(wp),intent(out) :: salp1, calp1, salp2, calp2, dnm
 real(wp) :: Ca(*) !! temporary
 
-logical :: shortp
+logical :: shortline
 real(wp) :: f1, e2, ep2, n, etol2, k2, eps, sig12, &
-            sbet12, cbet12, sbt12a, omg12, somg12, comg12, ssig12, csig12, &
-            x, y, lamscl, betscl, cbt12a, bt12a, m12b, m0, dummy, &
+            sbet12, cbet12, sbet12a, omg12, somg12, comg12, ssig12, csig12, &
+            x, y, lamscale, betscale, cbet12a, bt12a, m12b, m0, dummy, &
             k, omg12a, sbetm2, lam12x
 
 f1 = 1 - f
@@ -1230,12 +1230,12 @@ sig12 = -1
 ! bet12 = bet2 - bet1 in [0, pi); bt12a = bet2 + bet1 in (-pi, 0]
 sbet12 = sbet2 * cbet1 - cbet2 * sbet1
 cbet12 = cbet2 * cbet1 + sbet2 * sbet1
-sbt12a = sbet2 * cbet1 + cbet2 * sbet1
+sbet12a = sbet2 * cbet1 + cbet2 * sbet1
 
-shortp = cbet12 >= 0 .and. sbet12 < 0.5_wp .and. &
+shortline = cbet12 >= 0 .and. sbet12 < 0.5_wp .and. &
     cbet2 * lam12 < 0.5_wp
 
-if (shortp) then
+if (shortline) then
   sbetm2 = (sbet1 + sbet2)**2
 ! sin((bet1+bet2)/2)^2
 !  =  (sbet1 + sbet2)^2 / ((sbet1 + sbet2)^2 + (cbet1 + cbet2)^2)
@@ -1253,13 +1253,13 @@ salp1 = cbet2 * somg12
 if (comg12 >= 0) then
   calp1 = sbet12 + cbet2 * sbet1 * somg12**2 / (1 + comg12)
 else
-  calp1 = sbt12a - cbet2 * sbet1 * somg12**2 / (1 - comg12)
+  calp1 = sbet12a - cbet2 * sbet1 * somg12**2 / (1 - comg12)
 end if
 
-ssig12 = hypotx(salp1, calp1)
+ssig12 = hypot(salp1, calp1)
 csig12 = sbet1 * sbet2 + cbet1 * cbet2 * comg12
 
-if (shortp .and. ssig12 < etol2) then
+if (shortline .and. ssig12 < etol2) then
 ! really short lines
   salp2 = cbet1 * somg12
   if (comg12 >= 0) then
@@ -1268,7 +1268,7 @@ if (shortp .and. ssig12 < etol2) then
     calp2 = 1 - comg12
   end if
   calp2 = sbet12 - cbet1 * sbet2 * calp2
-  call norm2x(salp2, calp2)
+  call norm(salp2, calp2)
 ! Set return value
   sig12 = atan2(ssig12, csig12)
 else if (abs(n) > 0.1_wp .or. csig12 >= 0 .or. &
@@ -1283,30 +1283,30 @@ else
 ! x = dlong, y = dlat
     k2 = sbet1**2 * ep2
     eps = k2 / (2 * (1 + sqrt(1 + k2)) + k2)
-    lamscl = f * cbet1 * A3f(eps, A3x) * pi
-    betscl = lamscl * cbet1
-    x = lam12x / lamscl
-    y = sbt12a / betscl
+    lamscale = f * cbet1 * A3f(eps, A3x) * pi
+    betscale = lamscale * cbet1
+    x = lam12x / lamscale
+    y = sbet12a / betscale
   else
 ! f < 0: x = dlat, y = dlong
-    cbt12a = cbet2 * cbet1 - sbet2 * sbet1
-    bt12a = atan2(sbt12a, cbt12a)
+    cbet12a = cbet2 * cbet1 - sbet2 * sbet1
+    bt12a = atan2(sbet12a, cbet12a)
 ! In the case of lon12 = 180, this repeats a calculation made in
 ! Inverse.
-    call Lengs(n, pi + bt12a, &
+    call Lengths(n, pi + bt12a, &
         sbet1, -cbet1, dn1, sbet2, cbet2, dn2, cbet1, cbet2, 2, &
         dummy, m12b, m0, dummy, dummy, ep2, Ca)
     x = -1 + m12b / (cbet1 * cbet2 * m0 * pi)
     if (x < -0.01_wp) then
-      betscl = sbt12a / x
+      betscale = sbet12a / x
     else
-      betscl = -f * cbet1**2 * pi
+      betscale = -f * cbet1**2 * pi
     end if
-    lamscl = betscl / cbet1
-    y = lam12x / lamscl
+    lamscale = betscale / cbet1
+    y = lam12x / lamscale
   end if
 
-  if (y > -tol1 .and. x > -1 - xthrsh) then
+  if (y > -tol1 .and. x > -1 - xthresh) then
 ! strip near cut
     if (f >= 0) then
       salp1 = min(1.0_wp, -x)
@@ -1355,36 +1355,36 @@ else
 !    6    56      0
 !
 ! Because omg12 is near pi, estimate work with omg12a = pi - omg12
-    k = Astrd(x, y)
+    k = Astroid(x, y)
     if (f >= 0) then
       omg12a = -x * k/(1 + k)
     else
       omg12a = -y * (1 + k)/k
     end if
-    omg12a = lamscl * omg12a
+    omg12a = lamscale * omg12a
     somg12 = sin(omg12a)
     comg12 = -cos(omg12a)
 ! Update spherical estimate of alp1 using omg12 instead of lam12
     salp1 = cbet2 * somg12
-    calp1 = sbt12a - cbet2 * sbet1 * somg12**2 / (1 - comg12)
+    calp1 = sbet12a - cbet2 * sbet1 * somg12**2 / (1 - comg12)
   end if
 end if
 ! Sanity check on starting guess.  Backwards check allows NaN through.
 if (.not. (salp1 <= 0)) then
-  call norm2x(salp1, calp1)
+  call norm(salp1, calp1)
 else
   salp1 = 1
   calp1 = 0
 end if
-InvSta = sig12
+InverseStart = sig12
 
-end function InvSta
+end function InverseStart
 
 !*****************************************************************************************
 !>
 !
 
-real(wp) function Lam12f(sbet1, cbet1, dn1, &
+real(wp) function Lambda12(sbet1, cbet1, dn1, &
                          sbet2, cbet2, dn2, salp1, calp1, slm120, clm120, f, A3x, C3x, &
                          salp2, calp2, sig12, ssig1, csig1, ssig2, csig2, eps, &
                          domg12, diffp, dlam12, Ca)
@@ -1416,7 +1416,7 @@ if (sbet1 == 0 .and. calp1 == 0) calp1 = -tiny2
 ! sin(alp1) * cos(bet1) = sin(alp0)
 salp0 = salp1 * cbet1
 ! calp0 > 0
-calp0 = hypotx(calp1, salp1 * sbet1)
+calp0 = hypot(calp1, salp1 * sbet1)
 
 ! tan(bet1) = tan(sig1) * cos(alp1)
 ! tan(omg1) = sin(alp0) * tan(sig1) = tan(omg1)=tan(alp1)*sin(bet1)
@@ -1424,8 +1424,8 @@ ssig1 = sbet1
 somg1 = salp0 * sbet1
 csig1 = calp1 * cbet1
 comg1 = csig1
-call norm2x(ssig1, csig1)
-! norm2x(somg1, comg1); -- don't need to normalize!
+call norm(ssig1, csig1)
+! norm(somg1, comg1); -- don't need to normalize!
 
 ! Enforce symmetries in the case abs(bet2) = -bet1.  Need to be careful
 ! about this case, since this can yield singularities in the Newton
@@ -1456,8 +1456,8 @@ ssig2 = sbet2
 somg2 = salp0 * sbet2
 csig2 = calp2 * cbet2
 comg2 = csig2
-call norm2x(ssig2, csig2)
-! norm2x(somg2, comg2); -- don't need to normalize!
+call norm(ssig2, csig2)
+! norm(somg2, comg2); -- don't need to normalize!
 
 ! sig12 = sig2 - sig1, limit to [0, pi]
 sig12 = atan2(max(0d0, csig1 * ssig2 - ssig1 * csig2) + 0d0, &
@@ -1472,8 +1472,8 @@ eta = atan2(somg12 * clm120 - comg12 * slm120, &
 k2 = calp0**2 * ep2
 eps = k2 / (2 * (1 + sqrt(1 + k2)) + k2)
 call C3f(eps, C3x, Ca)
-B312 = (TrgSum(.true., ssig2, csig2, Ca, nC3-1) - &
-    TrgSum(.true., ssig1, csig1, Ca, nC3-1))
+B312 = (SinCosSeries(.true., ssig2, csig2, Ca, nC3-1) - &
+    SinCosSeries(.true., ssig1, csig1, Ca, nC3-1))
 domg12 = -f * A3f(eps, A3x) * salp0 * (sig12 + B312)
 lam12 = eta + domg12
 
@@ -1481,15 +1481,15 @@ if (diffp) then
   if (calp2 == 0) then
     dlam12 = - 2 * f1 * dn1 / sbet1
   else
-    call Lengs(eps, sig12, ssig1, csig1, dn1, ssig2, csig2, dn2, &
+    call Lengths(eps, sig12, ssig1, csig1, dn1, ssig2, csig2, dn2, &
         cbet1, cbet2, 2, &
         dummy, dlam12, dummy, dummy, dummy, ep2, Ca)
     dlam12 = dlam12 * f1 / (calp2 * cbet2)
   end if
 end if
-Lam12f = lam12
+Lambda12 = lam12
 
-end function Lam12f
+end function Lambda12
 
 !*****************************************************************************************
 !>
@@ -1504,7 +1504,7 @@ end function Lam12f
     real(wp),intent(in) :: eps
     real(wp),intent(out) :: A3x(0: nA3x-1)
 
-    A3f = polval(nA3 - 1, A3x, eps)
+    A3f = polyval(nA3 - 1, A3x, eps)
 
     end function A3f
 !*****************************************************************************************
@@ -1531,7 +1531,7 @@ end function Lam12f
     do l = 1, nC3 - 1
         m = nC3 - l - 1
         mult = mult * eps
-        c(l) = mult * polval(m, C3x(o), eps)
+        c(l) = mult * polyval(m, C3x(o), eps)
         o = o + m + 1
     end do
 
@@ -1559,7 +1559,7 @@ end function Lam12f
     o = 0
     do l = 0, nC4 - 1
     m = nC4 - l - 1
-    c(l) = mult * polval(m, C4x(o), eps)
+    c(l) = mult * polyval(m, C4x(o), eps)
     o = o + m + 1
     mult = mult * eps
     end do
@@ -1584,7 +1584,7 @@ end function Lam12f
 
     o = 1
     m = nA1/2
-    t = polval(m, coeff(o), eps**2) / coeff(o + m + 1)
+    t = polyval(m, coeff(o), eps**2) / coeff(o + m + 1)
     A1m1f = (t + eps) / (1 - eps)
 
     end function A1m1f
@@ -1618,7 +1618,7 @@ end function Lam12f
     o = 1
     do l = 1, nC1
         m = (nC1 - l) / 2
-        c(l) = d * polval(m, coeff(o), eps2) / coeff(o + m + 1)
+        c(l) = d * polyval(m, coeff(o), eps2) / coeff(o + m + 1)
         o = o + m + 2
         d = d * eps
     end do
@@ -1654,7 +1654,7 @@ end function Lam12f
     o = 1
     do l = 1, nC1p
         m = (nC1p - l) / 2
-        c(l) = d * polval(m, coeff(o), eps2) / coeff(o + m + 1)
+        c(l) = d * polyval(m, coeff(o), eps2) / coeff(o + m + 1)
         o = o + m + 2
         d = d * eps
     end do
@@ -1681,7 +1681,7 @@ end function Lam12f
 
     o = 1
     m = nA2/2
-    t = polval(m, coeff(o), eps**2) / coeff(o + m + 1)
+    t = polyval(m, coeff(o), eps**2) / coeff(o + m + 1)
     A2m1f = (t - eps) / (1 + eps)
 
     end function A2m1f
@@ -1715,7 +1715,7 @@ end function Lam12f
     o = 1
     do l = 1, nC2
         m = (nC2 - l) / 2
-        c(l) = d * polval(m, coeff(o), eps2) / coeff(o + m + 1)
+        c(l) = d * polyval(m, coeff(o), eps2) / coeff(o + m + 1)
         o = o + m + 2
         d = d * eps
     end do
@@ -1727,7 +1727,7 @@ end function Lam12f
 !>
 !  The scale factor A3 = mean value of (d/dsigma)I3
 
-    subroutine A3cof(n, A3x)
+    subroutine A3coeff(n, A3x)
 
     integer,parameter :: ord = 6
     integer,parameter :: nA3 = ord
@@ -1749,19 +1749,19 @@ end function Lam12f
     k = 0
     do j = nA3 - 1, 0, -1
         m = min(nA3 - j - 1, j)
-        A3x(k) = polval(m, coeff(o), n) / coeff(o + m + 1)
+        A3x(k) = polyval(m, coeff(o), n) / coeff(o + m + 1)
         k = k + 1
         o = o + m + 2
     end do
 
-    end subroutine A3cof
+    end subroutine A3coeff
 !*****************************************************************************************
 
 !*****************************************************************************************
 !>
 !  The coefficients C3[l] in the Fourier expansion of B3
 
-    subroutine C3cof(n, C3x)
+    subroutine C3coeff(n, C3x)
 
     integer,parameter :: ord = 6
     integer,parameter :: nC3 = ord
@@ -1793,20 +1793,20 @@ end function Lam12f
     do l = 1, nC3 - 1
         do j = nC3 - 1, l, -1
             m = min(nC3 - j - 1, j)
-            C3x(k) = polval(m, coeff(o), n) / coeff(o + m + 1)
+            C3x(k) = polyval(m, coeff(o), n) / coeff(o + m + 1)
             k = k + 1
             o = o + m + 2
         end do
     end do
 
-    end subroutine C3cof
+    end subroutine C3coeff
 !*****************************************************************************************
 
 !*****************************************************************************************
 !>
 !  The coefficients C4[l] in the Fourier expansion of I4
 
-    subroutine C4cof(n, C4x)
+    subroutine C4coeff(n, C4x)
 
     integer,parameter :: ord = 6
     integer,parameter :: nC4 = ord
@@ -1836,13 +1836,13 @@ end function Lam12f
     do l = 0, nC4 - 1
     do j = nC4 - 1, l, -1
         m = nC4 - j - 1
-        C4x(k) = polval(m, coeff(o), n) / coeff(o + m + 1)
+        C4x(k) = polyval(m, coeff(o), n) / coeff(o + m + 1)
         k = k + 1
         o = o + m + 2
     end do
     end do
 
-    end subroutine C4cof
+    end subroutine C4coeff
 !*****************************************************************************************
 
 !*****************************************************************************************
@@ -1925,7 +1925,7 @@ end function Lam12f
 !  to be returned (e.g., if x is tiny and negative and y = 180).  The
 !  error in the difference is returned in e
 
-    real(wp) function AngDif(x, y, e)
+    real(wp) function AngDiff(x, y, e)
 
     real(wp),intent(in) :: x, y
     real(wp),intent(out) :: e
@@ -1941,9 +1941,9 @@ end function Lam12f
             d = sign(d, -e)
         end if
     end if
-    AngDif = d
+    AngDiff = d
 
-    end function AngDif
+    end function AngDiff
 !*****************************************************************************************
 
 !*****************************************************************************************
@@ -1986,74 +1986,85 @@ end function Lam12f
     end subroutine swap
 !*****************************************************************************************
 
-real(wp) function hypotx(x, y)
-! input
-real(wp) x, y
+!*****************************************************************************************
+!>
 
-! With Fortran 2008, this becomes: hypotx = hypot(x, y)
-hypotx = sqrt(x**2 + y**2)
+    subroutine norm(x, y)
 
-end function hypotx
+    real(wp),intent(inout) :: x, y
 
-subroutine norm2x(x, y)
-! input/output
-real(wp) x, y
+    real(wp) :: r
 
-real(wp) r
-r = hypotx(x, y)
-x = x/r
-y = y/r
+    r = hypot(x, y)
+    x = x/r
+    y = y/r
 
-end subroutine norm2x
+    end subroutine norm
+!*****************************************************************************************
 
-real(wp) function log1px(x)
-! input
-real(wp) x
+!*****************************************************************************************
+!>
 
-real(wp) y, z
-y = 1 + x
-z = y - 1
-if (z == 0) then
-  log1px = x
-else
-  log1px = x * log(y) / z
-end if
+    real(wp) function log1px(x)
 
-end function log1px
+    real(wp),intent(in) :: x
 
-real(wp) function atanhx(x)
-! input
-real(wp) x
+    real(wp) :: y, z
 
-! With Fortran 2008, this becomes: atanhx = atanh(x)
-real(wp) y
-y = abs(x)
-y = log1px(2 * y/(1 - y))/2
-atanhx = sign(y, x)
+    y = 1 + x
+    z = y - 1
+    if (z == 0) then
+        log1px = x
+    else
+        log1px = x * log(y) / z
+    end if
 
-end function atanhx
+    end function log1px
+!*****************************************************************************************
 
-real(wp) function cbrt(x)
-! input
-real(wp) x
+! real(wp) function atanhx(x)
+! ! input
+! real(wp) x
+!
+! ! With Fortran 2008, this becomes: atanhx = atanh(x)
+! real(wp) y
+! y = abs(x)
+! y = log1px(2 * y/(1 - y))/2
+! atanhx = sign(y, x)
+!
+! end function atanhx
 
-cbrt = sign(abs(x)**(1/3d0), x)
+!*****************************************************************************************
+!>
+!  Cube root function
 
-end function cbrt
+    real(wp) function cbrt(x)
 
-real(wp) function TrgSum(sinp, sinx, cosx, c, n)
-! Evaluate
-! y = sinp ? sum(c[i] * sin( 2*i    * x), i, 1, n) :
-!            sum(c[i] * cos((2*i-1) * x), i, 1, n)
-! using Clenshaw summation.
-! Approx operation count = (n + 5) mult and (2 * n + 2) add
-! input
-logical sinp
-integer n
-real(wp) sinx, cosx, c(n)
+    real(wp),intent(in) :: x
 
-real(wp) ar, y0, y1
-integer n2, k
+    cbrt = sign(abs(x)**(1.0_wp/3.0_wp), x)
+
+    end function cbrt
+!*****************************************************************************************
+
+!*****************************************************************************************
+!>
+!  Evaluate
+!```
+!  y = sinp ? sum(c[i] * sin( 2*i    * x), i, 1, n) :
+!             sum(c[i] * cos((2*i-1) * x), i, 1, n)
+!```
+!  using Clenshaw summation.
+!  Approx operation count = (n + 5) mult and (2 * n + 2) add
+
+real(wp) function SinCosSeries(sinp, sinx, cosx, c, n)
+
+logical,intent(in) :: sinp
+integer,intent(in) :: n
+real(wp),intent(in) :: sinx, cosx, c(n)
+
+real(wp) :: ar, y0, y1
+integer :: n2, k
 
 ! 2 * cos(2 * x)
 ar = 2 * (cosx - sinx) * (cosx + sinx)
@@ -2074,78 +2085,81 @@ do k = n2, 2, -2
 end do
 if (sinp) then
 ! sin(2 * x) * y0
-  TrgSum = 2 * sinx * cosx * y0
+  SinCosSeries = 2 * sinx * cosx * y0
 else
 ! cos(x) * (y0 - y1)
-  TrgSum = cosx * (y0 - y1)
+  SinCosSeries = cosx * (y0 - y1)
 end if
 
-end function TrgSum
+end function SinCosSeries
+!*****************************************************************************************
 
-integer function trnsit(lon1, lon2)
-! input
-real(wp) lon1, lon2
+!*****************************************************************************************
+!>
 
-real(wp) lon1x, lon2x, lon12, e
-lon12 = AngDif(lon1, lon2, e)
-lon1x = AngNormalize(lon1)
-lon2x = AngNormalize(lon2)
-if (lon12 > 0 .and. ((lon1x < 0 .and. lon2x >= 0) .or. &
-                        (lon1x > 0 .and. lon2x == 0))) then
-  trnsit = 1
-else if (lon12 < 0 .and. lon1x >= 0 .and. lon2x < 0) then
-  trnsit = -1
-else
-  trnsit = 0
-end if
+    integer function transit(lon1, lon2)
 
-end function trnsit
+    real(wp),intent(in) :: lon1, lon2
 
-subroutine accini(s)
-! Initialize an accumulator; this is an array with two elements.
-! input/output
-real(wp) s(2)
+    real(wp) :: lon1x, lon2x, lon12, e
 
-s(1) = 0
-s(2) = 0
+    lon12 = AngDiff(lon1, lon2, e)
+    lon1x = AngNormalize(lon1)
+    lon2x = AngNormalize(lon2)
+    if (lon12 > 0 .and. ((lon1x < 0 .and. lon2x >= 0) .or. &
+                         (lon1x > 0 .and. lon2x == 0))) then
+        transit = 1
+    else if (lon12 < 0 .and. lon1x >= 0 .and. lon2x < 0) then
+        transit = -1
+    else
+        transit = 0
+    end if
 
-end subroutine accini
+    end function transit
+!*****************************************************************************************
 
-subroutine accadd(s, y)
-! Add y to an accumulator.
-! input
-real(wp) y
-! input/output
-real(wp) s(2)
+!*****************************************************************************************
+!>
+!  Add y to an accumulator.
 
-real(wp) z, u
-z = sumx(y, s(2), u)
-s(1) = sumx(z, s(1), s(2))
-if (s(1) == 0) then
-  s(1) = u
-else
-  s(2) = s(2) + u
-end if
+    subroutine accadd(s, y)
 
-end subroutine accadd
+    real(wp),intent(in) :: y
+    real(wp),intent(inout) :: s(2)
 
-subroutine accrem(s, y)
-! Reduce s to [-y/2, y/2].
-! input
-real(wp) y
-! input/output
-real(wp) s(2)
+    real(wp) :: z, u
 
-s(1) = remx(s(1), y)
-call accadd(s, 0d0)
+    z = sumx(y, s(2), u)
+    s(1) = sumx(z, s(1), s(2))
+    if (s(1) == 0) then
+        s(1) = u
+    else
+        s(2) = s(2) + u
+    end if
 
-end subroutine accrem
+    end subroutine accadd
+!*****************************************************************************************
+
+!*****************************************************************************************
+!>
+!  Reduce s to [-y/2, y/2].
+
+    subroutine accrem(s, y)
+
+    real(wp),intent(in) :: y
+    real(wp),intent(inout) :: s(2)
+
+    s(1) = remx(s(1), y)
+    call accadd(s, 0.0_wp)
+
+    end subroutine accrem
+!*****************************************************************************************
 
 !*****************************************************************************************
 !>
 !  Compute `sin(x)` and `cos(x)` with `x` in degrees
 
-    pure subroutine sncsdx(x, sinx, cosx)
+    pure subroutine sincosd(x, sinx, cosx)
 
     real(wp),intent(in) :: x
     real(wp),intent(out) :: sinx, cosx
@@ -2179,127 +2193,105 @@ end subroutine accrem
     end if
     cosx = 0.0_wp + cosx
 
-    end subroutine sncsdx
+    end subroutine sincosd
 !*****************************************************************************************
 
-subroutine sncsde(x, t, sinx, cosx)
-! Compute sin(x+t) and cos(x+t) with x in degrees
-! input
-real(wp) x, t
-! input/output
-real(wp) sinx, cosx
+!*****************************************************************************************
+!>
+!  Compute sin(x+t) and cos(x+t) with x in degrees
 
-real(wp) r, s, c
-integer q
-q = nint(x / 90)
-r = x - 90 * q
-r = AngRound(r + t) * degree
-s = sin(r)
-c = cos(r)
-q = mod(q + 4, 4)
-if (q == 0) then
-  sinx =  s
-  cosx =  c
-else if (q == 1) then
-  sinx =  c
-  cosx = -s
-else if (q == 2) then
-  sinx = -s
-  cosx = -c
-else
-! q == 3
-  sinx = -c
-  cosx =  s
-end if
+    subroutine sincosde(x, t, sinx, cosx)
 
-if (sinx == 0) then
-  sinx = sign(sinx, x)
-end if
-cosx = 0d0 + cosx
+    real(wp),intent(in) :: x, t
+    real(wp),intent(inout) :: sinx, cosx
 
-end subroutine sncsde
+    real(wp) :: r, s, c
+    integer :: q
 
-real(wp) function atn2dx(y, x)
-! input
-real(wp) x, y
+    q = nint(x / 90.0_wp)
+    r = x - 90.0_wp * q
+    r = AngRound(r + t) * degree
+    s = sin(r)
+    c = cos(r)
+    q = mod(q + 4, 4)
+    select case (q)
+    case (0)
+        sinx =  s
+        cosx =  c
+    case (1)
+        sinx =  c
+        cosx = -s
+    case (2)
+        sinx = -s
+        cosx = -c
+    case (3)
+        sinx = -c
+        cosx =  s
+    end select
 
-real(wp) xx, yy
-integer q
-if (abs(y) > abs(x)) then
-  xx = y
-  yy = x
-  q = 2
-else
-  xx = x
-  yy = y
-  q = 0
-end if
-if (xx < 0) then
-  xx = -xx
-  q = q + 1
-end if
-atn2dx = atan2(yy, xx) / degree
-if (q == 1) then
-  atn2dx = sign(180.0_wp, y) - atn2dx
-else if (q == 2) then
-  atn2dx =       90       - atn2dx
-else if (q == 3) then
-  atn2dx =      -90       + atn2dx
-end if
+    if (sinx == 0.0_wp) then
+    sinx = sign(sinx, x)
+    end if
+    cosx = 0.0_wp + cosx
 
-end function atn2dx
+    end subroutine sincosde
+!*****************************************************************************************
 
-real(wp) function polval(N, p, x)
-! input
-integer N
-real(wp) p(0:N), x
+!*****************************************************************************************
+!>
 
-integer i
-if (N < 0) then
-  polval = 0
-else
-  polval = p(0)
-end if
-do i = 1, N
-  polval = polval * x + p(i)
-end do
+    real(wp) function atan2d(y, x)
 
-end function polval
+    real(wp),intent(in) :: x, y
 
-! Table of name abbreviations to conform to the 6-char limit and
-! potential name conflicts.
-!    A3coeff       A3cof
-!    C3coeff       C3cof
-!    C4coeff       C4cof
-!    AngDiff       AngDif
-!    arcmode       arcmod
-!    Astroid       Astrd
-!    betscale      betscl
-!    lamscale      lamscl
-!    cbet12a       cbt12a
-!    sbet12a       sbt12a
-!    epsilon       dbleps
-!    realmin       dblmin
-!    geodesic      geod
-!    inverse       invers
-!    InverseStart  InvSta
-!    Lambda12      Lam12f
-!    latsign       latsgn
-!    lonsign       lonsgn
-!    Lengths       Lengs
-!    meridian      merid
-!    outmask       omask
-!    shortline     shortp
-!    norm          norm2x
-!    SinCosSeries  TrgSum
-!    xthresh       xthrsh
-!    transit       trnsit
-!    polyval       polval
-!    LONG_UNROLL   unroll
-!    sincosd       sncsdx
-!    sincosde      sncsde
-!    atan2d        atn2dx
+    real(wp) :: xx, yy
+    integer :: q
 
+    if (abs(y) > abs(x)) then
+        xx = y
+        yy = x
+        q = 2
+    else
+        xx = x
+        yy = y
+        q = 0
+    end if
+    if (xx < 0) then
+        xx = -xx
+        q = q + 1
+    end if
+    atan2d = atan2(yy, xx) / degree
+    if (q == 1) then
+        atan2d = sign(180.0_wp, y) - atan2d
+    else if (q == 2) then
+        atan2d =       90       - atan2d
+    else if (q == 3) then
+        atan2d =      -90       + atan2d
+    end if
+
+    end function atan2d
+!*****************************************************************************************
+
+!*****************************************************************************************
+!>
+
+    real(wp) function polyval(N, p, x)
+
+    integer,intent(in) :: N
+    real(wp),intent(in) :: p(0:N), x
+
+    integer i
+    if (N < 0) then
+        polyval = 0
+    else
+        polyval = p(0)
+    end if
+    do i = 1, N
+        polyval = polyval * x + p(i)
+    end do
+
+    end function polyval
+!*****************************************************************************************
 
 !*****************************************************************************************
 !> author: Jacob Williams
