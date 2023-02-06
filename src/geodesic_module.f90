@@ -2049,41 +2049,41 @@ end function Lambda12
 !  using Clenshaw summation.
 !  Approx operation count = (n + 5) mult and (2 * n + 2) add
 
-real(wp) function SinCosSeries(sinp, sinx, cosx, c, n)
+    real(wp) function SinCosSeries(sinp, sinx, cosx, c, n)
 
-logical,intent(in) :: sinp
-integer,intent(in) :: n
-real(wp),intent(in) :: sinx, cosx, c(n)
+    logical,intent(in) :: sinp
+    integer,intent(in) :: n
+    real(wp),intent(in) :: sinx, cosx, c(n)
 
-real(wp) :: ar, y0, y1
-integer :: n2, k
+    real(wp) :: ar, y0, y1
+    integer :: n2, k
 
-! 2 * cos(2 * x)
-ar = 2 * (cosx - sinx) * (cosx + sinx)
-! accumulators for sum
-if (mod(n, 2) == 1) then
-  y0 = c(n)
-  n2 = n - 1
-else
-  y0 = 0
-  n2 = n
-end if
-y1 = 0
-! Now n2 is even
-do k = n2, 2, -2
-  ! Unroll loop x 2, so accumulators return to their original role
-  y1 = ar * y0 - y1 + c(k)
-  y0 = ar * y1 - y0 + c(k-1)
-end do
-if (sinp) then
-! sin(2 * x) * y0
-  SinCosSeries = 2 * sinx * cosx * y0
-else
-! cos(x) * (y0 - y1)
-  SinCosSeries = cosx * (y0 - y1)
-end if
+    ! 2 * cos(2 * x)
+    ar = 2 * (cosx - sinx) * (cosx + sinx)
+    ! accumulators for sum
+    if (mod(n, 2) == 1) then
+        y0 = c(n)
+        n2 = n - 1
+    else
+        y0 = 0
+        n2 = n
+    end if
+    y1 = 0
+    ! Now n2 is even
+    do k = n2, 2, -2
+        ! Unroll loop x 2, so accumulators return to their original role
+        y1 = ar * y0 - y1 + c(k)
+        y0 = ar * y1 - y0 + c(k-1)
+    end do
+    if (sinp) then
+        ! sin(2 * x) * y0
+        SinCosSeries = 2 * sinx * cosx * y0
+    else
+        ! cos(x) * (y0 - y1)
+        SinCosSeries = cosx * (y0 - y1)
+    end if
 
-end function SinCosSeries
+    end function SinCosSeries
 !*****************************************************************************************
 
 !*****************************************************************************************
