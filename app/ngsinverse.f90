@@ -1,8 +1,9 @@
 !b::inverse
 !
 program ngsinverse
-  use geodesic_module
-!
+  use geodesic_module, wp => geodesic_wp
+  use ngscommon
+
 !********1*********2*********3*********4*********5*********6*********7**
 !
 ! name:      inverse
@@ -116,7 +117,7 @@ program ngsinverse
 !********1*********2*********3*********4*********5*********6*********7**
 !e::inverse
 !
-implicit double precision (a-h, o-z)
+implicit real(wp) (a-h, o-z)
 implicit integer (i-n)
 !
 logical  nowebb
@@ -178,7 +179,7 @@ else
   goto 5
 endif
 !
-esq = f*(2.0d0-f)
+esq = f*(2.0_wp-f)
 !
 write(*,*) '  '
 write(*,*) '  '
@@ -317,11 +318,11 @@ e1 = glon1
 p2 = glat2
 e2 = glon2
 !
-if( e1<0.0d0 )then
-  e1 = e1+2.0d0*pi
+if( e1<0.0_wp )then
+  e1 = e1+2.0_wp*pi
 endif
-if( e2<0.0d0 )then
-  e2 = e2+2.0d0*pi
+if( e2<0.0_wp )then
+  e2 = e2+2.0_wp*pi
 endif
 !
 !     compute the geodetic inverse

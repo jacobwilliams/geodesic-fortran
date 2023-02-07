@@ -1,5 +1,11 @@
+module ngscommon
+  use geodesic_module, wp => geodesic_wp
+  private :: wp
+
+  contains
+
 subroutine bufdms (buff,lgh,hem,dd,dm,ds,ierror)
-implicit double precision (a-h, o-z)
+implicit real(wp) (a-h, o-z)
 implicit integer (i-n)
 !
 logical     done,flag
@@ -9,7 +15,7 @@ character*1 ch
 character*1 hem
 integer*4   ll,lgh
 integer*4   i4,id,im,is,icond,ierror
-real*8      x(5)
+real(wp)      x(5)
 !
 !     set the "error flag"
 !
@@ -18,29 +24,29 @@ icond  = 0
 !
 !     set defaults for dd,dm,ds
 !
-dd = 0.0d0
-dm = 0.0d0
-ds = 0.0d0
+dd = 0.0_wp
+dm = 0.0_wp
+ds = 0.0_wp
 !
 !     set default limits for "hem" flag
 !
 if(     hem=='N' .or. hem=='S' )then
-  ddmax = 90.0d0
+  ddmax = 90.0_wp
 elseif( hem=='E' .or. hem=='W' )then
-  ddmax = 360.0d0
+  ddmax = 360.0_wp
 elseif( hem=='A' )then
-  ddmax = 360.0d0
+  ddmax = 360.0_wp
 elseif( hem=='Z' )then
-  ddmax = 180.0d0
+  ddmax = 180.0_wp
 elseif( hem=='*' )then
-  ddmax  = 0.0d0
+  ddmax  = 0.0_wp
   ierror = 1
 else
-  ddmax = 360.0d0
+  ddmax = 360.0_wp
 endif
 !
 do 1 i=1,5
-  x(i) = 0.0d0
+  x(i) = 0.0_wp
 1 continue
 !
 icolon = 0
@@ -78,29 +84,29 @@ if( ipoint==1 .and. icolon==0 )then
 !
 !         value is a packed decimal of ==>  DDMMSS.sssss
 !
-    ss = r8/10000.0d0
-    id = idint( ss )
+    ss = r8/10000.0_wp
+    id = int( ss )
 !
-    r8 = r8-10000.0d0*dble(float(id))
-    ss = r8/100.0d0
-    im = idint( ss )
+    r8 = r8-10000.0_wp*dble(float(id))
+    ss = r8/100.0_wp
+    im = int( ss )
 !
-    r8 = r8-100.0d0*dble(float(im))
+    r8 = r8-100.0_wp*dble(float(im))
   else
 !
 !         value is a decimal of ==>  .xx   X.xxx   X.
 !
-    id = idint( r8 )
-    r8 = (r8-id)*60.0d0
-    im = idint( r8 )
-    r8 = (r8-im)*60.0d0
+    id = int( r8 )
+    r8 = (r8-id)*60.0_wp
+    im = int( r8 )
+    r8 = (r8-im)*60.0_wp
   endif
 !
 !       account for rounding error
 !
-  is = idnint( r8*1.0d5 )
+  is = nint( r8*1.0d5 )
   if( is>=6000000 )then
-     r8 = 0.0d0
+     r8 = 0.0_wp
      im = im+1
   endif
 !
@@ -188,12 +194,12 @@ else
 endif
 !
 if( dd>ddmax  .or. &
-    dm>=60.0d0 .or. &
-    ds>=60.0d0 )then
+    dm>=60.0_wp .or. &
+    ds>=60.0_wp )then
   ierror = 1
-  dd = 0.0d0
-  dm = 0.0d0
-  ds = 0.0d0
+  dd = 0.0_wp
+  dm = 0.0_wp
+  ds = 0.0_wp
 endif
 !
 if( icond/=0 )then
@@ -204,7 +210,7 @@ return
 end
 
 subroutine elipss (elips)
-implicit double precision(a-h,o-z)
+implicit real(wp)(a-h,o-z)
 character*1  answer
 character*30 elips
 common/elipsoid/a,f
@@ -302,22 +308,22 @@ else
 !
   write(*,*) '  Enter Equatorial axis,   a : '
   read(*,*) a
-  a = dabs(a)
+  a = abs(a)
 !
   write(*,*) '  Enter either Polar axis, b or '
   write(*,*) '  Reciprocal flattening,   1/f : '
   read(*,*) ss
-  ss = dabs(ss)
+  ss = abs(ss)
 !
-  f = 0.0d0
-  if( 200.0d0<=ss .and. ss<=310.0d0 )then
+  f = 0.0_wp
+  if( 200.0_wp<=ss .and. ss<=310.0_wp )then
     f = 1.d0/ss
-  elseif( 6000000.0d0<ss .and. ss<a )then
+  elseif( 6000000.0_wp<ss .and. ss<a )then
     f = (a-ss)/a
   else
     elips = 'Error: default GRS80 used.'
-    a     = 6378137.0d0
-    f     = 1.0d0/298.25722210088d0
+    a     = 6378137.0_wp
+    f     = 1.0_wp/298.25722210088d0
   endif
 endif
 !
@@ -326,13 +332,13 @@ end
 
 subroutine fixdms (ideg, min, sec, tol )
 !
-implicit double precision (a-h, o-z)
+implicit real(wp) (a-h, o-z)
 implicit integer (i-n)
 !
 !     test for seconds near 60.0-tol
 !
-if( sec>=( 60.0d0-tol ) )then
-  sec  = 0.0d0
+if( sec>=( 60.0_wp-tol ) )then
+  sec  = 0.0_wp
   min  = min+1
 endif
 !
@@ -382,7 +388,7 @@ subroutine getdeg(d,m,sec,isign,val)
 
 !** comvert deg, min, sec to degrees
 
-implicit double precision(a-h,j-z)
+implicit real(wp)(a-h,j-z)
 
 val=(d+m/60.d0+sec/3600.d0)
 val=dble(isign)*val
@@ -511,11 +517,11 @@ character*1  ch
 integer*4    ich,icond
 integer*4    ll
 !
-real*8       ten
-real*8       valr8
-real*8       zero
+real(wp)       ten
+real(wp)       valr8
+real(wp)       zero
 !
-data zero,ten/0.0d0,10.0d0/
+data zero,ten/0.0_wp,10.0_wp/
 !
 n48     =  48
 l1      =  ll
@@ -607,7 +613,7 @@ goto 10
 !     treat illegal character
 !
 150 buff(i) = '0'
-valr8   =  0.0d0
+valr8   =  0.0_wp
 icond   =  1
 !
 1000 if( dpoint )then
@@ -626,7 +632,7 @@ subroutine todmsp(val,id,im,s,isign)
 !** convert position degrees to deg,min,sec
 !** range is [-180 to +180]
 
-implicit double precision(a-h,o-z)
+implicit real(wp)(a-h,o-z)
 
 1 if(val>180) then
   val=val-180-180
@@ -644,15 +650,15 @@ else
   isign=+1
 endif
 
-s=dabs(val)
-id=idint(s)
+s=abs(val)
+id=int(s)
 s=(s-id)*60.d0
-im=idint(s)
+im=int(s)
 s=(s-im)*60.d0
 
 !** account for rounding error
 
-is=idnint(s*1.d5)
+is=nint(s*1.d5)
 if(is>=6000000) then
   s=0.d0
   im=im+1
@@ -804,3 +810,5 @@ endif
 !
 return
 end
+
+end module ngscommon

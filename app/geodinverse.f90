@@ -7,16 +7,16 @@
 !! out lines with azi1, azi2, s12 (for the WGS84 ellipsoid).
 
 program geodinverse
-    use geodesic_module
+    use geodesic_module, wp => geodesic_wp
 implicit none
 
-double precision a, f, lat1, lon1, azi1, lat2, lon2, azi2, s12, &
+real(wp) a, f, lat1, lon1, azi1, lat2, lon2, azi2, s12, &
     dummy1, dummy2, dummy3, dummy4, dummy5
 integer outmask
 
 ! WGS84 values
-a = 6378137d0
-f = 1/298.257223563d0
+a = 6378137.0_wp
+f = 1.0_wp/298.257223563_wp
 
 outmask = 0
 

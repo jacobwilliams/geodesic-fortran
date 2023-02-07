@@ -1,7 +1,8 @@
 !b::forward
 !
 program ngsforward
-  use geodesic_module
+  use geodesic_module, wp => geodesic_wp
+  use ngscommon
 
 !
 !********1*********2*********3*********4*********5*********6*********7**
@@ -112,7 +113,7 @@ program ngsforward
 !********1*********2*********3*********4*********5*********6*********7**
 !e::forward
 !
-implicit double precision (a-h, o-z)
+implicit real(wp) (a-h, o-z)
 implicit integer (i-n)
 !
 logical  nowebb
@@ -174,12 +175,12 @@ else
   goto 5
 endif
 !
-esq = f*(2.0d0-f)
+esq = f*(2.0_wp-f)
 !
 !     compute the geodetic limit distance (blimit), it is equal
 !     to twice the equatorial circumference minus one meter
 !
-blimit = 2*pi*a-1.0d0
+blimit = 2*pi*a-1.0_wp
 !
 !     maximum distance allowed on ellipsoid
 !
@@ -281,9 +282,9 @@ call getdeg(azd1,azm1,saz1,iazsn,faz)
 !
 write(*,*) 'DDDDDD.dddd      Ellipsoidal Distance : (in meters)'
 !
-25 ss = 0.0d0
+25 ss = 0.0_wp
 read(*,*) ss
-ss = dabs(ss)
+ss = abs(ss)
 !
 if( ss<dd_max )then
   edist  = ss

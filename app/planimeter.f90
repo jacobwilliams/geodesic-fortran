@@ -9,17 +9,17 @@
 !! ellipsoid).
 
 program planimeter
-    use geodesic_module
+    use geodesic_module, wp => geodesic_wp
 implicit none
 
 integer maxpts
 parameter (maxpts = 10000)
-double precision a, f, lats(maxpts), lons(maxpts), S, P
+real(wp) a, f, lats(maxpts), lons(maxpts), S, P
 integer n
 
 ! WGS84 values
-a = 6378137d0
-f = 1/298.257223563d0
+a = 6378137.0_wp
+f = 1.0_wp/298.257223563_wp
 
 n = 0
 10 continue

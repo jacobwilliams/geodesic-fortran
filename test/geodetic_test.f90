@@ -7,9 +7,8 @@
 
 program geodetic_test
 
-    use iso_fortran_env, only: wp => real64
     use ieee_arithmetic, only: ieee_is_nan
-    use geodesic_module
+    use geodesic_module, wp => geodesic_wp
 
     implicit none
 

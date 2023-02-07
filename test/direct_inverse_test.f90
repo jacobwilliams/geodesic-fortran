@@ -8,8 +8,7 @@
 
     program direct_inverse_test
 
-    use iso_fortran_env, only: wp => real64
-    use geodesic_module
+    use geodesic_module, wp => geodesic_wp
 
     implicit none
 
