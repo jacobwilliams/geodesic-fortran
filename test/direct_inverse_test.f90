@@ -74,8 +74,8 @@
 
     end do
 
-    write(*,*) ' max vincenty errors:    ', maxerrors1
-    write(*,*) ' max geodeticlib errors: ', maxerrors2
+    write(*,'(1p,A,*(e16.6))') ' max vincenty errors:    ', maxerrors1
+    write(*,'(1p,A,*(e16.6))') ' max geodeticlib errors: ', maxerrors2
 
     if (any(maxerrors1>tol .or. maxerrors2>tol)) error stop 'test failed'
 

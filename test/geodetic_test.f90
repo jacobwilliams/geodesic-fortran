@@ -155,11 +155,11 @@ program geodetic_test
             if (any(abs(err) > test_tol) .or. any(ieee_is_nan(err))) then
                 write(*,*) ''
                 write(*,*) 'error for '//method, ', case', i
-                write(*,*) 'r      = ', r
-                write(*,*) 'h      = ', h,      h_,      h-h_
-                write(*,*) 'lambda = ', lambda, lambda_, lambda-lambda_
-                write(*,*) 'phi    = ', phi,    phi_,    phi-phi_
-                write(*,*) 'err    = ', err
+                write(*,'(1p,A,*(e16.6))') 'r      = ', r
+                write(*,'(1p,A,*(e16.6))') 'h      = ', h,      h_,      h-h_
+                write(*,'(1p,A,*(e16.6))') 'lambda = ', lambda, lambda_, lambda-lambda_
+                write(*,'(1p,A,*(e16.6))') 'phi    = ', phi,    phi_,    phi-phi_
+                write(*,'(1p,A,*(e16.6))') 'err    = ', err
                 error stop 'FAILURE'
             end if
             tmp = max(tmp , maxval(abs(err))) !compute something so loop isn't optimized away
