@@ -66,7 +66,7 @@ Traditionally two geodesic problems are considered:
 
 The ellipsoid is specified by its equatorial radius \e a (typically in
 meters) and flattening \e f.  The routines are accurate to round off with
-double precision arithmetic provided that |<i>f</i>| &lt; 1/50; for the
+real(wp) arithmetic provided that |<i>f</i>| &lt; 1/50; for the
 WGS84 ellipsoid, the errors are less than 15 nanometers.  (Reasonably
 accurate results are obtained for |<i>f</i>| &lt; 1/5.)  For a prolate
 ellipsoid, specify \e f &lt; 0.
