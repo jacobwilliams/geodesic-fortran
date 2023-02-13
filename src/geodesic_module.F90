@@ -15,103 +15,104 @@
 !    (see `geodesy_module.f90`). [Nov 6, 2022 version]
 !
 !### geographiclib Notes
-! The principal advantages of these algorithms over previous ones
-! (e.g., Vincenty, 1975) are
-! - accurate to round off for |<i>f</i>| &lt; 1/50;
-! - the solution of the inverse problem is always found;
-! - differential and integral properties of geodesics are computed.
+!  The principal advantages of these algorithms over previous ones
+!  (e.g., Vincenty, 1975) are:
 !
-! The shortest path between two points on the ellipsoid at (\e lat1, \e
-! lon1) and (\e lat2, \e lon2) is called the geodesic.  Its length is
-! \e s12 and the geodesic from point 1 to point 2 has forward azimuths
-! \e azi1 and \e azi2 at the two end points.
+!  * accurate to round off for `|f| < 1/50`
+!  * the solution of the inverse problem is always found
+!  * differential and integral properties of geodesics are computed
 !
-! Traditionally two geodesic problems are considered:
-! - the direct problem -- given \e lat1, \e lon1, \e s12, and \e azi1,
-!   determine \e lat2, \e lon2, and \e azi2.  This is solved by the
-!   subroutine direct().
-! - the inverse problem -- given \e lat1, \e lon1, \e lat2, \e lon2,
-!   determine \e s12, \e azi1, and \e azi2.  This is solved by the
-!   subroutine inverse().
+!  The shortest path between two points on the ellipsoid at (`lat1`,
+!  `lon1`) and (`lat2`, `lon2`) is called the geodesic.  Its length is
+!  `s12` and the geodesic from point 1 to point 2 has forward azimuths
+!  `azi1` and `azi2` at the two end points.
 !
-! The ellipsoid is specified by its equatorial radius \e a (typically
-! in meters) and flattening \e f.  The routines are accurate to round
-! off with real(wp) arithmetic provided that |<i>f</i>| &lt;
-! 1/50; for the WGS84 ellipsoid, the errors are less than 15
-! nanometers.  (Reasonably accurate results are obtained for |<i>f</i>|
-! &lt; 1/5.)  For a prolate ellipsoid, specify \e f &lt; 0.
+!  Traditionally two geodesic problems are considered:
 !
-! The routines also calculate several other quantities of interest
-! - \e SS12 is the area between the geodesic from point 1 to point 2
-!   and the equator; i.e., it is the area, measured counter-clockwise,
-!   of the geodesic quadrilateral with corners (\e lat1,\e lon1), (0,\e
-!   lon1), (0,\e lon2), and (\e lat2,\e lon2).
-! - \e m12, the reduced length of the geodesic is defined such that if
-!   the initial azimuth is perturbed by \e dazi1 (radians) then the
-!   second point is displaced by \e m12 \e dazi1 in the direction
-!   perpendicular to the geodesic.  On a curved surface the reduced
-!   length obeys a symmetry relation, \e m12 + \e m21 = 0.  On a flat
-!   surface, we have \e m12 = \e s12.
-! - \e MM12 and \e MM21 are geodesic scales.  If two geodesics are
-!   parallel at point 1 and separated by a small distance \e dt, then
-!   they are separated by a distance \e MM12 \e dt at point 2.  \e MM21
-!   is defined similarly (with the geodesics being parallel to one
-!   another at point 2).  On a flat surface, we have \e MM12 = \e MM21
-!   = 1.
-! - \e a12 is the arc length on the auxiliary sphere.  This is a
-!   construct for converting the problem to one in spherical
-!   trigonometry.  \e a12 is measured in degrees.  The spherical arc
-!   length from one equator crossing to the next is always 180 deg.
+!  * ***the direct problem*** -- given `lat1`, `lon1`, `s12`, and `azi1`,
+!    determine `lat2`, `lon2`, and `azi2`.  This is solved by the
+!    subroutine [[direct]].
+!  * ***the inverse problem*** -- given `lat1`, `lon1`, `lat2`, `lon2`,
+!    determine `s12`, `azi1`, and `azi2`.  This is solved by the
+!    subroutine [[inverse]].
 !
-! If points 1, 2, and 3 lie on a single geodesic, then the following
-! addition rules hold:
-! - \e s13 = \e s12 + \e s23
-! - \e a13 = \e a12 + \e a23
-! - \e SS13 = \e SS12 + \e SS23
-! - \e m13 = \e m12 \e MM23 + \e m23 \e MM21
-! - \e MM13 = \e MM12 \e MM23 - (1 - \e MM12 \e MM21) \e
-!   m23 / \e m12
-! - \e MM31 = \e MM32 \e MM21 - (1 - \e MM23 \e MM32) \e
-!   m12 / \e m23
+!  The ellipsoid is specified by its equatorial radius a (typically
+!  in meters) and flattening `f`.  The routines are accurate to round
+!  off with real(wp) arithmetic provided that `|f| < 1/50`
+!  for the WGS84 ellipsoid, the errors are less than 15
+!  nanometers.  (Reasonably accurate results are obtained for `|f| < 1/5`.)
+!  For a prolate ellipsoid, specify f < 0.
 !
-! The shortest distance returned by the solution of the inverse problem
-! is (obviously) uniquely defined.  However, in a few special cases
-! there are multiple azimuths which yield the same shortest distance.
-! Here is a catalog of those cases:
-! - \e lat1 = -\e lat2 (with neither point at a pole).  If \e
-!   azi1 = \e azi2, the geodesic is unique.  Otherwise there are two
-!   geodesics and the second one is obtained by setting [\e azi1, \e
-!   azi2] &rarr; [\e azi2, \e azi1], [\e MM12, \e MM21] &rarr; [\e
-!   MM21, \e MM12], \e SS12 &rarr; -\e SS12.  (This occurs when
-!   the longitude difference is near &plusmn;180 deg for oblate
-!   ellipsoids.)
-! - \e lon2 = \e lon1 &plusmn; 180 deg (with neither point at a pole).
-!   If \e azi1 = 0 deg or &plusmn;180 deg, the geodesic is unique.
-!   Otherwise there are two geodesics and the second one is obtained by
-!   setting [\e azi1, \e azi2] &rarr; [-\e azi1, -\e azi2],
-!   \e SS12 &rarr; -\e SS12.  (This occurs when \e lat2 is near
-!   -\e lat1 for prolate ellipsoids.)
-! - Points 1 and 2 at opposite poles.  There are infinitely many
-!   geodesics which can be generated by setting [\e azi1, \e azi2]
-!   &rarr; [\e azi1, \e azi2] + [\e d, -\e d], for arbitrary \e
-!   d.  (For spheres, this prescription applies when points 1 and 2 are
-!   antipodal.)
-! - \e s12 = 0 (coincident points).  There are infinitely many
-!   geodesics which can be generated by setting [\e azi1, \e azi2]
-!   &rarr; [\e azi1, \e azi2] + [\e d, \e d], for arbitrary \e d.
+!  The routines also calculate several other quantities of interest:
 !
-! These routines are a simple transcription of the corresponding C++
-! classes in <a href="https://geographiclib.sourceforge.io">
-! geodesic_module</a>.  Because of the limitations of Fortran 77, the
-! classes have been replaced by simple subroutines with no attempt to
-! save "state" across subroutine calls.  Most of the internal comments
-! have been retained.  However, in the process of transcription some
-! documentation has been lost and the documentation for the C++
-! classes, geodesic_module::Geodesic, geodesic_module::GeodesicLine, and
-! geodesic_module::PolygonAreaT, should be consulted.  The C++ code
-! remains the "reference implementation".  Think twice about
-! restructuring the internals of the Fortran code since this may make
-! porting fixes from the C++ code more difficult.
+!  * `SS12` is the area between the geodesic from point 1 to point 2
+!    and the equator; i.e., it is the area, measured counter-clockwise,
+!    of the geodesic quadrilateral with corners `(lat1,lon1)`, `(0,lon1)`,
+!    `(0,lon2)`, and `(lat2,lon2)`.
+!  * `m12`, the reduced length of the geodesic is defined such that if
+!    the initial azimuth is perturbed by `dazi1` (radians) then the
+!    second point is displaced by `m12` `dazi1` in the direction
+!    perpendicular to the geodesic.  On a curved surface the reduced
+!    length obeys a symmetry relation, `m12 + m21 = 0`.  On a flat
+!    surface, we have `m12 = s12`.
+!  * `MM12` and `MM21` are geodesic scales.  If two geodesics are
+!    parallel at point 1 and separated by a small distance `dt`, then
+!    they are separated by a distance `MM12` `dt` at point 2.  `MM21`
+!    is defined similarly (with the geodesics being parallel to one
+!    another at point 2).  On a flat surface, we have `MM12 = MM21 = 1`.
+!  * `a12` is the arc length on the auxiliary sphere.  This is a
+!    construct for converting the problem to one in spherical
+!    trigonometry.  `a12` is measured in degrees.  The spherical arc
+!    length from one equator crossing to the next is always 180 deg.
+!
+!  If points 1, 2, and 3 lie on a single geodesic, then the following
+!  addition rules hold:
+!
+!  * `s13 = s12 + s23`
+!  * `a13 = a12 + a23`
+!  * `SS13 = SS12 + SS23`
+!  * `m13 = m12 MM23 + m23 MM21`
+!  * `MM13 = MM12 MM23 - (1 - MM12 MM21) m23 / m12`
+!  * `MM31 = MM32 MM21 - (1 - MM23 MM32) m12 / m23`
+!
+!  The shortest distance returned by the solution of the inverse problem
+!  is (obviously) uniquely defined.  However, in a few special cases
+!  there are multiple azimuths which yield the same shortest distance.
+!  Here is a catalog of those cases:
+!
+!  * `lat1 = -lat2` (with neither point at a pole).  If
+!    `azi1 = azi2`, the geodesic is unique.  Otherwise there are two
+!    geodesics and the second one is obtained by setting
+!    [azi1, azi2] --> [azi2, azi1], [MM12, MM21] --> [MM21, MM12], SS12 --> -SS12.
+!    (This occurs when the longitude difference is near +/- 180 deg for oblate
+!    ellipsoids.)
+!  * lon2 = lon1 +/- 180 deg (with neither point at a pole).
+!    If azi1 = 0 deg or +/- 180 deg, the geodesic is unique.
+!    Otherwise there are two geodesics and the second one is obtained by
+!    setting [azi1, azi2] --> [-azi1, -azi2],
+!    SS12 --> -SS12.  (This occurs when lat2 is near
+!    -lat1 for prolate ellipsoids.)
+!  * Points 1 and 2 at opposite poles.  There are infinitely many
+!    geodesics which can be generated by setting [azi1, azi2]
+!    --> [azi1, azi2] + [d, -d], for arbitrary d.
+!    (For spheres, this prescription applies when points 1 and 2 are
+!    antipodal.)
+!  * s12 = 0 (coincident points).  There are infinitely many
+!    geodesics which can be generated by setting [azi1, azi2]
+!    --> [azi1, azi2] + [d, d], for arbitrary d.
+!
+!  These routines are a simple transcription of the corresponding C++
+!  classes in [geographiclib](https://geographiclib.sourceforge.io).
+!  Because of the limitations of Fortran 77, the
+!  classes have been replaced by simple subroutines with no attempt to
+!  save "state" across subroutine calls.  Most of the internal comments
+!  have been retained.  However, in the process of transcription some
+!  documentation has been lost and the documentation for the C++
+!  classes, geodesic_module::Geodesic, geodesic_module::GeodesicLine, and
+!  geodesic_module::PolygonAreaT, should be consulted.  The C++ code
+!  remains the "reference implementation".  Think twice about
+!  restructuring the internals of the Fortran code since this may make
+!  porting fixes from the C++ code more difficult.
 !
 !### License
 !
@@ -1573,10 +1574,10 @@ end function Lambda12
     mult = 1
     o = 0
     do l = 0, nC4 - 1
-    m = nC4 - l - 1
-    c(l) = mult * polyval(m, C4x(o), eps)
-    o = o + m + 1
-    mult = mult * eps
+        m = nC4 - l - 1
+        c(l) = mult * polyval(m, C4x(o), eps)
+        o = o + m + 1
+        mult = mult * eps
     end do
 
     end subroutine C4f
@@ -1833,20 +1834,20 @@ end function Lambda12
 
     integer :: o, m, l, j, k
     real(wp),dimension(ncoeff),parameter :: coeff = [ &
-        97, 15015,   1088, 156, 45045,   -224, -4784, 1573, 45045, &
+        97, 15015, 1088, 156, 45045, -224, -4784, 1573, 45045, &
         -10656, 14144, -4576, -858, 45045, &
         64, 624, -4576, 6864, -3003, 15015, &
         100, 208, 572, 3432, -12012, 30030, 45045, &
-        1, 9009,   -2944, 468, 135135,   5792, 1040, -1287, 135135, &
+        1, 9009, -2944, 468, 135135, 5792, 1040, -1287, 135135, &
         5952, -11648, 9152, -2574, 135135, &
         -64, -624, 4576, -6864, 3003, 135135, &
-        8, 10725,   1856, -936, 225225,   -8448, 4992, -1144, 225225, &
+        8, 10725, 1856, -936, 225225, -8448, 4992, -1144, 225225, &
         -1440, 4160, -4576, 1716, 225225, &
-        -136, 63063,   1024, -208, 105105, &
+        -136, 63063, 1024, -208, 105105, &
         3584, -3328, 1144, 315315, &
-        -128, 135135,   -2560, 832, 405405,   128, 99099 ]
+        -128, 135135, -2560, 832, 405405, 128, 99099 ]
 
-    o = 1
+       o = 1
     k = 0
     do l = 0, nC4 - 1
     do j = nC4 - 1, l, -1
@@ -2029,7 +2030,7 @@ end function Lambda12
 
     y = 1 + x
     z = y - 1
-    if (z == 0) then
+    if (z == 0.0_wp) then
         log1px = x
     else
         log1px = x * log(y) / z
@@ -2046,7 +2047,9 @@ end function Lambda12
 
     real(wp),intent(in) :: x
 
-    cbrt = sign(abs(x)**(1.0_wp/3.0_wp), x)
+    real(wp),parameter :: one_third = 1.0_wp / 3.0_wp
+
+    cbrt = sign(abs(x)**one_third, x)
 
     end function cbrt
 !*****************************************************************************************
@@ -2284,15 +2287,16 @@ end function Lambda12
     integer,intent(in) :: N
     real(wp),intent(in) :: p(0:N), x
 
-    integer i
+    integer :: i
+
     if (N < 0) then
-        polyval = 0
+        polyval = 0.0_wp
     else
         polyval = p(0)
+        do i = 1, N
+            polyval = polyval * x + p(i)
+        end do
     end if
-    do i = 1, N
-        polyval = polyval * x + p(i)
-    end do
 
     end function polyval
 !*****************************************************************************************
