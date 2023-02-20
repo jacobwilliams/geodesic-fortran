@@ -20,7 +20,7 @@ A `fmp.toml` file is provided for compiling geodesic-fortran with the [Fortran P
 fpm build --profile release
 ```
 
-<!-- By default, the library is built with double precision (`real64`) real values. Explicitly specifying the real kind can be done using the following processor flags:
+By default, the library is built with double precision (`real64`) real values. Explicitly specifying the real kind can be done using the following processor flags:
 
 Preprocessor flag | Kind  | Number of bytes
 ----------------- | ----- | ---------------
@@ -32,7 +32,7 @@ For example, to build a single precision version of the library, use:
 
 ```
 fpm build --profile release --flag "-DREAL32"
-``` -->
+```
 
 To run the unit tests:
 
