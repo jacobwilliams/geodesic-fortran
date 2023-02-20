@@ -2,7 +2,7 @@
 ![geodesic-fortran](media/logo.png)
 ============
 
-Implementation of geodesic routines in modern Fortran
+Implementation of geodesic routines in modern Fortran.
 
 [![GitHub release](https://img.shields.io/github/release/jacobwilliams/geodesic-fortran.svg?style=plastic)](https://github.com/jacobwilliams/geodesic-fortran/releases/latest)
 [![Build Status](https://github.com/jacobwilliams/geodesic-fortran/actions/workflows/CI.yml/badge.svg)](https://github.com/jacobwilliams/geodesic-fortran/actions)
@@ -11,10 +11,6 @@ Implementation of geodesic routines in modern Fortran
 ### Description
 
 This is a library to solve geodesic problems on an ellipsoid model of a planetary body (e.g., the Earth).
-
-The two tools `ngsforward` and `ngsinverse` are replacements for the tools
-FORWARD and INVERSE available from the
-[NGS](http://www.ngs.noaa.gov/PC_PROD/Inv_Fwd/).
 
 ### License
 
@@ -35,4 +31,5 @@ Licensed under the MIT/X11/BSD License.
 
 * `Geographiclib` [documentation](https://geographiclib.sourceforge.io/Fortran/doc) and [git repository](https://github.com/geographiclib/geographiclib-fortran)
 * [Fortran Astrodynamics Toolkit](https://github.com/jacobwilliams/geodesic-fortran)
+* FORWARD and INVERSE from the [NGS](http://www.ngs.noaa.gov/PC_PROD/Inv_Fwd/)
 
