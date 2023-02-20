@@ -12,6 +12,26 @@ Implementation of geodesic routines in modern Fortran.
 
 This is a library to solve geodesic problems on an ellipsoid model of a planetary body (e.g., the Earth).
 
+## Documentation
+
+Some of the algorithms in this library:
+
+| Procedure | Body Shape | Description | Reference
+| --- | --- | --- | --- |
+| [cartesian_to_geodetic_triaxial](https://jacobwilliams.github.io/geodesic-fortran/proc/cartesian_to_geodetic_triaxial.html) | Triaxial | Cartesian to geodetic | [Panou & Korakitis (2022)](https://link.springer.com/article/10.1007/s00190-022-01650-9)
+| [cartesian_to_geodetic_triaxial_2](https://jacobwilliams.github.io/geodesic-fortran/proc/cartesian_to_geodetic_triaxial_2.html) | Triaxial | Cartesian to geodetic | [Bektas (2015)](https://www.arcjournals.org/international-journal-of-mining-science/volume-1-issue-1/4)
+| [heikkinen](https://jacobwilliams.github.io/geodesic-fortran/proc/heikkinen.html) | Biaxial | Cartesian to geodetic | Heikkinen (1982)
+| [olson](https://jacobwilliams.github.io/geodesic-fortran/proc/olson.html) | Biaxial | Cartesian to geodetic | [Olson (1996)](https://ieeexplore.ieee.org/document/481290)
+| [direct](https://jacobwilliams.github.io/geodesic-fortran/proc/direct.html) | Biaxial | Direct geodesic problem | [Karney (2013)](https://link.springer.com/article/10.1007/s00190-012-0578-z)
+| [direct_vincenty](https://jacobwilliams.github.io/geodesic-fortran/proc/direct_vincenty.html) | Biaxial | Direct geodesic problem | [Vincenty (1975)](https://www.ngs.noaa.gov/PUBS_LIB/inverse.pdf)
+| [inverse](https://jacobwilliams.github.io/geodesic-fortran/proc/inverse.html) | Biaxial | Inverse geodesic problem | [Karney (2013)](https://link.springer.com/article/10.1007/s00190-012-0578-z)| []() | xxx | []()
+| [inverse_vincenty](https://jacobwilliams.github.io/geodesic-fortran/proc/inverse_vincenty.html) | Biaxial | Inverse geodesic problem | [Vincenty (1975)](https://www.ngs.noaa.gov/PUBS_LIB/inverse.pdf)| []() | xxx | []()
+| [great_circle_distance](https://jacobwilliams.github.io/geodesic-fortran/proc/great_circle_distance.html) | Sphere | Great circle distance | [Vincenty (1975)](https://www.ngs.noaa.gov/PUBS_LIB/inverse.pdf)| []() | xxx | []()
+
+
+See the latest API documentation for the [full list](https://jacobwilliams.github.io/geodesic-fortran/). This was generated from the source code using [FORD](https://github.com/Fortran-FOSS-Programmers/ford) (i.e. by running `ford ford.md`).
+
+
 ## Compiling
 
 A `fmp.toml` file is provided for compiling geodesic-fortran with the [Fortran Package Manager](https://github.com/fortran-lang/fpm). For example, to build:
@@ -55,10 +75,6 @@ geodesic-fortran = { git="https://github.com/jacobwilliams/geodesic-fortran.git"
 ### License
 
 * This library is licensed under a permissive MIT/X11/BSD license.
-
-## Documentation
-
-The latest API documentation can be found [here](https://jacobwilliams.github.io/geodesic-fortran/). This was generated from the source code using [FORD](https://github.com/Fortran-FOSS-Programmers/ford) (i.e. by running `ford ford.md`).
 
 ### References
 
