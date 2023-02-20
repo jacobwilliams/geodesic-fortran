@@ -12,9 +12,53 @@ Implementation of geodesic routines in modern Fortran.
 
 This is a library to solve geodesic problems on an ellipsoid model of a planetary body (e.g., the Earth).
 
+## Compiling
+
+A `fmp.toml` file is provided for compiling geodesic-fortran with the [Fortran Package Manager](https://github.com/fortran-lang/fpm). For example, to build:
+
+```
+fpm build --profile release
+```
+
+<!-- By default, the library is built with double precision (`real64`) real values. Explicitly specifying the real kind can be done using the following processor flags:
+
+Preprocessor flag | Kind  | Number of bytes
+----------------- | ----- | ---------------
+`REAL32`  | `real(kind=real32)`  | 4
+`REAL64`  | `real(kind=real64)`  | 8
+`REAL128` | `real(kind=real128)` | 16
+
+For example, to build a single precision version of the library, use:
+
+```
+fpm build --profile release --flag "-DREAL32"
+``` -->
+
+To run the unit tests:
+
+```
+fpm test --profile release
+```
+
+To use `geodesic-fortran` within your fpm project, add the following to your `fpm.toml` file:
+```toml
+[dependencies]
+geodesic-fortran = { git="https://github.com/jacobwilliams/geodesic-fortran.git" }
+```
+
+or, to use a specific version:
+```toml
+[dependencies]
+geodesic-fortran = { git="https://github.com/jacobwilliams/geodesic-fortran.git", tag = "1.0.0"  }
+```
+
 ### License
 
-Licensed under the MIT/X11/BSD License.
+* This library is licensed under a permissive MIT/X11/BSD license.
+
+## Documentation
+
+The latest API documentation can be found [here](https://jacobwilliams.github.io/geodesic-fortran/). This was generated from the source code using [FORD](https://github.com/Fortran-FOSS-Programmers/ford) (i.e. by running `ford ford.md`).
 
 ### References
 
