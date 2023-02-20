@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta name="description" content="Fortran implementation of geodesic routines">
+    <meta name="author" content="Jacob Williams" >
+    <link rel="icon" href="../favicon.png">
+
+    <title>direct &ndash; geodesic-fortran</title>
+
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/pygments.css" rel="stylesheet">
+    <link href="../css/font-awesome.min.css" rel="stylesheet">
+    <link href="../css/local.css" rel="stylesheet">
+    <link  href="../tipuesearch/tipuesearch.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    
+    <script src="../js/jquery-2.1.3.min.js"></script>
+    <script src="../js/svg-pan-zoom.min.js"></script>
+
+  </head>
+
+  <body>
+
+    <!-- Fixed navbar -->
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="../index.html">geodesic-fortran </a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="dropdown hidden-xs visible-sm visible-md hidden-lg">
+              <a href="#" class="dropdown-toggle"
+              data-toggle="dropdown" role="button"
+              aria-haspopup="true"
+     aria-expanded="false">Contents <span class="caret"></span></a>
+        <ul class="dropdown-menu">
+            <li><a href="../sourcefile/geodesic_module.f90.html">Source File</a></li>
+            <li><a href="../lists/modules.html">Modules</a></li>
+            <li><a href="../lists/procedures.html">Procedures</a></li>
+              
+            </ul>
+        
+            </li>
+<li class="visible-xs hidden-sm visible-lg"><a href="../sourcefile/geodesic_module.f90.html">Source File</a></li>
+<li class="visible-xs hidden-sm visible-lg"><a href="../lists/modules.html">Modules</a></li>
+<li class="visible-xs hidden-sm visible-lg"><a href="../lists/procedures.html">Procedures</a></li>
+                                       </ul>
+        <form action="../search.html" class="navbar-form navbar-right" role="search">
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+        </div>
+<!--
+        <button type="submit" class="btn btn-default">Submit</button>
+-->
+        </form>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+    <div class="container">
+  <div class="row">
+    <h1>direct
+      <small>Subroutine</small>
+      
+    </h1>
+      <div class="row" id="info-bar">
+    <div class="col-lg-12">
+      <div class="well well-sm">
+        <ul class="list-inline" style="margin-bottom:0px;display:inline">
+
+          <li id="statements"><i class="fa fa-list-ol"></i>
+            <a data-toggle="tooltip"
+               data-placement="bottom" data-html="true"
+               title="14.3% of total for procedures.">187 statements</a>
+          </li>
+
+            <li id="source-file">
+              <i class="fa fa-code"></i>
+              <a href="../src/geodesic_module.F90"> Source File</a>
+            </li>
+        </ul>
+        <ol class="breadcrumb in-well text-right">
+              <li><a href='../sourcefile/geodesic_module.f90.html'>geodesic_module.F90</a></li>
+              <li><a href='../module/geodesic_module.html'>geodesic_module</a></li>
+          <li class="active">direct</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+  <script>
+    $(function () {
+    $('[data-toggle="tooltip"]').tooltip()
+    })
+  </script>
+
+  </div>
+  
+  <div class="row">
+    <div class="col-md-3 hidden-xs hidden-sm visible-md visible-lg">
+      <div id="sidebar">
+      <h3>Contents</h3>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    <div class="panel panel-primary">
+      <div class="panel-heading text-left"><h3 class="panel-title">Source Code</h3></div>
+      <div class="list-group">
+        <a class="list-group-item" href="../proc/direct.html#src">direct</a>
+      </div>
+    </div>
+
+
+  </div>
+
+    </div>
+    
+    <div class="col-md-9" id='text'>
+    <h2>public  subroutine direct(a, f, lat1, lon1, azi1, s12a12, flags, lat2, lon2, azi2, outmask, a12s12, m12, MM12, MM21, SS12)  
+</h2>
+    
+
+    <p>Solve the direct geodesic problem.</p>
+<h3>Notes</h3>
+<p>If <code>arcmode</code> is not set, <code>s12a12</code> is <code>s12</code> and <code>a12s12</code> is
+  <code>a12</code>; otherwise, <code>s12a12</code> is <code>a12</code> and <code>a12s12</code> is <code>s12</code>.  If
+  <code>unroll</code> is not set, the value <code>lon2</code> returned is in the range
+  [-180 deg, 180 deg]; if <code>unroll</code> is set, the longitude variable
+  is "unrolled" so that <code>lon2 - lon1</code> indicates how many
+  times and in what sense the geodesic encircles the ellipsoid.</p>
+<p>If either point is at a pole, the azimuth is defined by keeping the
+  longitude fixed, writing <code>lat = lat = +/- (90 deg - Epsilon)</code>,
+  and taking the limit Epsilon --&gt; 0+.  An arc length
+  greater that 180 deg signifies a geodesic which is not a shortest
+  path.  (For a prolate ellipsoid, an additional condition is necessary
+  for a shortest path: the longitudinal extent must not exceed of
+  180 deg.)</p>
+
+    <h3>Arguments</h3>
+        <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-a~2"></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>a</strong></td>
+            <td>
+                <p>the equatorial radius (meters).</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-f"></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>f</strong></td>
+            <td>
+                <p>the flattening of the ellipsoid.  Setting <code>f = 0</code> gives
+a sphere.  Negative <code>f</code> gives a prolate ellipsoid.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-lat1~2"></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>lat1</strong></td>
+            <td>
+                <p>lat1 latitude of point 1 (degrees). <code>lat1</code> should be in the range [-90 deg, 90 deg].</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-lon1"></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>lon1</strong></td>
+            <td>
+                <p>lon1 longitude of point 1 (degrees).</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-azi1"></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>azi1</strong></td>
+            <td>
+                <p>azi1 azimuth at point 1 (degrees).</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-s12a12"></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>s12a12</strong></td>
+            <td>
+                <p>if <code>arcmode</code> is not set, this is the distance
+from point 1 to point 2 (meters); otherwise it is the arc
+length from point 1 to point 2 (degrees); it can be negative.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-flags"></span>
+              integer,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>flags</strong></td>
+            <td>
+                <p>a bitor'ed combination of the <code>arcmode</code> and <code>unroll</code> flags.</p>
+<p><code>flags</code> is an integer in [0, 4) whose binary bits are interpreted as follows:</p>
+<ul>
+<li>1 the <code>arcmode</code> flag</li>
+<li>2 the <code>unroll</code> flag</li>
+</ul>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-lat2~2"></span>
+              real(kind=wp),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>lat2</strong></td>
+            <td>
+                <p>latitude of point 2 (degrees).</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-lon2"></span>
+              real(kind=wp),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>lon2</strong></td>
+            <td>
+                <p>longitude of point 2 (degrees).</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-azi2"></span>
+              real(kind=wp),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>azi2</strong></td>
+            <td>
+                <p>(forward) azimuth at point 2 (degrees). The value <code>azi2</code> returned is in the range [-180 deg, 180 deg].</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-outmask"></span>
+              integer,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>outmask</strong></td>
+            <td>
+                <p>a bitor'ed combination of mask values
+specifying which of the following parameters should be set.</p>
+<p>outmask is an integer in [0, 16) whose binary bits are interpreted
+as follows:</p>
+<ul>
+<li>1 return <code>a12</code></li>
+<li>2 return <code>m12</code></li>
+<li>4 return <code>MM12</code> and <code>MM21</code></li>
+<li>8 return <code>SS12</code></li>
+</ul>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-a12s12"></span>
+              real(kind=wp),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>a12s12</strong></td>
+            <td>
+                <p>if <code>arcmode</code> is not set, this is the arc length
+from point 1 to point 2 (degrees); otherwise it is the distance
+from point 1 to point 2 (meters).</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-m12"></span>
+              real(kind=wp),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>m12</strong></td>
+            <td>
+                <p>reduced length of geodesic (meters).</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-mm12"></span>
+              real(kind=wp),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>MM12</strong></td>
+            <td>
+                <p>geodesic scale of point 2 relative to point 1 (dimensionless).</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-mm21"></span>
+              real(kind=wp),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>MM21</strong></td>
+            <td>
+                <p>geodesic scale of point 1 relative to point 2 (dimensionless).</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-ss12"></span>
+              real(kind=wp),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>SS12</strong></td>
+            <td>
+                <p>area under the geodesic (<script type="math/tex">m^2</script>).</p>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <br>
+
+    <section class="visible-xs visible-sm hidden-md">
+        <h3>Contents</h3>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    <div class="panel panel-primary">
+      <div class="panel-heading text-left"><h3 class="panel-title">Source Code</h3></div>
+      <div class="list-group">
+        <a class="list-group-item" href="../proc/direct.html#src">direct</a>
+      </div>
+    </div>
+
+
+    </section>
+    <br class="visible-xs visible-sm hidden-md">
+
+
+    
+    
+
+    
+    
+
+
+    
+    <section>
+    <h2><span class="anchor" id="src"></span>Source Code</h2>
+    <div class="highlight"><pre><span></span><span class="k">subroutine </span><span class="n">direct</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="n">lat1</span><span class="p">,</span><span class="w"> </span><span class="n">lon1</span><span class="p">,</span><span class="w"> </span><span class="n">azi1</span><span class="p">,</span><span class="w"> </span><span class="n">s12a12</span><span class="p">,</span><span class="w"> </span><span class="n">flags</span><span class="p">,</span><span class="w"> </span><span class="p">&amp;</span><span class="w"></span>
+<span class="w">                  </span><span class="n">lat2</span><span class="p">,</span><span class="w"> </span><span class="n">lon2</span><span class="p">,</span><span class="w"> </span><span class="n">azi2</span><span class="p">,</span><span class="w"> </span><span class="n">outmask</span><span class="p">,</span><span class="w"> </span><span class="n">a12s12</span><span class="p">,</span><span class="w"> </span><span class="n">m12</span><span class="p">,</span><span class="w"> </span><span class="n">MM12</span><span class="p">,</span><span class="w"> </span><span class="n">MM21</span><span class="p">,</span><span class="w"> </span><span class="n">SS12</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">  </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="c">!! the equatorial radius (meters).</span>
+<span class="w">  </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="c">!! the flattening of the ellipsoid.  Setting `f = 0` gives</span>
+<span class="w">                                    </span><span class="c">!! a sphere.  Negative `f` gives a prolate ellipsoid.</span>
+<span class="w">  </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">lat1</span><span class="w"> </span><span class="c">!! lat1 latitude of point 1 (degrees). `lat1` should be in the range [-90 deg, 90 deg].</span>
+<span class="w">  </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">lon1</span><span class="w"> </span><span class="c">!! lon1 longitude of point 1 (degrees).</span>
+<span class="w">  </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">azi1</span><span class="w"> </span><span class="c">!! azi1 azimuth at point 1 (degrees).</span>
+<span class="w">  </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">s12a12</span><span class="w"> </span><span class="c">!! if `arcmode` is not set, this is the distance</span>
+<span class="w">                                         </span><span class="c">!! from point 1 to point 2 (meters); otherwise it is the arc</span>
+<span class="w">                                         </span><span class="c">!! length from point 1 to point 2 (degrees); it can be negative.</span>
+<span class="w">  </span><span class="kt">integer</span><span class="p">,</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">flags</span><span class="w"> </span><span class="c">!! a bitor&#39;ed combination of the `arcmode` and `unroll` flags.</span>
+<span class="w">                               </span><span class="c">!!</span>
+<span class="w">                               </span><span class="c">!! `flags` is an integer in [0, 4) whose binary bits are interpreted as follows:</span>
+<span class="w">                               </span><span class="c">!!</span>
+<span class="w">                               </span><span class="c">!!  * 1 the `arcmode` flag</span>
+<span class="w">                               </span><span class="c">!!  * 2 the `unroll` flag</span>
+<span class="w">  </span><span class="kt">integer</span><span class="p">,</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">outmask</span><span class="w"> </span><span class="c">!! a bitor&#39;ed combination of mask values</span>
+<span class="w">                               </span><span class="c">!! specifying which of the following parameters should be set.</span>
+<span class="w">                               </span><span class="c">!!</span>
+<span class="w">                               </span><span class="c">!! outmask is an integer in [0, 16) whose binary bits are interpreted</span>
+<span class="w">                               </span><span class="c">!! as follows:</span>
+<span class="w">                               </span><span class="c">!!</span>
+<span class="w">                               </span><span class="c">!!  * 1 return `a12`</span>
+<span class="w">                               </span><span class="c">!!  * 2 return `m12`</span>
+<span class="w">                               </span><span class="c">!!  * 4 return `MM12` and `MM21`</span>
+<span class="w">                               </span><span class="c">!!  * 8 return `SS12`</span>
+<span class="w">  </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">lat2</span><span class="w"> </span><span class="c">!! latitude of point 2 (degrees).</span>
+<span class="w">  </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">lon2</span><span class="w"> </span><span class="c">!! longitude of point 2 (degrees).</span>
+<span class="w">  </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">azi2</span><span class="w"> </span><span class="c">!! (forward) azimuth at point 2 (degrees). The value `azi2` returned is in the range [-180 deg, 180 deg].</span>
+<span class="w">  </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">a12s12</span><span class="w"> </span><span class="c">!! if `arcmode` is not set, this is the arc length</span>
+<span class="w">                                          </span><span class="c">!! from point 1 to point 2 (degrees); otherwise it is the distance</span>
+<span class="w">                                          </span><span class="c">!! from point 1 to point 2 (meters).</span>
+<span class="w">  </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">m12</span><span class="w"> </span><span class="c">!! reduced length of geodesic (meters).</span>
+<span class="w">  </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">MM12</span><span class="w"> </span><span class="c">!! geodesic scale of point 2 relative to point 1 (dimensionless).</span>
+<span class="w">  </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">MM21</span><span class="w"> </span><span class="c">!! geodesic scale of point 1 relative to point 2 (dimensionless).</span>
+<span class="w">  </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">SS12</span><span class="w"> </span><span class="c">!! area under the geodesic (\(m^2\)).</span>
+
+<span class="w">  </span><span class="kt">integer</span><span class="p">,</span><span class="k">parameter</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ord</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">6</span><span class="w"></span>
+<span class="w">  </span><span class="kt">integer</span><span class="p">,</span><span class="k">parameter</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">nC1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ord</span><span class="w"></span>
+<span class="w">  </span><span class="kt">integer</span><span class="p">,</span><span class="k">parameter</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">nC1p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ord</span><span class="w"></span>
+<span class="w">  </span><span class="kt">integer</span><span class="p">,</span><span class="k">parameter</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">nC2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ord</span><span class="w"></span>
+<span class="w">  </span><span class="kt">integer</span><span class="p">,</span><span class="k">parameter</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">nA3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ord</span><span class="w"></span>
+<span class="w">  </span><span class="kt">integer</span><span class="p">,</span><span class="k">parameter</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">nA3x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nA3</span><span class="w"></span>
+<span class="w">  </span><span class="kt">integer</span><span class="p">,</span><span class="k">parameter</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">nC3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ord</span><span class="w"></span>
+<span class="w">  </span><span class="kt">integer</span><span class="p">,</span><span class="k">parameter</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">nC3x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">nC3</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">nC3</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">))</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">2</span><span class="w"></span>
+<span class="w">  </span><span class="kt">integer</span><span class="p">,</span><span class="k">parameter</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">nC4</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ord</span><span class="w"></span>
+<span class="w">  </span><span class="kt">integer</span><span class="p">,</span><span class="k">parameter</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">nC4x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">nC4</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">nC4</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">))</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">2</span><span class="w"></span>
+
+<span class="w">  </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">A3x</span><span class="p">(</span><span class="mi">0</span><span class="p">:</span><span class="n">nA3x</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span><span class="w"> </span><span class="n">C3x</span><span class="p">(</span><span class="mi">0</span><span class="p">:</span><span class="n">nC3x</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span><span class="w"> </span><span class="n">C4x</span><span class="p">(</span><span class="mi">0</span><span class="p">:</span><span class="n">nC4x</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span><span class="w"> </span><span class="p">&amp;</span><span class="w"></span>
+<span class="w">              </span><span class="n">C1a</span><span class="p">(</span><span class="n">nC1</span><span class="p">),</span><span class="w"> </span><span class="n">C1pa</span><span class="p">(</span><span class="n">nC1p</span><span class="p">),</span><span class="w"> </span><span class="n">C2a</span><span class="p">(</span><span class="n">nC2</span><span class="p">),</span><span class="w"> </span><span class="n">C3a</span><span class="p">(</span><span class="n">nC3</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span><span class="w"> </span><span class="n">C4a</span><span class="p">(</span><span class="mi">0</span><span class="p">:</span><span class="n">nC4</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">  </span><span class="kt">logical</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">arcmode</span><span class="p">,</span><span class="w"> </span><span class="n">unroll</span><span class="p">,</span><span class="w"> </span><span class="n">arcp</span><span class="p">,</span><span class="w"> </span><span class="n">redlp</span><span class="p">,</span><span class="w"> </span><span class="n">scalp</span><span class="p">,</span><span class="w"> </span><span class="n">areap</span><span class="w"></span>
+<span class="w">  </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">e2</span><span class="p">,</span><span class="w"> </span><span class="n">f1</span><span class="p">,</span><span class="w"> </span><span class="n">ep2</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">c2</span><span class="p">,</span><span class="w"> </span><span class="p">&amp;</span><span class="w"></span>
+<span class="w">              </span><span class="n">salp0</span><span class="p">,</span><span class="w"> </span><span class="n">calp0</span><span class="p">,</span><span class="w"> </span><span class="n">k2</span><span class="p">,</span><span class="w"> </span><span class="n">eps</span><span class="p">,</span><span class="w"> </span><span class="p">&amp;</span><span class="w"></span>
+<span class="w">              </span><span class="n">salp1</span><span class="p">,</span><span class="w"> </span><span class="n">calp1</span><span class="p">,</span><span class="w"> </span><span class="n">ssig1</span><span class="p">,</span><span class="w"> </span><span class="n">csig1</span><span class="p">,</span><span class="w"> </span><span class="n">cbet1</span><span class="p">,</span><span class="w"> </span><span class="n">sbet1</span><span class="p">,</span><span class="w"> </span><span class="n">dn1</span><span class="p">,</span><span class="w"> </span><span class="n">somg1</span><span class="p">,</span><span class="w"> </span><span class="n">comg1</span><span class="p">,</span><span class="w"> </span><span class="p">&amp;</span><span class="w"></span>
+<span class="w">              </span><span class="n">salp2</span><span class="p">,</span><span class="w"> </span><span class="n">calp2</span><span class="p">,</span><span class="w"> </span><span class="n">ssig2</span><span class="p">,</span><span class="w"> </span><span class="n">csig2</span><span class="p">,</span><span class="w"> </span><span class="n">sbet2</span><span class="p">,</span><span class="w"> </span><span class="n">cbet2</span><span class="p">,</span><span class="w"> </span><span class="n">dn2</span><span class="p">,</span><span class="w"> </span><span class="n">somg2</span><span class="p">,</span><span class="w"> </span><span class="n">comg2</span><span class="p">,</span><span class="w"> </span><span class="p">&amp;</span><span class="w"></span>
+<span class="w">              </span><span class="n">ssig12</span><span class="p">,</span><span class="w"> </span><span class="n">csig12</span><span class="p">,</span><span class="w"> </span><span class="n">salp12</span><span class="p">,</span><span class="w"> </span><span class="n">calp12</span><span class="p">,</span><span class="w"> </span><span class="n">omg12</span><span class="p">,</span><span class="w"> </span><span class="n">lam12</span><span class="p">,</span><span class="w"> </span><span class="n">lon12</span><span class="p">,</span><span class="w"> </span><span class="p">&amp;</span><span class="w"></span>
+<span class="w">              </span><span class="n">sig12</span><span class="p">,</span><span class="w"> </span><span class="n">stau1</span><span class="p">,</span><span class="w"> </span><span class="n">ctau1</span><span class="p">,</span><span class="w"> </span><span class="n">tau12</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">,</span><span class="w"> </span><span class="n">s</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="n">serr</span><span class="p">,</span><span class="w"> </span><span class="n">E</span><span class="p">,</span><span class="w"> </span><span class="p">&amp;</span><span class="w"></span>
+<span class="w">              </span><span class="n">A1m1</span><span class="p">,</span><span class="w"> </span><span class="n">A2m1</span><span class="p">,</span><span class="w"> </span><span class="n">A3c</span><span class="p">,</span><span class="w"> </span><span class="n">A4</span><span class="p">,</span><span class="w"> </span><span class="n">AB1</span><span class="p">,</span><span class="w"> </span><span class="n">AB2</span><span class="p">,</span><span class="w"> </span><span class="p">&amp;</span><span class="w"></span>
+<span class="w">              </span><span class="n">B11</span><span class="p">,</span><span class="w"> </span><span class="n">B12</span><span class="p">,</span><span class="w"> </span><span class="n">B21</span><span class="p">,</span><span class="w"> </span><span class="n">B22</span><span class="p">,</span><span class="w"> </span><span class="n">B31</span><span class="p">,</span><span class="w"> </span><span class="n">B41</span><span class="p">,</span><span class="w"> </span><span class="n">B42</span><span class="p">,</span><span class="w"> </span><span class="n">J12</span><span class="w"></span>
+
+<span class="n">e2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="mf">2.0_wp</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">f</span><span class="p">)</span><span class="w"></span>
+<span class="n">ep2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">e2</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="mf">1.0_wp</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">e2</span><span class="p">)</span><span class="w"></span>
+<span class="n">f1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0_wp</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">f</span><span class="w"></span>
+<span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="mf">2.0_wp</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">f</span><span class="p">)</span><span class="w"></span>
+<span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">f1</span><span class="w"></span>
+<span class="n">c2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
+
+<span class="n">arcmode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">mod</span><span class="p">(</span><span class="n">flags</span><span class="o">/</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
+<span class="n">unroll</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">mod</span><span class="p">(</span><span class="n">flags</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
+
+<span class="n">arcp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">mod</span><span class="p">(</span><span class="n">outmask</span><span class="o">/</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
+<span class="n">redlp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">mod</span><span class="p">(</span><span class="n">outmask</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
+<span class="n">scalp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">mod</span><span class="p">(</span><span class="n">outmask</span><span class="o">/</span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
+<span class="n">areap</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">mod</span><span class="p">(</span><span class="n">outmask</span><span class="o">/</span><span class="mi">8</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
+
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">areap</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="k">  if</span><span class="w"> </span><span class="p">(</span><span class="n">e2</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="k">    </span><span class="n">c2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="o">**</span><span class="mi">2</span><span class="w"></span>
+<span class="w">  </span><span class="k">else if</span><span class="w"> </span><span class="p">(</span><span class="n">e2</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="k">    </span><span class="n">c2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="o">**</span><span class="mi">2</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b</span><span class="o">**</span><span class="mi">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nb">atanh</span><span class="p">(</span><span class="nb">sqrt</span><span class="p">(</span><span class="n">e2</span><span class="p">))</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nb">sqrt</span><span class="p">(</span><span class="n">e2</span><span class="p">))</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">2.0_wp</span><span class="w"></span>
+<span class="w">  </span><span class="k">else</span>
+<span class="k">    </span><span class="n">c2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="o">**</span><span class="mi">2</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b</span><span class="o">**</span><span class="mi">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nb">atan</span><span class="p">(</span><span class="nb">sqrt</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">e2</span><span class="p">)))</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nb">sqrt</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">e2</span><span class="p">)))</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">2.0_wp</span><span class="w"></span>
+<span class="w">  </span><span class="k">end if</span>
+<span class="k">end if</span>
+
+<span class="k">call </span><span class="n">A3coeff</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">A3x</span><span class="p">)</span><span class="w"></span>
+<span class="k">call </span><span class="n">C3coeff</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">C3x</span><span class="p">)</span><span class="w"></span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">areap</span><span class="p">)</span><span class="w"> </span><span class="k">call </span><span class="n">C4coeff</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">C4x</span><span class="p">)</span><span class="w"></span>
+
+<span class="c">! Guard against underflow in salp0</span>
+<span class="k">call </span><span class="n">sincosd</span><span class="p">(</span><span class="n">AngRound</span><span class="p">(</span><span class="n">azi1</span><span class="p">),</span><span class="w"> </span><span class="n">salp1</span><span class="p">,</span><span class="w"> </span><span class="n">calp1</span><span class="p">)</span><span class="w"></span>
+
+<span class="k">call </span><span class="n">sincosd</span><span class="p">(</span><span class="n">AngRound</span><span class="p">(</span><span class="n">LatFix</span><span class="p">(</span><span class="n">lat1</span><span class="p">)),</span><span class="w"> </span><span class="n">sbet1</span><span class="p">,</span><span class="w"> </span><span class="n">cbet1</span><span class="p">)</span><span class="w"></span>
+<span class="n">sbet1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">f1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">sbet1</span><span class="w"></span>
+<span class="k">call </span><span class="n">norm</span><span class="p">(</span><span class="n">sbet1</span><span class="p">,</span><span class="w"> </span><span class="n">cbet1</span><span class="p">)</span><span class="w"></span>
+<span class="c">! Ensure cbet1 = +dbleps at poles</span>
+<span class="n">cbet1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">max</span><span class="p">(</span><span class="n">tiny2</span><span class="p">,</span><span class="w"> </span><span class="n">cbet1</span><span class="p">)</span><span class="w"></span>
+<span class="n">dn1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">sqrt</span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">ep2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">sbet1</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="w"></span>
+
+<span class="c">! Evaluate alp0 from sin(alp1) * cos(bet1) = sin(alp0),</span>
+<span class="c">! alp0 in [0, pi/2 - |bet1|]</span>
+<span class="n">salp0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">salp1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">cbet1</span><span class="w"></span>
+<span class="c">! Alt: calp0 = hypot(sbet1, calp1 * cbet1).  The following</span>
+<span class="c">! is slightly better (consider the case salp1 = 0).</span>
+<span class="n">calp0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">hypot</span><span class="p">(</span><span class="n">calp1</span><span class="p">,</span><span class="w"> </span><span class="n">salp1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">sbet1</span><span class="p">)</span><span class="w"></span>
+<span class="c">! Evaluate sig with tan(bet1) = tan(sig1) * cos(alp1).</span>
+<span class="c">! sig = 0 is nearest northward crossing of equator.</span>
+<span class="c">! With bet1 = 0, alp1 = pi/2, we have sig1 = 0 (equatorial line).</span>
+<span class="c">! With bet1 =  pi/2, alp1 = -pi, sig1 =  pi/2</span>
+<span class="c">! With bet1 = -pi/2, alp1 =  0 , sig1 = -pi/2</span>
+<span class="c">! Evaluate omg1 with tan(omg1) = sin(alp0) * tan(sig1).</span>
+<span class="c">! With alp0 in (0, pi/2], quadrants for sig and omg coincide.</span>
+<span class="c">! No atan2(0,0) ambiguity at poles since cbet1 = +dbleps.</span>
+<span class="c">! With alp0 = 0, omg1 = 0 for alp1 = 0, omg1 = pi for alp1 = pi.</span>
+<span class="n">ssig1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sbet1</span><span class="w"></span>
+<span class="n">somg1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">salp0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">sbet1</span><span class="w"></span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">sbet1</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">.</span><span class="nb">or</span><span class="p">.</span><span class="w"> </span><span class="n">calp1</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="k">  </span><span class="n">csig1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cbet1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">calp1</span><span class="w"></span>
+<span class="k">else</span>
+<span class="k">  </span><span class="n">csig1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
+<span class="k">end if</span>
+<span class="n">comg1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">csig1</span><span class="w"></span>
+<span class="c">! sig1 in (-pi, pi]</span>
+<span class="k">call </span><span class="n">norm</span><span class="p">(</span><span class="n">ssig1</span><span class="p">,</span><span class="w"> </span><span class="n">csig1</span><span class="p">)</span><span class="w"></span>
+<span class="c">! norm(somg1, comg1); -- don&#39;t need to normalize!</span>
+
+<span class="n">k2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">calp0</span><span class="o">**</span><span class="mi">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">ep2</span><span class="w"></span>
+<span class="n">eps</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">k2</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="mi">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nb">sqrt</span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">k2</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">k2</span><span class="p">)</span><span class="w"></span>
+
+<span class="n">A1m1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">A1m1f</span><span class="p">(</span><span class="n">eps</span><span class="p">)</span><span class="w"></span>
+<span class="k">call </span><span class="n">C1f</span><span class="p">(</span><span class="n">eps</span><span class="p">,</span><span class="w"> </span><span class="n">C1a</span><span class="p">)</span><span class="w"></span>
+<span class="n">B11</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SinCosSeries</span><span class="p">(.</span><span class="n">true</span><span class="p">.,</span><span class="w"> </span><span class="n">ssig1</span><span class="p">,</span><span class="w"> </span><span class="n">csig1</span><span class="p">,</span><span class="w"> </span><span class="n">C1a</span><span class="p">,</span><span class="w"> </span><span class="n">nC1</span><span class="p">)</span><span class="w"></span>
+<span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">sin</span><span class="p">(</span><span class="n">B11</span><span class="p">)</span><span class="w"></span>
+<span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">cos</span><span class="p">(</span><span class="n">B11</span><span class="p">)</span><span class="w"></span>
+<span class="c">! tau1 = sig1 + B11</span>
+<span class="n">stau1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ssig1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">csig1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">s</span><span class="w"></span>
+<span class="n">ctau1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">csig1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">ssig1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">s</span><span class="w"></span>
+<span class="c">! Not necessary because C1pa reverts C1a</span>
+<span class="c">!    B11 = -SinCosSeries(true, stau1, ctau1, C1pa, nC1p)</span>
+
+<span class="k">if</span><span class="w"> </span><span class="p">(.</span><span class="nb">not</span><span class="p">.</span><span class="w"> </span><span class="n">arcmode</span><span class="p">)</span><span class="w"> </span><span class="k">call </span><span class="n">C1pf</span><span class="p">(</span><span class="n">eps</span><span class="p">,</span><span class="w"> </span><span class="n">C1pa</span><span class="p">)</span><span class="w"></span>
+
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">redlp</span><span class="w"> </span><span class="p">.</span><span class="nb">or</span><span class="p">.</span><span class="w"> </span><span class="n">scalp</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="k">  </span><span class="n">A2m1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">A2m1f</span><span class="p">(</span><span class="n">eps</span><span class="p">)</span><span class="w"></span>
+<span class="w">  </span><span class="k">call </span><span class="n">C2f</span><span class="p">(</span><span class="n">eps</span><span class="p">,</span><span class="w"> </span><span class="n">C2a</span><span class="p">)</span><span class="w"></span>
+<span class="w">  </span><span class="n">B21</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SinCosSeries</span><span class="p">(.</span><span class="n">true</span><span class="p">.,</span><span class="w"> </span><span class="n">ssig1</span><span class="p">,</span><span class="w"> </span><span class="n">csig1</span><span class="p">,</span><span class="w"> </span><span class="n">C2a</span><span class="p">,</span><span class="w"> </span><span class="n">nC2</span><span class="p">)</span><span class="w"></span>
+<span class="k">else</span><span class="w"></span>
+<span class="c">! Suppress bogus warnings about unitialized variables</span>
+<span class="w">  </span><span class="n">A2m1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
+<span class="w">  </span><span class="n">B21</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
+<span class="k">end if</span>
+
+<span class="k">call </span><span class="n">C3f</span><span class="p">(</span><span class="n">eps</span><span class="p">,</span><span class="w"> </span><span class="n">C3x</span><span class="p">,</span><span class="w"> </span><span class="n">C3a</span><span class="p">)</span><span class="w"></span>
+<span class="n">A3c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="n">f</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">salp0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">A3f</span><span class="p">(</span><span class="n">eps</span><span class="p">,</span><span class="w"> </span><span class="n">A3x</span><span class="p">)</span><span class="w"></span>
+<span class="n">B31</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SinCosSeries</span><span class="p">(.</span><span class="n">true</span><span class="p">.,</span><span class="w"> </span><span class="n">ssig1</span><span class="p">,</span><span class="w"> </span><span class="n">csig1</span><span class="p">,</span><span class="w"> </span><span class="n">C3a</span><span class="p">,</span><span class="w"> </span><span class="n">nC3</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
+
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">areap</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="k">  call </span><span class="n">C4f</span><span class="p">(</span><span class="n">eps</span><span class="p">,</span><span class="w"> </span><span class="n">C4x</span><span class="p">,</span><span class="w"> </span><span class="n">C4a</span><span class="p">)</span><span class="w"></span>
+<span class="c">! Multiplier = a^2 * e^2 * cos(alpha0) * sin(alpha0)</span>
+<span class="w">  </span><span class="n">A4</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="o">**</span><span class="mi">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">calp0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">salp0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">e2</span><span class="w"></span>
+<span class="w">  </span><span class="n">B41</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SinCosSeries</span><span class="p">(.</span><span class="n">false</span><span class="p">.,</span><span class="w"> </span><span class="n">ssig1</span><span class="p">,</span><span class="w"> </span><span class="n">csig1</span><span class="p">,</span><span class="w"> </span><span class="n">C4a</span><span class="p">,</span><span class="w"> </span><span class="n">nC4</span><span class="p">)</span><span class="w"></span>
+<span class="k">else</span><span class="w"></span>
+<span class="c">! Suppress bogus warnings about unitialized variables</span>
+<span class="w">  </span><span class="n">A4</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
+<span class="w">  </span><span class="n">B41</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
+<span class="k">end if</span>
+
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">arcmode</span><span class="p">)</span><span class="w"> </span><span class="k">then</span><span class="w"></span>
+<span class="c">! Interpret s12a12 as spherical arc length</span>
+<span class="w">  </span><span class="n">sig12</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">s12a12</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">degree</span><span class="w"></span>
+<span class="w">  </span><span class="k">call </span><span class="n">sincosd</span><span class="p">(</span><span class="n">s12a12</span><span class="p">,</span><span class="w"> </span><span class="n">ssig12</span><span class="p">,</span><span class="w"> </span><span class="n">csig12</span><span class="p">)</span><span class="w"></span>
+<span class="c">! Suppress bogus warnings about unitialized variables</span>
+<span class="w">  </span><span class="n">B12</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
+<span class="k">else</span><span class="w"></span>
+<span class="c">! Interpret s12a12 as distance</span>
+<span class="w">  </span><span class="n">tau12</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">s12a12</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">b</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">A1m1</span><span class="p">))</span><span class="w"></span>
+<span class="w">  </span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">sin</span><span class="p">(</span><span class="n">tau12</span><span class="p">)</span><span class="w"></span>
+<span class="w">  </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">cos</span><span class="p">(</span><span class="n">tau12</span><span class="p">)</span><span class="w"></span>
+<span class="c">! tau2 = tau1 + tau12</span>
+<span class="w">  </span><span class="n">B12</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">SinCosSeries</span><span class="p">(.</span><span class="n">true</span><span class="p">.,</span><span class="w"> </span><span class="p">&amp;</span><span class="w"></span>
+<span class="w">      </span><span class="n">stau1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">ctau1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">s</span><span class="p">,</span><span class="w"> </span><span class="n">ctau1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">stau1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">s</span><span class="p">,</span><span class="w"> </span><span class="n">C1pa</span><span class="p">,</span><span class="w"> </span><span class="n">nC1p</span><span class="p">)</span><span class="w"></span>
+<span class="w">  </span><span class="n">sig12</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tau12</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="p">(</span><span class="n">B12</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">B11</span><span class="p">)</span><span class="w"></span>
+<span class="w">  </span><span class="n">ssig12</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">sin</span><span class="p">(</span><span class="n">sig12</span><span class="p">)</span><span class="w"></span>
+<span class="w">  </span><span class="n">csig12</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">cos</span><span class="p">(</span><span class="n">sig12</span><span class="p">)</span><span class="w"></span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">0.01_wp</span><span class="p">)</span><span class="w"> </span><span class="k">then</span><span class="w"></span>
+<span class="c">! Reverted distance series is inaccurate for |f| &gt; 1/100, so correct</span>
+<span class="c">! sig12 with 1 Newton iteration.  The following table shows the</span>
+<span class="c">! approximate maximum error for a = WGS_a() and various f relative to</span>
+<span class="c">! GeodesicExact.</span>
+<span class="c">!     erri = the error in the inverse solution (nm)</span>
+<span class="c">!     errd = the error in the direct solution (series only) (nm)</span>
+<span class="c">!     errda = the error in the direct solution (series + 1 Newton) (nm)</span>
+<span class="c">!</span>
+<span class="c">!       f     erri  errd errda</span>
+<span class="c">!     -1/5    12e6 1.2e9  69e6</span>
+<span class="c">!     -1/10  123e3  12e6 765e3</span>
+<span class="c">!     -1/20   1110 108e3  7155</span>
+<span class="c">!     -1/50  18.63 200.9 27.12</span>
+<span class="c">!     -1/100 18.63 23.78 23.37</span>
+<span class="c">!     -1/150 18.63 21.05 20.26</span>
+<span class="c">!      1/150 22.35 24.73 25.83</span>
+<span class="c">!      1/100 22.35 25.03 25.31</span>
+<span class="c">!      1/50  29.80 231.9 30.44</span>
+<span class="c">!      1/20   5376 146e3  10e3</span>
+<span class="c">!      1/10  829e3  22e6 1.5e6</span>
+<span class="c">!      1/5   157e6 3.8e9 280e6</span>
+<span class="w">    </span><span class="n">ssig2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ssig1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">csig12</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">csig1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">ssig12</span><span class="w"></span>
+<span class="w">    </span><span class="n">csig2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">csig1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">csig12</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">ssig1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">ssig12</span><span class="w"></span>
+<span class="w">    </span><span class="n">B12</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SinCosSeries</span><span class="p">(.</span><span class="n">true</span><span class="p">.,</span><span class="w"> </span><span class="n">ssig2</span><span class="p">,</span><span class="w"> </span><span class="n">csig2</span><span class="p">,</span><span class="w"> </span><span class="n">C1a</span><span class="p">,</span><span class="w"> </span><span class="n">nC1</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="n">serr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">A1m1</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">sig12</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="n">B12</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">B11</span><span class="p">))</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">s12a12</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">b</span><span class="w"></span>
+<span class="w">    </span><span class="n">sig12</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sig12</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">serr</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nb">sqrt</span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">k2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">ssig2</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="n">ssig12</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">sin</span><span class="p">(</span><span class="n">sig12</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="n">csig12</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">cos</span><span class="p">(</span><span class="n">sig12</span><span class="p">)</span><span class="w"></span>
+<span class="c">! Update B12 below</span>
+<span class="w">  </span><span class="k">end if</span>
+<span class="k">end if</span><span class="w"></span>
+
+<span class="c">! sig2 = sig1 + sig12</span>
+<span class="n">ssig2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ssig1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">csig12</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">csig1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">ssig12</span><span class="w"></span>
+<span class="n">csig2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">csig1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">csig12</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">ssig1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">ssig12</span><span class="w"></span>
+<span class="n">dn2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">sqrt</span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">k2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">ssig2</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="w"></span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">arcmode</span><span class="w"> </span><span class="p">.</span><span class="nb">or</span><span class="p">.</span><span class="w"> </span><span class="nb">abs</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">0.01_wp</span><span class="p">)</span><span class="w"> </span><span class="p">&amp;</span><span class="w"></span>
+<span class="w">    </span><span class="n">B12</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SinCosSeries</span><span class="p">(.</span><span class="n">true</span><span class="p">.,</span><span class="w"> </span><span class="n">ssig2</span><span class="p">,</span><span class="w"> </span><span class="n">csig2</span><span class="p">,</span><span class="w"> </span><span class="n">C1a</span><span class="p">,</span><span class="w"> </span><span class="n">nC1</span><span class="p">)</span><span class="w"></span>
+<span class="n">AB1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">A1m1</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">B12</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">B11</span><span class="p">)</span><span class="w"></span>
+
+<span class="c">! sin(bet2) = cos(alp0) * sin(sig2)</span>
+<span class="n">sbet2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">calp0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">ssig2</span><span class="w"></span>
+<span class="c">! Alt: cbet2 = hypot(csig2, salp0 * ssig2)</span>
+<span class="n">cbet2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">hypot</span><span class="p">(</span><span class="n">salp0</span><span class="p">,</span><span class="w"> </span><span class="n">calp0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">csig2</span><span class="p">)</span><span class="w"></span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">cbet2</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="k">then</span><span class="w"></span>
+<span class="c">! I.e., salp0 = 0, csig2 = 0.  Break the degeneracy in this case</span>
+<span class="w">  </span><span class="n">cbet2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tiny2</span><span class="w"></span>
+<span class="w">  </span><span class="n">csig2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cbet2</span><span class="w"></span>
+<span class="k">end if</span><span class="w"></span>
+<span class="c">! tan(omg2) = sin(alp0) * tan(sig2)</span>
+<span class="c">! No need to normalize</span>
+<span class="n">somg2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">salp0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">ssig2</span><span class="w"></span>
+<span class="n">comg2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">csig2</span><span class="w"></span>
+<span class="c">! tan(alp0) = cos(sig2)*tan(alp2)</span>
+<span class="c">! No need to normalize</span>
+<span class="n">salp2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">salp0</span><span class="w"></span>
+<span class="n">calp2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">calp0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">csig2</span><span class="w"></span>
+<span class="c">! East or west going?</span>
+<span class="n">E</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">sign</span><span class="p">(</span><span class="mf">1.0_wp</span><span class="p">,</span><span class="w"> </span><span class="n">salp0</span><span class="p">)</span><span class="w"></span>
+<span class="c">! omg12 = omg2 - omg1</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">unroll</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="k">  </span><span class="n">omg12</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">E</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">sig12</span><span class="w"> </span><span class="p">&amp;</span><span class="w"></span>
+<span class="w">      </span><span class="o">-</span><span class="w"> </span><span class="p">(</span><span class="n">atan2</span><span class="p">(</span><span class="w">    </span><span class="n">ssig2</span><span class="p">,</span><span class="w"> </span><span class="n">csig2</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">atan2</span><span class="p">(</span><span class="w">    </span><span class="n">ssig1</span><span class="p">,</span><span class="w"> </span><span class="n">csig1</span><span class="p">))</span><span class="w"> </span><span class="p">&amp;</span><span class="w"></span>
+<span class="w">      </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="n">atan2</span><span class="p">(</span><span class="n">E</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">somg2</span><span class="p">,</span><span class="w"> </span><span class="n">comg2</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">atan2</span><span class="p">(</span><span class="n">E</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">somg1</span><span class="p">,</span><span class="w"> </span><span class="n">comg1</span><span class="p">)))</span><span class="w"></span>
+<span class="k">else</span>
+<span class="k">  </span><span class="n">omg12</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">atan2</span><span class="p">(</span><span class="n">somg2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">comg1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">comg2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">somg1</span><span class="p">,</span><span class="w"> </span><span class="p">&amp;</span><span class="w"></span>
+<span class="w">      </span><span class="n">comg2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">comg1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">somg2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">somg1</span><span class="p">)</span><span class="w"></span>
+<span class="k">end if</span>
+
+<span class="n">lam12</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">omg12</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">A3c</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">&amp;</span><span class="w"></span>
+<span class="w">    </span><span class="p">(</span><span class="w"> </span><span class="n">sig12</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="n">SinCosSeries</span><span class="p">(.</span><span class="n">true</span><span class="p">.,</span><span class="w"> </span><span class="n">ssig2</span><span class="p">,</span><span class="w"> </span><span class="n">csig2</span><span class="p">,</span><span class="w"> </span><span class="n">C3a</span><span class="p">,</span><span class="w"> </span><span class="n">nC3</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">&amp;</span><span class="w"></span>
+<span class="w">    </span><span class="o">-</span><span class="w"> </span><span class="n">B31</span><span class="p">))</span><span class="w"></span>
+<span class="n">lon12</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lam12</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">degree</span><span class="w"></span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">unroll</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="k">  </span><span class="n">lon2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lon1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">lon12</span><span class="w"></span>
+<span class="k">else</span>
+<span class="k">  </span><span class="n">lon2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">AngNormalize</span><span class="p">(</span><span class="n">AngNormalize</span><span class="p">(</span><span class="n">lon1</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">AngNormalize</span><span class="p">(</span><span class="n">lon12</span><span class="p">))</span><span class="w"></span>
+<span class="k">end if</span>
+<span class="n">lat2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">atan2d</span><span class="p">(</span><span class="n">sbet2</span><span class="p">,</span><span class="w"> </span><span class="n">f1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">cbet2</span><span class="p">)</span><span class="w"></span>
+<span class="n">azi2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">atan2d</span><span class="p">(</span><span class="n">salp2</span><span class="p">,</span><span class="w"> </span><span class="n">calp2</span><span class="p">)</span><span class="w"></span>
+
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">redlp</span><span class="w"> </span><span class="p">.</span><span class="nb">or</span><span class="p">.</span><span class="w"> </span><span class="n">scalp</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="k">  </span><span class="n">B22</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SinCosSeries</span><span class="p">(.</span><span class="n">true</span><span class="p">.,</span><span class="w"> </span><span class="n">ssig2</span><span class="p">,</span><span class="w"> </span><span class="n">csig2</span><span class="p">,</span><span class="w"> </span><span class="n">C2a</span><span class="p">,</span><span class="w"> </span><span class="n">nC2</span><span class="p">)</span><span class="w"></span>
+<span class="w">  </span><span class="n">AB2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">A2m1</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">B22</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">B21</span><span class="p">)</span><span class="w"></span>
+<span class="w">  </span><span class="n">J12</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">A1m1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">A2m1</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">sig12</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="n">AB1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">AB2</span><span class="p">)</span><span class="w"></span>
+<span class="k">end if</span><span class="w"></span>
+<span class="c">! Add parens around (csig1 * ssig2) and (ssig1 * csig2) to ensure</span>
+<span class="c">! accurate cancellation in the case of coincident points.</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">redlp</span><span class="p">)</span><span class="w"> </span><span class="n">m12</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">((</span><span class="n">dn2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">csig1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">ssig2</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="p">&amp;</span><span class="w"></span>
+<span class="w">    </span><span class="n">dn1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">ssig1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">csig2</span><span class="p">))</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">csig1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">csig2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">J12</span><span class="p">)</span><span class="w"></span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">scalp</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="k">  </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">k2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">ssig2</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">ssig1</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">ssig2</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">ssig1</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">dn1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">dn2</span><span class="p">)</span><span class="w"></span>
+<span class="w">  </span><span class="n">MM12</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">csig12</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="n">t</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">ssig2</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">csig2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">J12</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">ssig1</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">dn1</span><span class="w"></span>
+<span class="w">  </span><span class="n">MM21</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">csig12</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="p">(</span><span class="n">t</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">ssig1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">csig1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">J12</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">ssig2</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">dn2</span><span class="w"></span>
+<span class="k">end if</span>
+
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">areap</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="k">  </span><span class="n">B42</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SinCosSeries</span><span class="p">(.</span><span class="n">false</span><span class="p">.,</span><span class="w"> </span><span class="n">ssig2</span><span class="p">,</span><span class="w"> </span><span class="n">csig2</span><span class="p">,</span><span class="w"> </span><span class="n">C4a</span><span class="p">,</span><span class="w"> </span><span class="n">nC4</span><span class="p">)</span><span class="w"></span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">calp0</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">.</span><span class="nb">or</span><span class="p">.</span><span class="w"> </span><span class="n">salp0</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="k">then</span><span class="w"></span>
+<span class="c">! alp12 = alp2 - alp1, used in atan2 so no need to normalize</span>
+<span class="w">    </span><span class="n">salp12</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">salp2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">calp1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">calp2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">salp1</span><span class="w"></span>
+<span class="w">    </span><span class="n">calp12</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">calp2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">calp1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">salp2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">salp1</span><span class="w"></span>
+<span class="w">  </span><span class="k">else</span><span class="w"></span>
+<span class="c">! tan(alp) = tan(alp0) * sec(sig)</span>
+<span class="c">! tan(alp2-alp1) = (tan(alp2) -tan(alp1)) / (tan(alp2)*tan(alp1)+1)</span>
+<span class="c">! = calp0 * salp0 * (csig1-csig2) / (salp0^2 + calp0^2 * csig1*csig2)</span>
+<span class="c">! If csig12 &gt; 0, write</span>
+<span class="c">!   csig1 - csig2 = ssig12 * (csig1 * ssig12 / (1 + csig12) + ssig1)</span>
+<span class="c">! else</span>
+<span class="c">!   csig1 - csig2 = csig1 * (1 - csig12) + ssig12 * ssig1</span>
+<span class="c">! No need to normalize</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">csig12</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="k">      </span><span class="n">salp12</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">csig1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">csig12</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">ssig12</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">ssig1</span><span class="w"></span>
+<span class="w">    </span><span class="k">else</span>
+<span class="k">      </span><span class="n">salp12</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ssig12</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">csig1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">ssig12</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">csig12</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">ssig1</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">end if</span>
+<span class="k">    </span><span class="n">salp12</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">calp0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">salp0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">salp12</span><span class="w"></span>
+<span class="w">    </span><span class="n">calp12</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">salp0</span><span class="o">**</span><span class="mi">2</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">calp0</span><span class="o">**</span><span class="mi">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">csig1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">csig2</span><span class="w"></span>
+<span class="w">  </span><span class="k">end if</span>
+<span class="k">  </span><span class="n">SS12</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">c2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">atan2</span><span class="p">(</span><span class="n">salp12</span><span class="p">,</span><span class="w"> </span><span class="n">calp12</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">A4</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">B42</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">B41</span><span class="p">)</span><span class="w"></span>
+<span class="k">end if</span>
+
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">arcp</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="k">  if</span><span class="w"> </span><span class="p">(</span><span class="n">arcmode</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="k">    </span><span class="n">a12s12</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">((</span><span class="mi">1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">A1m1</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">sig12</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">AB1</span><span class="p">)</span><span class="w"></span>
+<span class="w">  </span><span class="k">else</span>
+<span class="k">    </span><span class="n">a12s12</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sig12</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">degree</span><span class="w"></span>
+<span class="w">  </span><span class="k">end if</span>
+<span class="k">end if</span>
+
+<span class="k">end subroutine </span><span class="n">direct</span><span class="w"></span>
+</pre></div>
+
+    </section>
+    <br>
+    
+    </div>
+  </div>
+
+    <hr>    
+    </div> <!-- /container -->
+    <footer>
+      <div class="container">
+      <div class="row">
+        <div class="col-xs-6 col-md-6"><p>geodesic-fortran was developed by Jacob Williams<br>&copy; 2023 
+</p>
+        </div>
+        <div class="col-xs-6 col-md-6">
+          <p class="text-right">
+            Documentation generated by 
+            <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
+          </p>
+        </div>
+      </div>
+      <br>
+      </div> <!-- /container -->    
+    </footer>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+<!--
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+-->
+    <script src="../js/bootstrap.min.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="../js/ie10-viewport-bug-workaround.js"></script>
+
+    <!-- MathJax JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } },
+        jax: ['input/TeX','input/MathML','output/HTML-CSS'],
+        extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']
+      });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script src="../tipuesearch/tipuesearch_content.js"></script>
+    <script src="../tipuesearch/tipuesearch_set.js"></script>
+    <script src="../tipuesearch/tipuesearch.js"></script>
+    
+  </body>
+</html>

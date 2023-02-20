@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta name="description" content="Fortran implementation of geodesic routines">
+    <meta name="author" content="Jacob Williams" >
+    <link rel="icon" href="../favicon.png">
+
+    <title>CartesianIntoGeodeticI &ndash; geodesic-fortran</title>
+
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/pygments.css" rel="stylesheet">
+    <link href="../css/font-awesome.min.css" rel="stylesheet">
+    <link href="../css/local.css" rel="stylesheet">
+    <link  href="../tipuesearch/tipuesearch.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    
+    <script src="../js/jquery-2.1.3.min.js"></script>
+    <script src="../js/svg-pan-zoom.min.js"></script>
+
+  </head>
+
+  <body>
+
+    <!-- Fixed navbar -->
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="../index.html">geodesic-fortran </a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="dropdown hidden-xs visible-sm visible-md hidden-lg">
+              <a href="#" class="dropdown-toggle"
+              data-toggle="dropdown" role="button"
+              aria-haspopup="true"
+     aria-expanded="false">Contents <span class="caret"></span></a>
+        <ul class="dropdown-menu">
+            <li><a href="../sourcefile/geodesic_module.f90.html">Source File</a></li>
+            <li><a href="../lists/modules.html">Modules</a></li>
+            <li><a href="../lists/procedures.html">Procedures</a></li>
+              
+            </ul>
+        
+            </li>
+<li class="visible-xs hidden-sm visible-lg"><a href="../sourcefile/geodesic_module.f90.html">Source File</a></li>
+<li class="visible-xs hidden-sm visible-lg"><a href="../lists/modules.html">Modules</a></li>
+<li class="visible-xs hidden-sm visible-lg"><a href="../lists/procedures.html">Procedures</a></li>
+                                       </ul>
+        <form action="../search.html" class="navbar-form navbar-right" role="search">
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+        </div>
+<!--
+        <button type="submit" class="btn btn-default">Submit</button>
+-->
+        </form>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+    <div class="container">
+  <div class="row">
+    <h1>CartesianIntoGeodeticI
+      <small>Subroutine</small>
+      
+    </h1>
+      <div class="row" id="info-bar">
+    <div class="col-lg-12">
+      <div class="well well-sm">
+        <ul class="list-inline" style="margin-bottom:0px;display:inline">
+
+          <li id="statements"><i class="fa fa-list-ol"></i>
+            <a data-toggle="tooltip"
+               data-placement="bottom" data-html="true"
+               title=" 7.2% of total for procedures.">94 statements</a>
+          </li>
+
+            <li id="source-file">
+              <i class="fa fa-code"></i>
+              <a href="../src/geodesic_module.F90"> Source File</a>
+            </li>
+        </ul>
+        <ol class="breadcrumb in-well text-right">
+              <li><a href='../sourcefile/geodesic_module.f90.html'>geodesic_module.F90</a></li>
+              <li><a href='../module/geodesic_module.html'>geodesic_module</a></li>
+          <li class="active">CartesianIntoGeodeticI</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+  <script>
+    $(function () {
+    $('[data-toggle="tooltip"]').tooltip()
+    })
+  </script>
+
+  </div>
+  
+  <div class="row">
+    <div class="col-md-3 hidden-xs hidden-sm visible-md visible-lg">
+      <div id="sidebar">
+      <h3>Contents</h3>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    <div class="panel panel-primary">
+      <div class="panel-heading text-left"><h3 class="panel-title">Source Code</h3></div>
+      <div class="list-group">
+        <a class="list-group-item" href="../proc/cartesianintogeodetici.html#src">CartesianIntoGeodeticI</a>
+      </div>
+    </div>
+
+
+  </div>
+
+    </div>
+    
+    <div class="col-md-9" id='text'>
+    <h2>public  subroutine CartesianIntoGeodeticI(ax, ay, az, r, latitude, longitude, altitude, error)  
+</h2>
+    
+
+    <p>Cartesian to Geodetic I</p>
+<h3>See also</h3>
+<ul>
+<li><a href="../proc/cartesianintogeodeticii.html">CartesianIntoGeodeticII</a></li>
+</ul>
+<h3>Reference</h3>
+<ul>
+<li>Gema Maria Diaz-Toca, Leandro Marin, Ioana Necula,
+    "Direct transformation from Cartesian into geodetic coordinates on a triaxial ellipsoid"
+    Computers &amp; Geosciences, Volume 142, September 2020, 104551.
+    <a href="https://www.sciencedirect.com/science/article/pii/S0098300420305410?via%3Dihub">link</a>,</li>
+<li><a href="https://data.mendeley.com/datasets/s5f6sww86x/2">C++ code</a> [CC BY 4.0 License]</li>
+</ul>
+
+    <h3>Arguments</h3>
+        <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-ax~3"></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ax</strong></td>
+            <td>
+                <p>semiaxes of the celestial body: ax&gt;ay&gt;az</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-ay~3"></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ay</strong></td>
+            <td>
+                <p>semiaxes of the celestial body: ax&gt;ay&gt;az</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-az"></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>az</strong></td>
+            <td>
+                <p>semiaxes of the celestial body: ax&gt;ay&gt;az</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-r~7"></span>
+              real(kind=wp),
+            </td>
+<td>intent(in),</td>
+              <td></td>            <td>
+              dimension(3)
+            </td>
+            <td>::</td>
+            <td><strong>r</strong></td>
+            <td>
+                <p>cartesian coordinates of the considered point
+in the first octant: xG, yG, zG with (xG,yG,zG)&lt;&gt;(0,0,0)</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-latitude"></span>
+              real(kind=wp),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>latitude</strong></td>
+            <td>
+                <p>geodetic coordinates of the considered point</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-longitude"></span>
+              real(kind=wp),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>longitude</strong></td>
+            <td>
+                <p>geodetic coordinates of the considered point</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-altitude"></span>
+              real(kind=wp),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>altitude</strong></td>
+            <td>
+                <p>geodetic coordinates of the considered point</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-error~2"></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>error</strong></td>
+            <td>
+                <p>Values smaller than error treated as 0.0</p>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <br>
+
+    <section class="visible-xs visible-sm hidden-md">
+        <h3>Contents</h3>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    <div class="panel panel-primary">
+      <div class="panel-heading text-left"><h3 class="panel-title">Source Code</h3></div>
+      <div class="list-group">
+        <a class="list-group-item" href="../proc/cartesianintogeodetici.html#src">CartesianIntoGeodeticI</a>
+      </div>
+    </div>
+
+
+    </section>
+    <br class="visible-xs visible-sm hidden-md">
+
+
+    
+    
+
+    
+    
+
+
+    
+    <section>
+    <h2><span class="anchor" id="src"></span>Source Code</h2>
+    <div class="highlight"><pre><span></span><span class="k">subroutine </span><span class="n">CartesianIntoGeodeticI</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span><span class="w"> </span><span class="n">ay</span><span class="p">,</span><span class="w"> </span><span class="n">az</span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="p">,</span><span class="w"> </span><span class="n">latitude</span><span class="p">,</span><span class="w"> </span><span class="n">longitude</span><span class="p">,</span><span class="w"> </span><span class="n">altitude</span><span class="p">,</span><span class="w"> </span><span class="n">error</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">    </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ax</span><span class="p">,</span><span class="w"> </span><span class="n">ay</span><span class="p">,</span><span class="w"> </span><span class="n">az</span><span class="w"> </span><span class="c">!! semiaxes of the celestial body: ax&gt;ay&gt;az</span>
+<span class="w">    </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">),</span><span class="k">dimension</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="c">!! cartesian coordinates of the considered point</span>
+<span class="w">                                          </span><span class="c">!! in the first octant: xG, yG, zG with (xG,yG,zG)&lt;&gt;(0,0,0)</span>
+<span class="w">    </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">latitude</span><span class="p">,</span><span class="w"> </span><span class="n">longitude</span><span class="p">,</span><span class="w"> </span><span class="n">altitude</span><span class="w"> </span><span class="c">!! geodetic coordinates of the considered point</span>
+<span class="w">    </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="c">!! Values smaller than error treated as 0.0</span>
+
+<span class="w">    </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ax2</span><span class="p">,</span><span class="n">ay2</span><span class="p">,</span><span class="n">az2</span><span class="p">,</span><span class="n">ax4</span><span class="p">,</span><span class="n">ay4</span><span class="p">,</span><span class="n">az4</span><span class="p">,</span><span class="n">b5</span><span class="p">,</span><span class="n">b4</span><span class="p">,</span><span class="n">b3</span><span class="p">,</span><span class="n">b3x</span><span class="p">,</span><span class="n">b3y</span><span class="p">,</span><span class="n">b3z</span><span class="p">,&amp;</span><span class="w"></span>
+<span class="w">                </span><span class="n">b2</span><span class="p">,</span><span class="n">b2x</span><span class="p">,</span><span class="n">b2y</span><span class="p">,</span><span class="n">b2z</span><span class="p">,</span><span class="n">b1</span><span class="p">,</span><span class="n">b1x</span><span class="p">,</span><span class="n">b1y</span><span class="p">,</span><span class="n">b1z</span><span class="p">,</span><span class="n">b0</span><span class="p">,</span><span class="n">b0x</span><span class="p">,</span><span class="n">b0y</span><span class="p">,</span><span class="n">b0z</span><span class="p">,</span><span class="n">eec</span><span class="p">,</span><span class="n">exc</span><span class="w"></span>
+<span class="w">    </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">xg2</span><span class="p">,</span><span class="n">yg2</span><span class="p">,</span><span class="n">zg2</span><span class="p">,</span><span class="n">aux</span><span class="p">,</span><span class="n">xG</span><span class="p">,</span><span class="n">yG</span><span class="p">,</span><span class="n">zG</span><span class="w"></span>
+<span class="w">    </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">xE</span><span class="p">,</span><span class="n">yE</span><span class="p">,</span><span class="n">zE</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">B</span><span class="p">(</span><span class="mi">0</span><span class="p">:</span><span class="mi">6</span><span class="p">),</span><span class="n">BB</span><span class="p">(</span><span class="mi">0</span><span class="p">:</span><span class="mi">6</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="kt">logical</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">done</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">call </span><span class="n">special_cases</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span><span class="n">ay</span><span class="p">,</span><span class="n">az</span><span class="p">,</span><span class="n">r</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="n">r</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="n">r</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span><span class="n">latitude</span><span class="p">,</span><span class="n">longitude</span><span class="p">,</span><span class="n">altitude</span><span class="p">,</span><span class="n">done</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">done</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"></span>
+
+<span class="w">    </span><span class="c">! Computations independent of xG,yG,zG. They can be precomputed, if necessary.</span>
+<span class="w">    </span><span class="n">ax2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ax</span><span class="o">*</span><span class="n">ax</span><span class="w"></span>
+<span class="w">    </span><span class="n">ay2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ay</span><span class="o">*</span><span class="n">ay</span><span class="w"></span>
+<span class="w">    </span><span class="n">az2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">az</span><span class="o">*</span><span class="n">az</span><span class="w"></span>
+<span class="w">    </span><span class="n">ax4</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ax2</span><span class="o">*</span><span class="n">ax2</span><span class="w"></span>
+<span class="w">    </span><span class="n">ay4</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ay2</span><span class="o">*</span><span class="n">ay2</span><span class="w"></span>
+<span class="w">    </span><span class="n">az4</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">az2</span><span class="o">*</span><span class="n">az2</span><span class="w"></span>
+<span class="w">    </span><span class="n">b5</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mf">2.0_wp</span><span class="o">*</span><span class="p">(</span><span class="n">ax2</span><span class="o">+</span><span class="n">ay2</span><span class="o">+</span><span class="n">az2</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="n">b4</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">ax4</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">4.0_wp</span><span class="o">*</span><span class="n">ax2</span><span class="o">*</span><span class="n">ay2</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">ay4</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">4.0_wp</span><span class="o">*</span><span class="n">ax2</span><span class="o">*</span><span class="n">az2</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">4.0_wp</span><span class="o">*</span><span class="n">ay2</span><span class="o">*</span><span class="n">az2</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">az4</span><span class="w"></span>
+<span class="w">    </span><span class="n">b3</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mf">2.0_wp</span><span class="o">*</span><span class="n">ax4</span><span class="o">*</span><span class="n">ay2</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">2.0_wp</span><span class="o">*</span><span class="n">ax2</span><span class="o">*</span><span class="n">ay4</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">2.0_wp</span><span class="o">*</span><span class="n">ax4</span><span class="o">*</span><span class="n">az2</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">8.0_wp</span><span class="o">*</span><span class="n">ax2</span><span class="o">*</span><span class="n">ay2</span><span class="o">*</span><span class="n">az2</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">2.0_wp</span><span class="o">*</span><span class="n">ay4</span><span class="o">*</span><span class="n">az2</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">2.0_wp</span><span class="o">*</span><span class="n">ax2</span><span class="o">*</span><span class="n">az4</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">2.0_wp</span><span class="o">*</span><span class="n">ay2</span><span class="o">*</span><span class="n">az4</span><span class="w"></span>
+<span class="w">    </span><span class="n">b3x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">2.0_wp</span><span class="o">*</span><span class="n">ax2</span><span class="o">*</span><span class="n">ay2</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">2.0_wp</span><span class="o">*</span><span class="n">ax2</span><span class="o">*</span><span class="n">az2</span><span class="w"></span>
+<span class="w">    </span><span class="n">b3y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">2.0_wp</span><span class="o">*</span><span class="n">ax2</span><span class="o">*</span><span class="n">ay2</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">2.0_wp</span><span class="o">*</span><span class="n">ay2</span><span class="o">*</span><span class="n">az2</span><span class="w"></span>
+<span class="w">    </span><span class="n">b3z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">2.0_wp</span><span class="o">*</span><span class="n">ay2</span><span class="o">*</span><span class="n">az2</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">2.0_wp</span><span class="o">*</span><span class="n">ax2</span><span class="o">*</span><span class="n">az2</span><span class="w"></span>
+<span class="w">    </span><span class="n">b2</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mf">4.0_wp</span><span class="o">*</span><span class="n">ax4</span><span class="o">*</span><span class="n">ay2</span><span class="o">*</span><span class="n">az2</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">4.0_wp</span><span class="o">*</span><span class="n">ax2</span><span class="o">*</span><span class="n">ay4</span><span class="o">*</span><span class="n">az2</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">ax4</span><span class="o">*</span><span class="n">az4</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">4.0_wp</span><span class="o">*</span><span class="n">ax2</span><span class="o">*</span><span class="n">ay2</span><span class="o">*</span><span class="n">az4</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">ax4</span><span class="o">*</span><span class="n">ay4</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">ay4</span><span class="o">*</span><span class="n">az4</span><span class="w"></span>
+<span class="w">    </span><span class="n">b2x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="n">ax2</span><span class="o">*</span><span class="n">ay4</span><span class="w"> </span><span class="o">-</span><span class="mf">4.0_wp</span><span class="o">*</span><span class="n">ax2</span><span class="o">*</span><span class="n">ay2</span><span class="o">*</span><span class="n">az2</span><span class="w"> </span><span class="o">-</span><span class="n">ax2</span><span class="o">*</span><span class="n">az4</span><span class="w"></span>
+<span class="w">    </span><span class="n">b2y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="n">ax4</span><span class="o">*</span><span class="n">ay2</span><span class="w"> </span><span class="o">-</span><span class="mf">4.0_wp</span><span class="o">*</span><span class="n">ax2</span><span class="o">*</span><span class="n">ay2</span><span class="o">*</span><span class="n">az2</span><span class="w"> </span><span class="o">-</span><span class="n">ay2</span><span class="o">*</span><span class="n">az4</span><span class="w"></span>
+<span class="w">    </span><span class="n">b2z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="n">ax4</span><span class="o">*</span><span class="n">az2</span><span class="w"> </span><span class="o">-</span><span class="mf">4.0_wp</span><span class="o">*</span><span class="n">ax2</span><span class="o">*</span><span class="n">ay2</span><span class="o">*</span><span class="n">az2</span><span class="w"> </span><span class="o">-</span><span class="n">ay4</span><span class="o">*</span><span class="n">az2</span><span class="w"></span>
+<span class="w">    </span><span class="n">b1</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mf">2.0_wp</span><span class="o">*</span><span class="n">ax4</span><span class="o">*</span><span class="n">ay4</span><span class="o">*</span><span class="n">az2</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">2.0_wp</span><span class="o">*</span><span class="n">ax4</span><span class="o">*</span><span class="n">ay2</span><span class="o">*</span><span class="n">az4</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">2.0_wp</span><span class="o">*</span><span class="n">ax2</span><span class="o">*</span><span class="n">ay4</span><span class="o">*</span><span class="n">az4</span><span class="w"></span>
+<span class="w">    </span><span class="n">b1x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">2.0_wp</span><span class="o">*</span><span class="n">ax2</span><span class="o">*</span><span class="n">ay4</span><span class="o">*</span><span class="n">az2</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">2.0_wp</span><span class="o">*</span><span class="n">ax2</span><span class="o">*</span><span class="n">ay2</span><span class="o">*</span><span class="n">az4</span><span class="w"></span>
+<span class="w">    </span><span class="n">b1y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">2.0_wp</span><span class="o">*</span><span class="n">ax4</span><span class="o">*</span><span class="n">ay2</span><span class="o">*</span><span class="n">az2</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">2.0_wp</span><span class="o">*</span><span class="n">ax2</span><span class="o">*</span><span class="n">ay2</span><span class="o">*</span><span class="n">az4</span><span class="w"></span>
+<span class="w">    </span><span class="n">b1z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">2.0_wp</span><span class="o">*</span><span class="n">ax4</span><span class="o">*</span><span class="n">ay2</span><span class="o">*</span><span class="n">az2</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">2.0_wp</span><span class="o">*</span><span class="n">ax2</span><span class="o">*</span><span class="n">ay4</span><span class="o">*</span><span class="n">az2</span><span class="w"></span>
+<span class="w">    </span><span class="n">b0</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">ax4</span><span class="o">*</span><span class="n">ay4</span><span class="o">*</span><span class="n">az4</span><span class="w"></span>
+<span class="w">    </span><span class="n">b0x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">ax2</span><span class="o">*</span><span class="n">ay4</span><span class="o">*</span><span class="n">az4</span><span class="w"></span>
+<span class="w">    </span><span class="n">b0y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">ax4</span><span class="o">*</span><span class="n">ay2</span><span class="o">*</span><span class="n">az4</span><span class="w"></span>
+<span class="w">    </span><span class="n">b0z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">ax4</span><span class="o">*</span><span class="n">ay4</span><span class="o">*</span><span class="n">az2</span><span class="w"></span>
+<span class="w">    </span><span class="n">eec</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">ax2</span><span class="o">-</span><span class="n">ay2</span><span class="p">)</span><span class="o">/</span><span class="n">ax2</span><span class="w"></span>
+<span class="w">    </span><span class="n">exc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">ax2</span><span class="o">-</span><span class="n">az2</span><span class="p">)</span><span class="o">/</span><span class="n">ax2</span><span class="w"></span>
+
+<span class="w">    </span><span class="c">! Computations dependant of xG, yG, zG</span>
+<span class="w">    </span><span class="n">xG</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">abs</span><span class="p">(</span><span class="n">r</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span><span class="w"></span>
+<span class="w">    </span><span class="n">yG</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">abs</span><span class="p">(</span><span class="n">r</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span><span class="w"></span>
+<span class="w">    </span><span class="n">zG</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">abs</span><span class="p">(</span><span class="n">r</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span><span class="w"></span>
+<span class="w">    </span><span class="n">xg2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xG</span><span class="o">*</span><span class="n">xG</span><span class="w"></span>
+<span class="w">    </span><span class="n">yg2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">yG</span><span class="o">*</span><span class="n">yG</span><span class="w"></span>
+<span class="w">    </span><span class="n">zg2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zG</span><span class="o">*</span><span class="n">zG</span><span class="w"></span>
+<span class="w">    </span><span class="n">aux</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xg2</span><span class="o">/</span><span class="n">ax2</span><span class="o">+</span><span class="n">yg2</span><span class="o">/</span><span class="n">ay2</span><span class="o">+</span><span class="n">zg2</span><span class="o">/</span><span class="n">az2</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">B</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">b0</span><span class="o">+</span><span class="n">b0x</span><span class="o">*</span><span class="n">xg2</span><span class="o">+</span><span class="n">b0y</span><span class="o">*</span><span class="n">yg2</span><span class="o">+</span><span class="n">b0z</span><span class="o">*</span><span class="n">zg2</span><span class="p">,</span><span class="w"> </span><span class="p">&amp;</span><span class="w"></span>
+<span class="w">         </span><span class="n">b1</span><span class="o">+</span><span class="n">b1x</span><span class="o">*</span><span class="n">xg2</span><span class="o">+</span><span class="n">b1y</span><span class="o">*</span><span class="n">yg2</span><span class="o">+</span><span class="n">b1z</span><span class="o">*</span><span class="n">zg2</span><span class="p">,</span><span class="w"> </span><span class="p">&amp;</span><span class="w"></span>
+<span class="w">         </span><span class="n">b2</span><span class="o">+</span><span class="n">b2x</span><span class="o">*</span><span class="n">xg2</span><span class="o">+</span><span class="n">b2y</span><span class="o">*</span><span class="n">yg2</span><span class="o">+</span><span class="n">b2z</span><span class="o">*</span><span class="n">zg2</span><span class="p">,</span><span class="w"> </span><span class="p">&amp;</span><span class="w"></span>
+<span class="w">         </span><span class="n">b3</span><span class="o">+</span><span class="n">b3x</span><span class="o">*</span><span class="n">xg2</span><span class="o">+</span><span class="n">b3y</span><span class="o">*</span><span class="n">yg2</span><span class="o">+</span><span class="n">b3z</span><span class="o">*</span><span class="n">zg2</span><span class="p">,</span><span class="w"> </span><span class="p">&amp;</span><span class="w"></span>
+<span class="w">         </span><span class="n">b4</span><span class="o">-</span><span class="p">(</span><span class="n">ax2</span><span class="o">*</span><span class="n">xg2</span><span class="o">+</span><span class="n">ay2</span><span class="o">*</span><span class="n">yg2</span><span class="o">+</span><span class="n">az2</span><span class="o">*</span><span class="n">zg2</span><span class="p">),</span><span class="w"> </span><span class="p">&amp;</span><span class="w"></span>
+<span class="w">         </span><span class="n">b5</span><span class="p">,</span><span class="w"> </span><span class="p">&amp;</span><span class="w"></span>
+<span class="w">         </span><span class="mf">1.0_wp</span><span class="w"> </span><span class="p">]</span><span class="w"></span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">aux</span><span class="o">-</span><span class="mf">1.0_wp</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">error</span><span class="p">)</span><span class="w"> </span><span class="k">then</span><span class="w"> </span><span class="c">! The point is on the ellipsoid</span>
+
+<span class="w">    </span><span class="n">xE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xG</span><span class="w"></span>
+<span class="w">    </span><span class="n">yE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">yG</span><span class="w"></span>
+<span class="w">    </span><span class="n">zE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zG</span><span class="w"></span>
+
+<span class="w">  </span><span class="k">else if</span><span class="w"> </span><span class="p">(</span><span class="n">aux</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">1.0_wp</span><span class="p">)</span><span class="w"> </span><span class="k">then</span><span class="w"> </span><span class="c">! The point is outside the ellipsoid</span>
+
+<span class="w">    </span><span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">solve_polynomial</span><span class="p">(</span><span class="n">B</span><span class="p">,(</span><span class="n">xg2</span><span class="o">+</span><span class="n">yg2</span><span class="o">+</span><span class="n">zg2</span><span class="p">)</span><span class="o">/</span><span class="mf">3.0_wp</span><span class="p">,</span><span class="n">error</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="n">xE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ax2</span><span class="o">*</span><span class="n">xG</span><span class="o">/</span><span class="p">(</span><span class="n">ax2</span><span class="o">+</span><span class="n">k</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="n">yE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ay2</span><span class="o">*</span><span class="n">yG</span><span class="o">/</span><span class="p">(</span><span class="n">ay2</span><span class="o">+</span><span class="n">k</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="n">zE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">az2</span><span class="o">*</span><span class="n">zG</span><span class="o">/</span><span class="p">(</span><span class="n">az2</span><span class="o">+</span><span class="n">k</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">  </span><span class="k">else if</span><span class="w"> </span><span class="p">(</span><span class="n">zG</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">0.0_wp</span><span class="p">)</span><span class="w"> </span><span class="k">then</span><span class="w"> </span><span class="c">! The point  is inside the ellipsoid and zG&gt;0</span>
+
+<span class="w">    </span><span class="k">call </span><span class="n">horner</span><span class="p">(</span><span class="n">B</span><span class="p">,</span><span class="n">az2</span><span class="p">,</span><span class="n">BB</span><span class="p">)</span><span class="w"> </span><span class="c">! B(x-az2) = BB(x)</span>
+<span class="w">    </span><span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">solve_polynomial</span><span class="p">(</span><span class="n">BB</span><span class="p">,(</span><span class="n">xg2</span><span class="o">+</span><span class="n">yg2</span><span class="o">+</span><span class="n">zg2</span><span class="p">)</span><span class="o">/</span><span class="mf">3.0_wp</span><span class="o">+</span><span class="n">az2</span><span class="p">,</span><span class="n">error</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">az2</span><span class="w"></span>
+<span class="w">    </span><span class="n">xE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ax2</span><span class="o">*</span><span class="n">xG</span><span class="o">/</span><span class="p">(</span><span class="n">ax2</span><span class="o">+</span><span class="n">k</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="n">yE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ay2</span><span class="o">*</span><span class="n">yG</span><span class="o">/</span><span class="p">(</span><span class="n">ay2</span><span class="o">+</span><span class="n">k</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="n">zE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">az2</span><span class="o">*</span><span class="n">zG</span><span class="o">/</span><span class="p">(</span><span class="n">az2</span><span class="o">+</span><span class="n">k</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">  </span><span class="k">else if</span><span class="w"> </span><span class="p">(</span><span class="n">xG</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">0.0_wp</span><span class="w"> </span><span class="p">.</span><span class="nb">and</span><span class="p">.</span><span class="w"> </span><span class="n">yG</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">0.0_wp</span><span class="p">)</span><span class="w"> </span><span class="k">then</span><span class="w"> </span><span class="c">! The point is inside the ellipsoid and zG=0, yG &gt; 0, xG &gt; 0</span>
+
+<span class="w">    </span><span class="k">call </span><span class="n">horner</span><span class="p">(</span><span class="n">B</span><span class="p">,</span><span class="n">ay2</span><span class="p">,</span><span class="n">BB</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">solve_polynomial</span><span class="p">(</span><span class="n">BB</span><span class="p">,(</span><span class="n">xg2</span><span class="o">+</span><span class="n">yg2</span><span class="o">+</span><span class="n">zg2</span><span class="p">)</span><span class="o">/</span><span class="mf">3.0_wp</span><span class="o">+</span><span class="n">ay2</span><span class="p">,</span><span class="n">error</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">ay2</span><span class="w"></span>
+<span class="w">    </span><span class="n">xE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ax2</span><span class="o">*</span><span class="n">xG</span><span class="o">/</span><span class="p">(</span><span class="n">ax2</span><span class="o">+</span><span class="n">k</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="n">yE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ay2</span><span class="o">*</span><span class="n">yG</span><span class="o">/</span><span class="p">(</span><span class="n">ay2</span><span class="o">+</span><span class="n">k</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="n">zE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0_wp</span><span class="w"></span>
+
+<span class="w">  </span><span class="k">else if</span><span class="w"> </span><span class="p">(</span><span class="n">xG</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="p">.</span><span class="nb">and</span><span class="p">.</span><span class="w"> </span><span class="n">yG</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">0.0_wp</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+
+<span class="k">    </span><span class="n">xE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0_wp</span><span class="w"></span>
+<span class="w">    </span><span class="n">yE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ay</span><span class="w"></span>
+<span class="w">    </span><span class="n">zE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0_wp</span><span class="w"></span>
+
+<span class="w">  </span><span class="k">else if</span><span class="w"> </span><span class="p">(</span><span class="n">xG</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">0.0_wp</span><span class="w"> </span><span class="p">.</span><span class="nb">and</span><span class="p">.</span><span class="w"> </span><span class="n">yG</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">error</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+
+<span class="k">    </span><span class="n">xE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ax</span><span class="w"></span>
+<span class="w">    </span><span class="n">yE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0_wp</span><span class="w"></span>
+<span class="w">    </span><span class="n">zE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0_wp</span><span class="w"></span>
+
+<span class="w">  </span><span class="k">end if</span><span class="w"></span>
+
+<span class="w">  </span><span class="c">! Computing longitude</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">xG</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">0.0_wp</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="k">    </span><span class="n">longitude</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">atan</span><span class="p">(</span><span class="n">yE</span><span class="o">/</span><span class="p">((</span><span class="mf">1.0_wp</span><span class="o">-</span><span class="n">eec</span><span class="p">)</span><span class="o">*</span><span class="n">xE</span><span class="p">))</span><span class="w"></span>
+<span class="w">  </span><span class="k">else if</span><span class="w"> </span><span class="p">(</span><span class="n">yG</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">0.0_wp</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="k">    </span><span class="n">longitude</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">halfpi</span><span class="w"></span>
+<span class="w">  </span><span class="k">else</span>
+<span class="k">    </span><span class="n">longitude</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">huge</span><span class="p">(</span><span class="mf">1.0_wp</span><span class="p">)</span><span class="w">  </span><span class="c">! undefined</span>
+<span class="w">  </span><span class="k">end if</span><span class="w"></span>
+
+<span class="w">  </span><span class="c">! Computing latitude</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">xE</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">0.0_wp</span><span class="w"> </span><span class="p">.</span><span class="nb">or</span><span class="p">.</span><span class="w"> </span><span class="n">yE</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">0.0_wp</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="k">    </span><span class="n">latitude</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">atan</span><span class="p">((</span><span class="mf">1.0_wp</span><span class="o">-</span><span class="n">eec</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mf">1.0_wp</span><span class="o">-</span><span class="n">exc</span><span class="p">)</span><span class="o">*</span><span class="n">zE</span><span class="o">/</span><span class="nb">norm2</span><span class="p">([</span><span class="n">xE</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0_wp</span><span class="o">-</span><span class="n">eec</span><span class="p">),</span><span class="n">yE</span><span class="p">]))</span><span class="w"></span>
+<span class="w">  </span><span class="k">else</span>
+<span class="k">    </span><span class="n">latitude</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">halfpi</span><span class="w"></span>
+<span class="w">  </span><span class="k">end if</span><span class="w"></span>
+
+<span class="w">  </span><span class="c">! Computing altitude</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">aux</span><span class="o">&gt;=</span><span class="mf">1.0_wp</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="k">    </span><span class="n">altitude</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">norm2</span><span class="p">([</span><span class="n">xE</span><span class="o">-</span><span class="n">xG</span><span class="p">,</span><span class="n">yE</span><span class="o">-</span><span class="n">yG</span><span class="p">,</span><span class="n">zE</span><span class="o">-</span><span class="n">zG</span><span class="p">])</span><span class="w"></span>
+<span class="w">  </span><span class="k">else</span>
+<span class="k">    </span><span class="n">altitude</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="nb">norm2</span><span class="p">([</span><span class="n">xE</span><span class="o">-</span><span class="n">xG</span><span class="p">,</span><span class="n">yE</span><span class="o">-</span><span class="n">yG</span><span class="p">,</span><span class="n">zE</span><span class="o">-</span><span class="n">zG</span><span class="p">])</span><span class="w"></span>
+<span class="w">  </span><span class="k">end if</span>
+
+<span class="k">  call </span><span class="n">philambda_quadrant</span><span class="p">(</span><span class="n">r</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="w"> </span><span class="n">r</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="w"> </span><span class="n">r</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span><span class="w"> </span><span class="n">latitude</span><span class="p">,</span><span class="w"> </span><span class="n">longitude</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">  </span><span class="k">end subroutine </span><span class="n">CartesianIntoGeodeticI</span><span class="w"></span>
+</pre></div>
+
+    </section>
+    <br>
+    
+    </div>
+  </div>
+
+    <hr>    
+    </div> <!-- /container -->
+    <footer>
+      <div class="container">
+      <div class="row">
+        <div class="col-xs-6 col-md-6"><p>geodesic-fortran was developed by Jacob Williams<br>&copy; 2023 
+</p>
+        </div>
+        <div class="col-xs-6 col-md-6">
+          <p class="text-right">
+            Documentation generated by 
+            <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
+          </p>
+        </div>
+      </div>
+      <br>
+      </div> <!-- /container -->    
+    </footer>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+<!--
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+-->
+    <script src="../js/bootstrap.min.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="../js/ie10-viewport-bug-workaround.js"></script>
+
+    <!-- MathJax JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } },
+        jax: ['input/TeX','input/MathML','output/HTML-CSS'],
+        extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']
+      });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script src="../tipuesearch/tipuesearch_content.js"></script>
+    <script src="../tipuesearch/tipuesearch_set.js"></script>
+    <script src="../tipuesearch/tipuesearch.js"></script>
+    
+  </body>
+</html>

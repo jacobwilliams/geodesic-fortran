@@ -1,0 +1,3308 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta name="description" content="Fortran implementation of geodesic routines">
+    <meta name="author" content="Jacob Williams" >
+    <link rel="icon" href="../favicon.png">
+
+    <title>geodesic_module &ndash; geodesic-fortran</title>
+
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/pygments.css" rel="stylesheet">
+    <link href="../css/font-awesome.min.css" rel="stylesheet">
+    <link href="../css/local.css" rel="stylesheet">
+    <link  href="../tipuesearch/tipuesearch.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    
+    <script src="../js/jquery-2.1.3.min.js"></script>
+    <script src="../js/svg-pan-zoom.min.js"></script>
+
+  </head>
+
+  <body>
+
+    <!-- Fixed navbar -->
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="../index.html">geodesic-fortran </a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="dropdown hidden-xs visible-sm visible-md hidden-lg">
+              <a href="#" class="dropdown-toggle"
+              data-toggle="dropdown" role="button"
+              aria-haspopup="true"
+     aria-expanded="false">Contents <span class="caret"></span></a>
+        <ul class="dropdown-menu">
+            <li><a href="../sourcefile/geodesic_module.f90.html">Source File</a></li>
+            <li><a href="../lists/modules.html">Modules</a></li>
+            <li><a href="../lists/procedures.html">Procedures</a></li>
+              
+            </ul>
+        
+            </li>
+<li class="visible-xs hidden-sm visible-lg"><a href="../sourcefile/geodesic_module.f90.html">Source File</a></li>
+<li class="visible-xs hidden-sm visible-lg"><a href="../lists/modules.html">Modules</a></li>
+<li class="visible-xs hidden-sm visible-lg"><a href="../lists/procedures.html">Procedures</a></li>
+                                       </ul>
+        <form action="../search.html" class="navbar-form navbar-right" role="search">
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+        </div>
+<!--
+        <button type="submit" class="btn btn-default">Submit</button>
+-->
+        </form>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+    <div class="container">
+  <div class="row">
+    <h1>geodesic_module 
+    <small>Module</small>
+    
+    </h1>
+      <div class="row" id="info-bar">
+    <div class="col-lg-12">
+      <div class="well well-sm">
+        <ul class="list-inline" style="margin-bottom:0px;display:inline">
+
+          <li id="statements"><i class="fa fa-list-ol"></i>
+            <a data-toggle="tooltip"
+               data-placement="bottom" data-html="true"
+               title="100.0% of total for modules and submodules.">2185 statements</a>
+          </li>
+
+            <li id="source-file">
+              <i class="fa fa-code"></i>
+              <a href="../src/geodesic_module.F90"> Source File</a>
+            </li>
+        </ul>
+        <ol class="breadcrumb in-well text-right">
+              <li><a href='../sourcefile/geodesic_module.f90.html'>geodesic_module.F90</a></li>
+          <li class="active">geodesic_module</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+  <script>
+    $(function () {
+    $('[data-toggle="tooltip"]').tooltip()
+    })
+  </script>
+
+  </div>
+  
+  <div class="row">
+    <div class="col-md-3 hidden-xs hidden-sm visible-md visible-lg">
+      <div id="sidebar">
+      <h3>Contents</h3>
+  
+      <div class="panel panel-primary">
+      <div class="panel-heading text-left">
+        <h3 class="panel-title">
+          <a data-toggle="collapse" href="#vars-0">Variables</a>
+        </h3>
+      </div>
+      <div id="vars-0" class="panel-collapse collapse">
+        <div class="list-group">
+            <a class="list-group-item" href="../module/geodesic_module.html#variable-geodesic_wp">geodesic_wp</a>
+        </div>
+      </div>
+    </div>
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+      <div class="panel panel-primary">
+      <div class="panel-heading text-left">
+        <h3 class="panel-title">
+          <a data-toggle="collapse" href="#funcs-0">Functions</a>
+        </h3>
+      </div>
+      <div id="funcs-0" class="panel-collapse collapse">
+        <div class="list-group">
+            <a class="list-group-item" href="../module/geodesic_module.html#proc-sumx">sumx</a>
+            <a class="list-group-item" href="../module/geodesic_module.html#proc-angnormalize">AngNormalize</a>
+            <a class="list-group-item" href="../module/geodesic_module.html#proc-latfix">LatFix</a>
+            <a class="list-group-item" href="../module/geodesic_module.html#proc-angdiff">AngDiff</a>
+            <a class="list-group-item" href="../module/geodesic_module.html#proc-anground">AngRound</a>
+            <a class="list-group-item" href="../module/geodesic_module.html#proc-great_circle_distance">great_circle_distance</a>
+            <a class="list-group-item" href="../module/geodesic_module.html#proc-geocentric_radius">geocentric_radius</a>
+        </div>
+      </div>
+    </div>
+
+      <div class="panel panel-primary">
+      <div class="panel-heading text-left">
+        <h3 class="panel-title">
+          <a data-toggle="collapse" href="#subs-0">Subroutines</a>
+        </h3>
+      </div>
+      <div id="subs-0" class="panel-collapse collapse">
+        <div class="list-group">
+            <a class="list-group-item" href="../module/geodesic_module.html#proc-direct">direct</a>
+            <a class="list-group-item" href="../module/geodesic_module.html#proc-inverse">inverse</a>
+            <a class="list-group-item" href="../module/geodesic_module.html#proc-area">area</a>
+            <a class="list-group-item" href="../module/geodesic_module.html#proc-sincosd">sincosd</a>
+            <a class="list-group-item" href="../module/geodesic_module.html#proc-heikkinen">heikkinen</a>
+            <a class="list-group-item" href="../module/geodesic_module.html#proc-olson">olson</a>
+            <a class="list-group-item" href="../module/geodesic_module.html#proc-direct_vincenty">direct_vincenty</a>
+            <a class="list-group-item" href="../module/geodesic_module.html#proc-geodetic_to_cartesian">geodetic_to_cartesian</a>
+            <a class="list-group-item" href="../module/geodesic_module.html#proc-inverse_vincenty">inverse_vincenty</a>
+            <a class="list-group-item" href="../module/geodesic_module.html#proc-geodetic_to_cartesian_triaxial">geodetic_to_cartesian_triaxial</a>
+            <a class="list-group-item" href="../module/geodesic_module.html#proc-geodetic_to_cartesian_triaxial_2">geodetic_to_cartesian_triaxial_2</a>
+            <a class="list-group-item" href="../module/geodesic_module.html#proc-cartesian_to_geodetic_triaxial">cartesian_to_geodetic_triaxial</a>
+            <a class="list-group-item" href="../module/geodesic_module.html#proc-cartesianintogeodetici">CartesianIntoGeodeticI</a>
+            <a class="list-group-item" href="../module/geodesic_module.html#proc-cartesianintogeodeticii">CartesianIntoGeodeticII</a>
+            <a class="list-group-item" href="../module/geodesic_module.html#proc-cartesian_to_geodetic_triaxial_2">cartesian_to_geodetic_triaxial_2</a>
+        </div>
+      </div>
+    </div>
+
+  
+  
+  
+  
+  
+  
+
+
+  </div>
+
+    </div>
+    
+    <div class="col-md-9" id='text'>
+    <p>Implementation of geodesic routines in modern Fortran</p>
+<h3>See also</h3>
+<ul>
+<li>This module contains modernized versions of the Fortran
+    code from <a href="https://github.com/geographiclib/geographiclib-fortran">geographiclib-fortran</a>.
+    The <code>geographiclib</code> subroutines are documented at:
+    <a href="https://geographiclib.sourceforge.io/html/Fortran/">sourceforge</a>
+    These are Fortran implementation of the geodesic algorithms described in:
+    C. F. F. Karney, <a href="https://doi.org/10.1007/s00190-012-0578-z">Algorithms for geodesics</a>,
+    J. Geodesy 87, 43--55 (2013). [Apr 23, 2022 version]</li>
+<li>Some of the code was also split off from the
+    <a href="https://github.com/jacobwilliams/Fortran-Astrodynamics-Toolkit">Fortran Astrodynamics Toolkit</a>
+    (see <code>geodesy_module.f90</code>). [Nov 6, 2022 version]</li>
+</ul>
+<h3>geographiclib Notes</h3>
+<p>The principal advantages of these algorithms over previous ones
+  (e.g., Vincenty, 1975) are:</p>
+<ul>
+<li>accurate to round off for <code>|f| &lt; 1/50</code></li>
+<li>the solution of the inverse problem is always found</li>
+<li>differential and integral properties of geodesics are computed</li>
+</ul>
+<p>The shortest path between two points on the ellipsoid at (<code>lat1</code>,
+  <code>lon1</code>) and (<code>lat2</code>, <code>lon2</code>) is called the geodesic.  Its length is
+  <code>s12</code> and the geodesic from point 1 to point 2 has forward azimuths
+  <code>azi1</code> and <code>azi2</code> at the two end points.</p>
+<p>Traditionally two geodesic problems are considered:</p>
+<ul>
+<li><strong><em>the direct problem</em></strong> -- given <code>lat1</code>, <code>lon1</code>, <code>s12</code>, and <code>azi1</code>,
+    determine <code>lat2</code>, <code>lon2</code>, and <code>azi2</code>.  This is solved by the
+    subroutine <a href="../proc/direct.html">direct</a>.</li>
+<li><strong><em>the inverse problem</em></strong> -- given <code>lat1</code>, <code>lon1</code>, <code>lat2</code>, <code>lon2</code>,
+    determine <code>s12</code>, <code>azi1</code>, and <code>azi2</code>.  This is solved by the
+    subroutine <a href="../proc/inverse.html">inverse</a>.</li>
+</ul>
+<p>The ellipsoid is specified by its equatorial radius a (typically
+  in meters) and flattening <code>f</code>.  The routines are accurate to round
+  off with real(wp) arithmetic provided that <code>|f| &lt; 1/50</code>
+  for the WGS84 ellipsoid, the errors are less than 15
+  nanometers.  (Reasonably accurate results are obtained for <code>|f| &lt; 1/5</code>.)
+  For a prolate ellipsoid, specify f &lt; 0.</p>
+<p>The routines also calculate several other quantities of interest:</p>
+<ul>
+<li><code>SS12</code> is the area between the geodesic from point 1 to point 2
+    and the equator; i.e., it is the area, measured counter-clockwise,
+    of the geodesic quadrilateral with corners <code>(lat1,lon1)</code>, <code>(0,lon1)</code>,
+    <code>(0,lon2)</code>, and <code>(lat2,lon2)</code>.</li>
+<li><code>m12</code>, the reduced length of the geodesic is defined such that if
+    the initial azimuth is perturbed by <code>dazi1</code> (radians) then the
+    second point is displaced by <code>m12</code> <code>dazi1</code> in the direction
+    perpendicular to the geodesic.  On a curved surface the reduced
+    length obeys a symmetry relation, <code>m12 + m21 = 0</code>.  On a flat
+    surface, we have <code>m12 = s12</code>.</li>
+<li><code>MM12</code> and <code>MM21</code> are geodesic scales.  If two geodesics are
+    parallel at point 1 and separated by a small distance <code>dt</code>, then
+    they are separated by a distance <code>MM12</code> <code>dt</code> at point 2.  <code>MM21</code>
+    is defined similarly (with the geodesics being parallel to one
+    another at point 2).  On a flat surface, we have <code>MM12 = MM21 = 1</code>.</li>
+<li><code>a12</code> is the arc length on the auxiliary sphere.  This is a
+    construct for converting the problem to one in spherical
+    trigonometry.  <code>a12</code> is measured in degrees.  The spherical arc
+    length from one equator crossing to the next is always 180 deg.</li>
+</ul>
+<p>If points 1, 2, and 3 lie on a single geodesic, then the following
+  addition rules hold:</p>
+<ul>
+<li><code>s13 = s12 + s23</code></li>
+<li><code>a13 = a12 + a23</code></li>
+<li><code>SS13 = SS12 + SS23</code></li>
+<li><code>m13 = m12 MM23 + m23 MM21</code></li>
+<li><code>MM13 = MM12 MM23 - (1 - MM12 MM21) m23 / m12</code></li>
+<li><code>MM31 = MM32 MM21 - (1 - MM23 MM32) m12 / m23</code></li>
+</ul>
+<p>The shortest distance returned by the solution of the inverse problem
+  is (obviously) uniquely defined.  However, in a few special cases
+  there are multiple azimuths which yield the same shortest distance.
+  Here is a catalog of those cases:</p>
+<ul>
+<li><code>lat1 = -lat2</code> (with neither point at a pole).  If
+    <code>azi1 = azi2</code>, the geodesic is unique.  Otherwise there are two
+    geodesics and the second one is obtained by setting
+    [azi1, azi2] --&gt; [azi2, azi1], [MM12, MM21] --&gt; [MM21, MM12], SS12 --&gt; -SS12.
+    (This occurs when the longitude difference is near +/- 180 deg for oblate
+    ellipsoids.)</li>
+<li>lon2 = lon1 +/- 180 deg (with neither point at a pole).
+    If azi1 = 0 deg or +/- 180 deg, the geodesic is unique.
+    Otherwise there are two geodesics and the second one is obtained by
+    setting [azi1, azi2] --&gt; [-azi1, -azi2],
+    SS12 --&gt; -SS12.  (This occurs when lat2 is near
+    -lat1 for prolate ellipsoids.)</li>
+<li>Points 1 and 2 at opposite poles.  There are infinitely many
+    geodesics which can be generated by setting [azi1, azi2]
+    --&gt; [azi1, azi2] + [d, -d], for arbitrary d.
+    (For spheres, this prescription applies when points 1 and 2 are
+    antipodal.)</li>
+<li>s12 = 0 (coincident points).  There are infinitely many
+    geodesics which can be generated by setting [azi1, azi2]
+    --&gt; [azi1, azi2] + [d, d], for arbitrary d.</li>
+</ul>
+<p>These routines are a simple transcription of the corresponding C++
+  classes in <a href="https://geographiclib.sourceforge.io">geographiclib</a>.
+  Because of the limitations of Fortran 77, the
+  classes have been replaced by simple subroutines with no attempt to
+  save "state" across subroutine calls.  Most of the internal comments
+  have been retained.  However, in the process of transcription some
+  documentation has been lost and the documentation for the C++
+  classes, geodesic_module::Geodesic, geodesic_module::GeodesicLine, and
+  geodesic_module::PolygonAreaT, should be consulted.  The C++ code
+  remains the "reference implementation".  Think twice about
+  restructuring the internals of the Fortran code since this may make
+  porting fixes from the C++ code more difficult.</p>
+<h3>License</h3>
+<p><code>geographiclib-fortran</code> Copyright (c) Charles Karney (2012-2022) <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#99;&#104;&#97;&#114;&#108;&#101;&#115;&#64;&#107;&#97;&#114;&#110;&#101;&#121;&#46;&#99;&#111;&#109;">&#99;&#104;&#97;&#114;&#108;&#101;&#115;&#64;&#107;&#97;&#114;&#110;&#101;&#121;&#46;&#99;&#111;&#109;</a> and
+  licensed under the MIT/X11 License.  For more information, see
+  https://geographiclib.sourceforge.io/</p>
+<br>        <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Uses</h3>
+      </div>
+      <ul class="list-group">
+          <li class="list-group-item">
+            <ul class="list-inline">
+                <li><a href="https://gcc.gnu.org/onlinedocs/gfortran/ISO_005fFORTRAN_005fENV.html">iso_fortran_env</a></li>
+            </ul>
+          </li>
+      </ul>
+    </div>
+
+    
+    <br>
+
+    <section class="visible-xs visible-sm hidden-md">
+        <h3>Contents</h3>
+  
+      <div class="panel panel-primary">
+      <div class="panel-heading text-left">
+        <h3 class="panel-title">
+          <a data-toggle="collapse" href="#vars-1">Variables</a>
+        </h3>
+      </div>
+      <div id="vars-1" class="panel-collapse collapse">
+        <div class="list-group">
+            <a class="list-group-item" href="../module/geodesic_module.html#variable-geodesic_wp">geodesic_wp</a>
+        </div>
+      </div>
+    </div>
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+      <div class="panel panel-primary">
+      <div class="panel-heading text-left">
+        <h3 class="panel-title">
+          <a data-toggle="collapse" href="#funcs-1">Functions</a>
+        </h3>
+      </div>
+      <div id="funcs-1" class="panel-collapse collapse">
+        <div class="list-group">
+            <a class="list-group-item" href="../module/geodesic_module.html#proc-sumx">sumx</a>
+            <a class="list-group-item" href="../module/geodesic_module.html#proc-angnormalize">AngNormalize</a>
+            <a class="list-group-item" href="../module/geodesic_module.html#proc-latfix">LatFix</a>
+            <a class="list-group-item" href="../module/geodesic_module.html#proc-angdiff">AngDiff</a>
+            <a class="list-group-item" href="../module/geodesic_module.html#proc-anground">AngRound</a>
+            <a class="list-group-item" href="../module/geodesic_module.html#proc-great_circle_distance">great_circle_distance</a>
+            <a class="list-group-item" href="../module/geodesic_module.html#proc-geocentric_radius">geocentric_radius</a>
+        </div>
+      </div>
+    </div>
+
+      <div class="panel panel-primary">
+      <div class="panel-heading text-left">
+        <h3 class="panel-title">
+          <a data-toggle="collapse" href="#subs-1">Subroutines</a>
+        </h3>
+      </div>
+      <div id="subs-1" class="panel-collapse collapse">
+        <div class="list-group">
+            <a class="list-group-item" href="../module/geodesic_module.html#proc-direct">direct</a>
+            <a class="list-group-item" href="../module/geodesic_module.html#proc-inverse">inverse</a>
+            <a class="list-group-item" href="../module/geodesic_module.html#proc-area">area</a>
+            <a class="list-group-item" href="../module/geodesic_module.html#proc-sincosd">sincosd</a>
+            <a class="list-group-item" href="../module/geodesic_module.html#proc-heikkinen">heikkinen</a>
+            <a class="list-group-item" href="../module/geodesic_module.html#proc-olson">olson</a>
+            <a class="list-group-item" href="../module/geodesic_module.html#proc-direct_vincenty">direct_vincenty</a>
+            <a class="list-group-item" href="../module/geodesic_module.html#proc-geodetic_to_cartesian">geodetic_to_cartesian</a>
+            <a class="list-group-item" href="../module/geodesic_module.html#proc-inverse_vincenty">inverse_vincenty</a>
+            <a class="list-group-item" href="../module/geodesic_module.html#proc-geodetic_to_cartesian_triaxial">geodetic_to_cartesian_triaxial</a>
+            <a class="list-group-item" href="../module/geodesic_module.html#proc-geodetic_to_cartesian_triaxial_2">geodetic_to_cartesian_triaxial_2</a>
+            <a class="list-group-item" href="../module/geodesic_module.html#proc-cartesian_to_geodetic_triaxial">cartesian_to_geodetic_triaxial</a>
+            <a class="list-group-item" href="../module/geodesic_module.html#proc-cartesianintogeodetici">CartesianIntoGeodeticI</a>
+            <a class="list-group-item" href="../module/geodesic_module.html#proc-cartesianintogeodeticii">CartesianIntoGeodeticII</a>
+            <a class="list-group-item" href="../module/geodesic_module.html#proc-cartesian_to_geodetic_triaxial_2">cartesian_to_geodetic_triaxial_2</a>
+        </div>
+      </div>
+    </div>
+
+  
+  
+  
+  
+  
+  
+
+
+    </section>
+    <br class="visible-xs visible-sm hidden-md">
+
+
+    <section>
+    <h2>Variables</h2>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Visibility</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+<th></th><th>Initial</th>        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-geodesic_wp"></span>
+              integer,
+            </td>
+              <td>public,</td>
+            <td>
+parameter               
+            </td>
+            <td>::</td>
+            <td><strong>geodesic_wp</strong></td>
+<td> =</td>
+                <td>wp</td>
+            <td>
+                <p>Real working precision</p>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    </section>
+    <br>
+    
+    
+
+    
+    
+ 
+    <section>
+    <h2>Functions</h2>
+      <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="proc-sumx"></span><h3>public  function <a href='../proc/sumx.html'>sumx</a>(u, v, t)  
+</h3></div>
+    <div class="panel-body">
+          
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>u</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>v</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>t</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>real(kind=wp)</small>
+    </h4>
+    
+
+    </div>
+  </div>
+
+      <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="proc-angnormalize"></span><h3>public  function <a href='../proc/angnormalize.html'>AngNormalize</a>(x)  
+</h3></div>
+    <div class="panel-body">
+          
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>x</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>real(kind=wp)</small>
+    </h4>
+    
+
+    </div>
+  </div>
+
+      <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="proc-latfix"></span><h3>public  function <a href='../proc/latfix.html'>LatFix</a>(x)  
+</h3></div>
+    <div class="panel-body">
+          
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>x</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>real(kind=wp)</small>
+    </h4>
+    
+
+    </div>
+  </div>
+
+      <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="proc-angdiff"></span><h3>public  function <a href='../proc/angdiff.html'>AngDiff</a>(x, y, e)  
+</h3></div>
+    <div class="panel-body">
+          
+  <p>Compute y - x.  x and y must both lie in [-180, 180].  The result is
+equivalent to computing the difference exactly, reducing it to (-180,
+180] and rounding the result.  Note that this prescription allows -180
+to be returned (e.g., if x is tiny and negative and y = 180).  The
+error in the difference is returned in e</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>x</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>y</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>e</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>real(kind=wp)</small>
+    </h4>
+    
+
+    </div>
+  </div>
+
+      <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="proc-anground"></span><h3>public  function <a href='../proc/anground.html'>AngRound</a>(x)  
+</h3></div>
+    <div class="panel-body">
+          
+  <p>The makes the smallest gap in x = 1/16 - nextafter(1/16, 0) = 1/2^57
+for reals = 0.7 pm on the earth if x is an angle in degrees.  (This is
+about 1000 times more resolution than we get with angles around 90
+degrees.)  We use this to avoid having to deal with near singular
+cases when x is non-zero but tiny (e.g., 1.0e-200).</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>x</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>real(kind=wp)</small>
+    </h4>
+    
+
+    </div>
+  </div>
+
+      <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="proc-great_circle_distance"></span><h3>public pure function <a href='../proc/great_circle_distance.html'>great_circle_distance</a>(r, long1, lat1, long2, lat2) result(d)  
+</h3></div>
+    <div class="panel-body">
+              <dl class="dl-horizontal">
+        <dt>Author</dt><dd>Jacob Williams</dd>
+        <dt>Date</dt><dd>7/13/2014</dd>
+    </dl>
+
+  <p>Great circle distance on a spherical body, using the Vincenty algorithm.</p><a href="../proc/great_circle_distance.html" class="pull-right"><emph>Read more&hellip;</emph></a>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>r</strong></td>
+            <td>
+<p>radius of the body [km]</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>long1</strong></td>
+            <td>
+<p>longitude of first site [rad]</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>lat1</strong></td>
+            <td>
+<p>latitude of the first site [rad]</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>long2</strong></td>
+            <td>
+<p>longitude of the second site [rad]</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>lat2</strong></td>
+            <td>
+<p>latitude of the second site [rad]</p>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>real(kind=wp)</small>
+    </h4>
+    <p>great circle distance from 1 to 2 [km]</p>
+
+    </div>
+  </div>
+
+      <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="proc-geocentric_radius"></span><h3>public pure function <a href='../proc/geocentric_radius.html'>geocentric_radius</a>(a, b, lat) result(r)  
+</h3></div>
+    <div class="panel-body">
+          
+  <p>The distance from the center of a celestial body (e.g., the Earth) to a point
+  on the spheroid surface at a specified geodetic latitude.</p><a href="../proc/geocentric_radius.html" class="pull-right"><emph>Read more&hellip;</emph></a>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>a</strong></td>
+            <td>
+<p>equatorial radius (km)</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>b</strong></td>
+            <td>
+<p>polar radius of point (km)</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>lat</strong></td>
+            <td>
+<p>geodetic latitude of point (rad)</p>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>real(kind=wp)</small>
+    </h4>
+    <p>distance from center of body to point (km)</p>
+
+    </div>
+  </div>
+
+    </section>
+    <br>
+
+    <section>
+    <h2>Subroutines</h2>
+      <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="proc-direct"></span><h3>public  subroutine <a href='../proc/direct.html'>direct</a>(a, f, lat1, lon1, azi1, s12a12, flags, lat2, lon2, azi2, outmask, a12s12, m12, MM12, MM21, SS12)  
+</h3></div>
+    <div class="panel-body">
+          
+  <p>Solve the direct geodesic problem.</p><a href="../proc/direct.html" class="pull-right"><emph>Read more&hellip;</emph></a>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>a</strong></td>
+            <td>
+<p>the equatorial radius (meters).</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>f</strong></td>
+            <td>
+<p>the flattening of the ellipsoid.  Setting <code>f = 0</code> gives
+a sphere.  Negative <code>f</code> gives a prolate ellipsoid.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>lat1</strong></td>
+            <td>
+<p>lat1 latitude of point 1 (degrees). <code>lat1</code> should be in the range [-90 deg, 90 deg].</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>lon1</strong></td>
+            <td>
+<p>lon1 longitude of point 1 (degrees).</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>azi1</strong></td>
+            <td>
+<p>azi1 azimuth at point 1 (degrees).</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>s12a12</strong></td>
+            <td>
+<p>if <code>arcmode</code> is not set, this is the distance
+from point 1 to point 2 (meters); otherwise it is the arc
+length from point 1 to point 2 (degrees); it can be negative.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>flags</strong></td>
+            <td>
+<p>a bitor'ed combination of the <code>arcmode</code> and <code>unroll</code> flags.</p><a href="../proc/direct.html#variable-flags" class="pull-right"><emph>Read more&hellip;</emph></a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>lat2</strong></td>
+            <td>
+<p>latitude of point 2 (degrees).</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>lon2</strong></td>
+            <td>
+<p>longitude of point 2 (degrees).</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>azi2</strong></td>
+            <td>
+<p>(forward) azimuth at point 2 (degrees). The value <code>azi2</code> returned is in the range [-180 deg, 180 deg].</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>outmask</strong></td>
+            <td>
+<p>a bitor'ed combination of mask values
+specifying which of the following parameters should be set.</p><a href="../proc/direct.html#variable-outmask" class="pull-right"><emph>Read more&hellip;</emph></a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>a12s12</strong></td>
+            <td>
+<p>if <code>arcmode</code> is not set, this is the arc length
+from point 1 to point 2 (degrees); otherwise it is the distance
+from point 1 to point 2 (meters).</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>m12</strong></td>
+            <td>
+<p>reduced length of geodesic (meters).</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>MM12</strong></td>
+            <td>
+<p>geodesic scale of point 2 relative to point 1 (dimensionless).</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>MM21</strong></td>
+            <td>
+<p>geodesic scale of point 1 relative to point 2 (dimensionless).</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>SS12</strong></td>
+            <td>
+<p>area under the geodesic (<script type="math/tex">m^2</script>).</p>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+    </div>
+  </div>
+
+      <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="proc-inverse"></span><h3>public  subroutine <a href='../proc/inverse.html'>inverse</a>(a, f, lat1, lon1, lat2, lon2, s12, azi1, azi2, outmask, a12, m12, MM12, MM21, SS12)  
+</h3></div>
+    <div class="panel-body">
+          
+  <p>Solve the inverse geodesic problem.</p><a href="../proc/inverse.html" class="pull-right"><emph>Read more&hellip;</emph></a>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>a</strong></td>
+            <td>
+<p>the equatorial radius (meters).</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>f</strong></td>
+            <td>
+<p>the flattening of the ellipsoid.  Setting <code>f = 0</code> gives
+a sphere.  Negative <code>f</code> gives a prolate ellipsoid.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>lat1</strong></td>
+            <td>
+<p>latitude of point 1 (degrees).</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>lon1</strong></td>
+            <td>
+<p>longitude of point 1 (degrees).</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>lat2</strong></td>
+            <td>
+<p>latitude of point 2 (degrees).</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>lon2</strong></td>
+            <td>
+<p>longitude of point 2 (degrees).</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>s12</strong></td>
+            <td>
+<p>distance from point 1 to point 2 (meters).</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>azi1</strong></td>
+            <td>
+<p>azimuth at point 1 (degrees).</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>azi2</strong></td>
+            <td>
+<p>(forward) azimuth at point 2 (degrees).</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>outmask</strong></td>
+            <td>
+<p>a bitor'ed combination of mask values
+specifying which of the following parameters should be set.
+<code>outmask</code> is an integer in [0, 16) whose binary bits are interpreted
+as follows:</p><a href="../proc/inverse.html#variable-outmask~2" class="pull-right"><emph>Read more&hellip;</emph></a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>a12</strong></td>
+            <td>
+<p>arc length from point 1 to point 2 (degrees).</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>m12</strong></td>
+            <td>
+<p>reduced length of geodesic (meters).</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>MM12</strong></td>
+            <td>
+<p>MM12 geodesic scale of point 2 relative to point 1 (dimensionless).</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>MM21</strong></td>
+            <td>
+<p>MM21 geodesic scale of point 1 relative to point 2 (dimensionless).</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>SS12</strong></td>
+            <td>
+<p>SS12 area under the geodesic (<script type="math/tex">m^2</script>).</p>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+    </div>
+  </div>
+
+      <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="proc-area"></span><h3>public  subroutine <a href='../proc/area.html'>area</a>(a, f, lats, lons, n, AA, PP)  
+</h3></div>
+    <div class="panel-body">
+          
+  <p>Determine the area of a geodesic polygon</p><a href="../proc/area.html" class="pull-right"><emph>Read more&hellip;</emph></a>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>a</strong></td>
+            <td>
+<p>the equatorial radius (meters).</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>f</strong></td>
+            <td>
+<p>the flattening of the ellipsoid.  Setting <code>f = 0</code> gives
+a sphere.  Negative <code>f</code> gives a prolate ellipsoid.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>lats</strong>(n)</td>
+            <td>
+<p>an array of the latitudes of the vertices (degrees).
+lats should be in the range [-90 deg, 90 deg].</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>lons</strong>(n)</td>
+            <td>
+<p>an array of the longitudes of the vertices (degrees).</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>n</strong></td>
+            <td>
+<p>number of points</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>AA</strong></td>
+            <td>
+<p>the (signed) area of the polygon (<script type="math/tex">m^2</script>).</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>PP</strong></td>
+            <td>
+<p>the perimeter of the polygon.</p>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+    </div>
+  </div>
+
+      <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="proc-sincosd"></span><h3>public pure subroutine <a href='../proc/sincosd.html'>sincosd</a>(x, sinx, cosx)  
+</h3></div>
+    <div class="panel-body">
+          
+  <p>Compute <code>sin(x)</code> and <code>cos(x)</code> with <code>x</code> in degrees</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>x</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>sinx</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>cosx</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+    </div>
+  </div>
+
+      <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="proc-heikkinen"></span><h3>public pure subroutine <a href='../proc/heikkinen.html'>heikkinen</a>(rvec, a, b, h, lon, lat)  
+</h3></div>
+    <div class="panel-body">
+              <dl class="dl-horizontal">
+        <dt>Author</dt><dd>Jacob Williams</dd>
+    </dl>
+
+  <p>Heikkinen routine for cartesian to geodetic transformation</p><a href="../proc/heikkinen.html" class="pull-right"><emph>Read more&hellip;</emph></a>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in),</td>
+              <td></td>            <td>
+              dimension(3)
+            </td>
+            <td>::</td>
+            <td><strong>rvec</strong></td>
+            <td>
+<p>position vector [km]</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>a</strong></td>
+            <td>
+<p>geoid semimajor axis [km]</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>b</strong></td>
+            <td>
+<p>geoid semiminor axis [km]</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>h</strong></td>
+            <td>
+<p>geodetic altitude [km]</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>lon</strong></td>
+            <td>
+<p>longitude [rad]</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>lat</strong></td>
+            <td>
+<p>geodetic latitude [rad]</p>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+    </div>
+  </div>
+
+      <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="proc-olson"></span><h3>public pure subroutine <a href='../proc/olson.html'>olson</a>(rvec, a, b, h, long, lat)  
+</h3></div>
+    <div class="panel-body">
+              <dl class="dl-horizontal">
+        <dt>Author</dt><dd>Jacob Williams</dd>
+    </dl>
+
+  <p>Olson routine for cartesian to geodetic transformation.</p><a href="../proc/olson.html" class="pull-right"><emph>Read more&hellip;</emph></a>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in),</td>
+              <td></td>            <td>
+              dimension(3)
+            </td>
+            <td>::</td>
+            <td><strong>rvec</strong></td>
+            <td>
+<p>position vector [km]</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>a</strong></td>
+            <td>
+<p>geoid semimajor axis [km]</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>b</strong></td>
+            <td>
+<p>geoid semiminor axis [km]</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>h</strong></td>
+            <td>
+<p>geodetic altitude [km]</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>long</strong></td>
+            <td>
+<p>longitude [rad]</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>lat</strong></td>
+            <td>
+<p>geodetic latitude [rad]</p>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+    </div>
+  </div>
+
+      <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="proc-direct_vincenty"></span><h3>public  subroutine <a href='../proc/direct_vincenty.html'>direct_vincenty</a>(a, f, glat1, glon1, faz, s, glat2, glon2, baz)  
+</h3></div>
+    <div class="panel-body">
+              <dl class="dl-horizontal">
+        <dt>Author</dt><dd>Jacob Williams</dd>
+    </dl>
+
+  <p>Solve the "direct" geodetic problem: given the latitude and longitude of one
+  point and the azimuth and distance to a second point, determine the latitude
+  and longitude of that second point.  The solution is obtained using the
+  algorithm by Vincenty.</p><a href="../proc/direct_vincenty.html" class="pull-right"><emph>Read more&hellip;</emph></a>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>a</strong></td>
+            <td>
+<p>semimajor axis of ellipsoid [m]</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>f</strong></td>
+            <td>
+<p>flattening of ellipsoid [-]</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>glat1</strong></td>
+            <td>
+<p>latitude of 1 [rad]</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>glon1</strong></td>
+            <td>
+<p>longitude of 1 [rad]</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>faz</strong></td>
+            <td>
+<p>forward azimuth 1-&gt;2 [rad]</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>s</strong></td>
+            <td>
+<p>distance from 1-&gt;2 [m]</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>glat2</strong></td>
+            <td>
+<p>latitude of 2 [rad]</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>glon2</strong></td>
+            <td>
+<p>longitude of 2 [rad]</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>baz</strong></td>
+            <td>
+<p>back azimuth 2-&gt;1 [rad]</p>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+    </div>
+  </div>
+
+      <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="proc-geodetic_to_cartesian"></span><h3>public  subroutine <a href='../proc/geodetic_to_cartesian.html'>geodetic_to_cartesian</a>(a, b, glat, lon, h, r)  
+</h3></div>
+    <div class="panel-body">
+              <dl class="dl-horizontal">
+        <dt>Author</dt><dd>Jacob Williams</dd>
+    </dl>
+
+  <p>Geodetic latitude, longitude, and height to Cartesian position vector.</p><a href="../proc/geodetic_to_cartesian.html" class="pull-right"><emph>Read more&hellip;</emph></a>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>a</strong></td>
+            <td>
+<p>geoid semimajor axis [km]</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>b</strong></td>
+            <td>
+<p>geoid semiminor axis [km]</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>glat</strong></td>
+            <td>
+<p>geodetic latitude [rad]</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>lon</strong></td>
+            <td>
+<p>longitude [rad]</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>h</strong></td>
+            <td>
+<p>geodetic altitude [km]</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(out),</td>
+              <td></td>            <td>
+              dimension(3)
+            </td>
+            <td>::</td>
+            <td><strong>r</strong></td>
+            <td>
+<p>Cartesian position vector [x,y,z]</p>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+    </div>
+  </div>
+
+      <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="proc-inverse_vincenty"></span><h3>public  subroutine <a href='../proc/inverse_vincenty.html'>inverse_vincenty</a>(a, rf, b1, l1, b2, l2, faz, baz, s, it, sig, lam, kind)  
+</h3></div>
+    <div class="panel-body">
+          
+  <p>INVERSE computes the geodetic azimuth and distance between two points,
+  given their geographic positions.</p><a href="../proc/inverse_vincenty.html" class="pull-right"><emph>Read more&hellip;</emph></a>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>a</strong></td>
+            <td>
+<p>Equatorial semimajor axis</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>rf</strong></td>
+            <td>
+<p>reciprocal flattening (1/f)</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>b1</strong></td>
+            <td>
+<p>latitude of point 1 (rad, positive north)</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>l1</strong></td>
+            <td>
+<p>longitude of point 1 (rad, positive east)</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>b2</strong></td>
+            <td>
+<p>latitude of point 2 (rad, positive north)</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>l2</strong></td>
+            <td>
+<p>longitude of point 2 (rad, positive east)</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>faz</strong></td>
+            <td>
+<p>Forward azimuth (rad, clockwise from north)</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>baz</strong></td>
+            <td>
+<p>Back azimuth (rad, clockwise from north)</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>s</strong></td>
+            <td>
+<p>Ellipsoidal distance</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>it</strong></td>
+            <td>
+<p>iteration count</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>sig</strong></td>
+            <td>
+<p>spherical distance on auxiliary sphere</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>lam</strong></td>
+            <td>
+<p>longitude difference on auxiliary sphere</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>kind</strong></td>
+            <td>
+<p>solution flag: kind=1, long-line; kind=2, antipodal</p>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+    </div>
+  </div>
+
+      <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="proc-geodetic_to_cartesian_triaxial"></span><h3>public  subroutine <a href='../proc/geodetic_to_cartesian_triaxial.html'>geodetic_to_cartesian_triaxial</a>(ax, ay, b, phi, lambda, h, r)  
+</h3></div>
+    <div class="panel-body">
+          
+  <p>Function computes the Cartesian coordinates given the
+  geodetic latitude (phi), longitude (lambda) and
+  height (h) of a point related to an ellipsoid
+  defined by its three semiaxes ax, ay and b</p><a href="../proc/geodetic_to_cartesian_triaxial.html" class="pull-right"><emph>Read more&hellip;</emph></a>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ax</strong></td>
+            <td>
+<p>semiaxes (0 &lt; b &lt;= ay &lt;= ax)</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ay</strong></td>
+            <td>
+<p>semiaxes (0 &lt; b &lt;= ay &lt;= ax)</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>b</strong></td>
+            <td>
+<p>semiaxes (0 &lt; b &lt;= ay &lt;= ax)</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>phi</strong></td>
+            <td>
+<p>geodetic latitude (radians)</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>lambda</strong></td>
+            <td>
+<p>geodetic longitude (radians)</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>h</strong></td>
+            <td>
+<p>geodetic height</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(out),</td>
+              <td></td>            <td>
+              dimension(3)
+            </td>
+            <td>::</td>
+            <td><strong>r</strong></td>
+            <td>
+<p>Cartesian position vector [x,y,z]</p>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+    </div>
+  </div>
+
+      <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="proc-geodetic_to_cartesian_triaxial_2"></span><h3>public pure subroutine <a href='../proc/geodetic_to_cartesian_triaxial_2.html'>geodetic_to_cartesian_triaxial_2</a>(a, b, c, lat, long, h, r)  
+</h3></div>
+    <div class="panel-body">
+          
+  <p>Geodetic to Cartesian for Triaxial Ellipsoid.</p><a href="../proc/geodetic_to_cartesian_triaxial_2.html" class="pull-right"><emph>Read more&hellip;</emph></a>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>a</strong></td>
+            <td>
+<p>ellipsoid radii <code>a &gt;= b &gt;= c</code></p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>b</strong></td>
+            <td>
+<p>ellipsoid radii <code>a &gt;= b &gt;= c</code></p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>c</strong></td>
+            <td>
+<p>ellipsoid radii <code>a &gt;= b &gt;= c</code></p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>lat</strong></td>
+            <td>
+<p>latitude (rad)</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>long</strong></td>
+            <td>
+<p>longitude (rad)</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>h</strong></td>
+            <td>
+<p>altitude</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(out),</td>
+              <td></td>            <td>
+              dimension(3)
+            </td>
+            <td>::</td>
+            <td><strong>r</strong></td>
+            <td>
+<p>Cartesian coordinates (x,y,z)</p>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+    </div>
+  </div>
+
+      <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="proc-cartesian_to_geodetic_triaxial"></span><h3>public  subroutine <a href='../proc/cartesian_to_geodetic_triaxial.html'>cartesian_to_geodetic_triaxial</a>(ax, ay, b, r, tol, phi, lambda, h)  
+</h3></div>
+    <div class="panel-body">
+          
+  <p>Function computes the geodetic latitude (phi), longitude (lambda) and
+  height (h) of a point related to an ellipsoid
+  defined by its three semiaxes ax, ay and b (0 &lt; b &lt;= ay &lt;= ax)
+  given Cartesian coordinates Xi, Yi, Zi and tolerance (tol).
+  Latitude and longitude are returned in radians.</p><a href="../proc/cartesian_to_geodetic_triaxial.html" class="pull-right"><emph>Read more&hellip;</emph></a>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ax</strong></td>
+            <td>
+<p>semiaxes (0 &lt; b &lt;= ay &lt;= ax)</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ay</strong></td>
+            <td>
+<p>semiaxes (0 &lt; b &lt;= ay &lt;= ax)</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>b</strong></td>
+            <td>
+<p>semiaxes (0 &lt; b &lt;= ay &lt;= ax)</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in),</td>
+              <td></td>            <td>
+              dimension(3)
+            </td>
+            <td>::</td>
+            <td><strong>r</strong></td>
+            <td>
+<p>Cartesian coordinates (x,y,z)</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>tol</strong></td>
+            <td>
+<p>tolerance (may be set to zero)</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>phi</strong></td>
+            <td>
+<p>geodetic latitude (radians)</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>lambda</strong></td>
+            <td>
+<p>geodetic longitude (radians)</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>h</strong></td>
+            <td>
+<p>geodetic height</p>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+    </div>
+  </div>
+
+      <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="proc-cartesianintogeodetici"></span><h3>public  subroutine <a href='../proc/cartesianintogeodetici.html'>CartesianIntoGeodeticI</a>(ax, ay, az, r, latitude, longitude, altitude, error)  
+</h3></div>
+    <div class="panel-body">
+          
+  <p>Cartesian to Geodetic I</p><a href="../proc/cartesianintogeodetici.html" class="pull-right"><emph>Read more&hellip;</emph></a>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ax</strong></td>
+            <td>
+<p>semiaxes of the celestial body: ax&gt;ay&gt;az</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ay</strong></td>
+            <td>
+<p>semiaxes of the celestial body: ax&gt;ay&gt;az</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>az</strong></td>
+            <td>
+<p>semiaxes of the celestial body: ax&gt;ay&gt;az</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in),</td>
+              <td></td>            <td>
+              dimension(3)
+            </td>
+            <td>::</td>
+            <td><strong>r</strong></td>
+            <td>
+<p>cartesian coordinates of the considered point
+in the first octant: xG, yG, zG with (xG,yG,zG)&lt;&gt;(0,0,0)</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>latitude</strong></td>
+            <td>
+<p>geodetic coordinates of the considered point</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>longitude</strong></td>
+            <td>
+<p>geodetic coordinates of the considered point</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>altitude</strong></td>
+            <td>
+<p>geodetic coordinates of the considered point</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>error</strong></td>
+            <td>
+<p>Values smaller than error treated as 0.0</p>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+    </div>
+  </div>
+
+      <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="proc-cartesianintogeodeticii"></span><h3>public  subroutine <a href='../proc/cartesianintogeodeticii.html'>CartesianIntoGeodeticII</a>(ax, ay, az, r, latitude, longitude, altitude, error)  
+</h3></div>
+    <div class="panel-body">
+          
+  <p>Cartesian into Geodetic II</p><a href="../proc/cartesianintogeodeticii.html" class="pull-right"><emph>Read more&hellip;</emph></a>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ax</strong></td>
+            <td>
+<p>semiaxes of the celestial body: ax&gt;ay&gt;az</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ay</strong></td>
+            <td>
+<p>semiaxes of the celestial body: ax&gt;ay&gt;az</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>az</strong></td>
+            <td>
+<p>semiaxes of the celestial body: ax&gt;ay&gt;az</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in),</td>
+              <td></td>            <td>
+              dimension(3)
+            </td>
+            <td>::</td>
+            <td><strong>r</strong></td>
+            <td>
+<p>cartesian coordinates of the considered point
+in the first octant: xG, yG, zG with (xG,yG,zG)&lt;&gt;(0,0,0)</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>latitude</strong></td>
+            <td>
+<p>geodetic coordinates of the considered point</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>longitude</strong></td>
+            <td>
+<p>geodetic coordinates of the considered point</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>altitude</strong></td>
+            <td>
+<p>geodetic coordinates of the considered point</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>error</strong></td>
+            <td>
+<p>Values smaller than error treated as 0.0</p>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+    </div>
+  </div>
+
+      <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="proc-cartesian_to_geodetic_triaxial_2"></span><h3>public  subroutine <a href='../proc/cartesian_to_geodetic_triaxial_2.html'>cartesian_to_geodetic_triaxial_2</a>(a, b, c, r, eps, phi, lambda, h)  
+</h3></div>
+    <div class="panel-body">
+          
+  <p>Cartesian to geodetic for Triaxial Ellipsoid.</p><a href="../proc/cartesian_to_geodetic_triaxial_2.html" class="pull-right"><emph>Read more&hellip;</emph></a>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>a</strong></td>
+            <td>
+<p>ellipsoid radii <code>a &gt;= b &gt;= c</code></p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>b</strong></td>
+            <td>
+<p>ellipsoid radii <code>a &gt;= b &gt;= c</code></p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>c</strong></td>
+            <td>
+<p>ellipsoid radii <code>a &gt;= b &gt;= c</code></p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in),</td>
+              <td></td>            <td>
+              dimension(3)
+            </td>
+            <td>::</td>
+            <td><strong>r</strong></td>
+            <td>
+<p>Cartesian coordinates (x,y,z)</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>eps</strong></td>
+            <td>
+<p>convergence tolerance</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>phi</strong></td>
+            <td>
+<p>latitude (rad)</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>lambda</strong></td>
+            <td>
+<p>longitude (rad)</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>h</strong></td>
+            <td>
+<p>altitude</p>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+    </div>
+  </div>
+
+    </section>
+    <br>
+
+
+
+    </div>
+  </div>
+
+    <hr>    
+    </div> <!-- /container -->
+    <footer>
+      <div class="container">
+      <div class="row">
+        <div class="col-xs-6 col-md-6"><p>geodesic-fortran was developed by Jacob Williams<br>&copy; 2023 
+</p>
+        </div>
+        <div class="col-xs-6 col-md-6">
+          <p class="text-right">
+            Documentation generated by 
+            <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
+          </p>
+        </div>
+      </div>
+      <br>
+      </div> <!-- /container -->    
+    </footer>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+<!--
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+-->
+    <script src="../js/bootstrap.min.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="../js/ie10-viewport-bug-workaround.js"></script>
+
+    <!-- MathJax JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } },
+        jax: ['input/TeX','input/MathML','output/HTML-CSS'],
+        extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']
+      });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script src="../tipuesearch/tipuesearch_content.js"></script>
+    <script src="../tipuesearch/tipuesearch_set.js"></script>
+    <script src="../tipuesearch/tipuesearch.js"></script>
+    
+  </body>
+</html>
