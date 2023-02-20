@@ -74,7 +74,7 @@ geodesic-fortran = { git="https://github.com/jacobwilliams/geodesic-fortran.git"
 
 ### License
 
-* This library is licensed under a permissive MIT/X11/BSD license.
+* This library is licensed under a permissive MIT/X11/BSD [license](https://github.com/jacobwilliams/geodesic-fortran/blob/master/LICENSE.txt).
 
 ### References
 
