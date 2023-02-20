@@ -92,6 +92,75 @@
 <a href="https://codecov.io/gh/jacobwilliams/geodesic-fortran"><img alt="codecov" src="https://codecov.io/gh/jacobwilliams/geodesic-fortran/branch/master/graph/badge.svg?token=BHtd51oUTE"></a></p>
 <h3>Description</h3>
 <p>This is a library to solve geodesic problems on an ellipsoid model of a planetary body (e.g., the Earth).</p>
+<h2>Documentation</h2>
+<p>Some of the algorithms in this library:</p>
+<table>
+<thead>
+<tr>
+<th>Procedure</th>
+<th>Body Shape</th>
+<th>Description</th>
+<th>Reference</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://jacobwilliams.github.io/geodesic-fortran/proc/cartesian_to_geodetic_triaxial.html">cartesian_to_geodetic_triaxial</a></td>
+<td>Triaxial</td>
+<td>Cartesian to geodetic</td>
+<td><a href="https://link.springer.com/article/10.1007/s00190-022-01650-9">Panou &amp; Korakitis (2022)</a></td>
+</tr>
+<tr>
+<td><a href="https://jacobwilliams.github.io/geodesic-fortran/proc/cartesian_to_geodetic_triaxial_2.html">cartesian_to_geodetic_triaxial_2</a></td>
+<td>Triaxial</td>
+<td>Cartesian to geodetic</td>
+<td><a href="https://www.arcjournals.org/international-journal-of-mining-science/volume-1-issue-1/4">Bektas (2015)</a></td>
+</tr>
+<tr>
+<td><a href="https://jacobwilliams.github.io/geodesic-fortran/proc/heikkinen.html">heikkinen</a></td>
+<td>Biaxial</td>
+<td>Cartesian to geodetic</td>
+<td>Heikkinen (1982)</td>
+</tr>
+<tr>
+<td><a href="https://jacobwilliams.github.io/geodesic-fortran/proc/olson.html">olson</a></td>
+<td>Biaxial</td>
+<td>Cartesian to geodetic</td>
+<td><a href="https://ieeexplore.ieee.org/document/481290">Olson (1996)</a></td>
+</tr>
+<tr>
+<td><a href="https://jacobwilliams.github.io/geodesic-fortran/proc/direct.html">direct</a></td>
+<td>Biaxial</td>
+<td>Direct geodesic problem</td>
+<td><a href="https://link.springer.com/article/10.1007/s00190-012-0578-z">Karney (2013)</a></td>
+</tr>
+<tr>
+<td><a href="https://jacobwilliams.github.io/geodesic-fortran/proc/direct_vincenty.html">direct_vincenty</a></td>
+<td>Biaxial</td>
+<td>Direct geodesic problem</td>
+<td><a href="https://www.ngs.noaa.gov/PUBS_LIB/inverse.pdf">Vincenty (1975)</a></td>
+</tr>
+<tr>
+<td><a href="https://jacobwilliams.github.io/geodesic-fortran/proc/inverse.html">inverse</a></td>
+<td>Biaxial</td>
+<td>Inverse geodesic problem</td>
+<td><a href="https://link.springer.com/article/10.1007/s00190-012-0578-z">Karney (2013)</a></td>
+</tr>
+<tr>
+<td><a href="https://jacobwilliams.github.io/geodesic-fortran/proc/inverse_vincenty.html">inverse_vincenty</a></td>
+<td>Biaxial</td>
+<td>Inverse geodesic problem</td>
+<td><a href="https://www.ngs.noaa.gov/PUBS_LIB/inverse.pdf">Vincenty (1975)</a></td>
+</tr>
+<tr>
+<td><a href="https://jacobwilliams.github.io/geodesic-fortran/proc/great_circle_distance.html">great_circle_distance</a></td>
+<td>Sphere</td>
+<td>Great circle distance</td>
+<td><a href="https://www.ngs.noaa.gov/PUBS_LIB/inverse.pdf">Vincenty (1975)</a></td>
+</tr>
+</tbody>
+</table>
+<p>See the latest API documentation for the <a href="https://jacobwilliams.github.io/geodesic-fortran/">full list</a>. This was generated from the source code using <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a> (i.e. by running <code>ford ford.md</code>).</p>
 <h2>Compiling</h2>
 <p>A <code>fmp.toml</code> file is provided for compiling geodesic-fortran with the <a href="https://github.com/fortran-lang/fpm">Fortran Package Manager</a>. For example, to build:</p>
 <div class="codehilite"><pre><span></span><code>fpm build --profile release
@@ -146,8 +215,6 @@
 <ul>
 <li>This library is licensed under a permissive MIT/X11/BSD license.</li>
 </ul>
-<h2>Documentation</h2>
-<p>The latest API documentation can be found <a href="https://jacobwilliams.github.io/geodesic-fortran/">here</a>. This was generated from the source code using <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a> (i.e. by running <code>ford ford.md</code>).</p>
 <h3>References</h3>
 <ul>
 <li>T. Vincenty, "<a href="http://www.ngs.noaa.gov/PUBS_LIB/inverse.pdf">Direct and Inverse Solutions of Geodesics on the Ellipsoid with Application of Nested Equations</a>", Survey Review XXII. 176, April 1975.</li>
