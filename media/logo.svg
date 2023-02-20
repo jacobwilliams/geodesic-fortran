@@ -19,6 +19,12 @@
    inkscape:export-ydpi="58.009998">
   <defs
      id="defs2">
+    <rect
+       x="5.2916647"
+       y="148.16667"
+       width="556.02577"
+       height="174.79969"
+       id="rect867" />
     <marker
        style="overflow:visible"
        id="marker1589"
@@ -60,6 +66,59 @@
          stdDeviation="0.0067822081"
          id="feGaussianBlur1005" />
     </filter>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath873">
+      <text
+         xml:space="preserve"
+         id="text877"
+         style="font-size:10.58329999999999949px;line-height:1.25;font-family:'Clarendon BT';-inkscape-font-specification:'Clarendon BT';white-space:pre;shape-inside:url(#rect867);fill:#ffffff;stroke-width:0.999999;"
+         transform="translate(-197.52,23.29723)"><tspan
+           x="5.2910156"
+           y="157.52976"><tspan
+             style="fill:#ffffff;stroke-width:0.264583">        NN  = ax/sqrt(one-ex2*Sphi*Sphi-ee2*Cphi*Cphi*Slambda*Slambda) ! eqn. 4
+</tspan></tspan><tspan
+           x="5.2910156"
+           y="170.75888"><tspan
+             style="fill:#ffffff;stroke-width:0.264583">        Den = two*(one-ex2*Sphi**2-ee2*Cphi**2*Slambda**2)**(three/two)
+</tspan></tspan><tspan
+           x="5.2910156"
+           y="183.98801"><tspan
+             style="fill:#ffffff;stroke-width:0.264583">        dndphi = -ax*sin(two*phi)*(ex2 - ee2*Slambda**2) / Den
+</tspan></tspan><tspan
+           x="5.2910156"
+           y="197.21713"><tspan
+             style="fill:#ffffff;stroke-width:0.264583">        dxdphi = (dndphi*Cphi - NN*Sphi) * Clambda
+</tspan></tspan><tspan
+           x="5.2910156"
+           y="210.44626"><tspan
+             style="fill:#ffffff;stroke-width:0.264583">        dydphi = onemee2*(dndphi*Cphi - NN*Sphi) * Slambda
+</tspan></tspan><tspan
+           x="5.2910156"
+           y="223.67539"><tspan
+             style="fill:#ffffff;stroke-width:0.264583">        dzdphi = onemex2*(dndphi*Sphi + NN*Cphi)
+</tspan></tspan><tspan
+           x="5.2910156"
+           y="236.90451"><tspan
+             style="fill:#ffffff;stroke-width:0.264583">        dndlam = -ax*ee2*Cphi**2*sin(two*lambda) / Den
+</tspan></tspan><tspan
+           x="5.2910156"
+           y="250.13364"><tspan
+             style="fill:#ffffff;stroke-width:0.264583">        dxdlam = (dndlam*Clambda - NN*Slambda)*Cphi
+</tspan></tspan><tspan
+           x="5.2910156"
+           y="263.36276"><tspan
+             style="fill:#ffffff;stroke-width:0.264583">        dydlam = onemee2*(dndlam*Slambda + NN*Clambda)*Cphi
+</tspan></tspan><tspan
+           x="5.2910156"
+           y="276.59189"><tspan
+             style="fill:#ffffff;stroke-width:0.264583">        dzdlam = onemex2*dndlam*Sphi
+</tspan></tspan><tspan
+           x="5.2910156"
+           y="289.82102"><tspan
+             style="fill:#ffffff;stroke-width:0.264583">        J = reshape([dxdphi,dydphi,dzdphi,dxdlam,dydlam,dzdlam],[3,2])
+</tspan></tspan></text>
+    </clipPath>
   </defs>
   <sodipodi:namedview
      id="base"
@@ -68,9 +127,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.52241545"
-     inkscape:cx="439.85314"
-     inkscape:cy="312.4887"
+     inkscape:zoom="0.51"
+     inkscape:cx="388.73933"
+     inkscape:cy="308.78077"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      inkscape:document-rotation="0"
@@ -98,7 +157,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -121,6 +180,14 @@
        cx="114.62744"
        cy="229.70667"
        r="75.197624" />
+    <circle
+       style="opacity:1;fill:#214478;fill-opacity:1;stroke:none;stroke-width:3.07204;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+       id="circle871"
+       cx="-95.047638"
+       cy="243.38113"
+       r="75.197624"
+       clip-path="url(#clipPath873)"
+       transform="matrix(0.97655084,0,0,0.97655084,207.44629,-9.0145047)" />
     <text
        xml:space="preserve"
        style="font-size:31.064px;line-height:1.25;font-family:'Clarendon BT';-inkscape-font-specification:'Clarendon BT';fill:#ffffff;fill-opacity:1;stroke-width:0.264583"
