@@ -97,7 +97,7 @@
 <div class="codehilite"><pre><span></span><code>fpm build --profile release
 </code></pre></div>
 
-<p>&lt;!-- By default, the library is built with double precision (<code>real64</code>) real values. Explicitly specifying the real kind can be done using the following processor flags:</p>
+<p>By default, the library is built with double precision (<code>real64</code>) real values. Explicitly specifying the real kind can be done using the following processor flags:</p>
 <table>
 <thead>
 <tr>
@@ -125,17 +125,16 @@
 </tbody>
 </table>
 <p>For example, to build a single precision version of the library, use:</p>
-<div class="codehilite"><pre><span></span><code><span class="n">fpm</span><span class="w"> </span><span class="kr">build</span><span class="w"> </span><span class="o">--</span><span class="n">profile</span><span class="w"> </span><span class="n">release</span><span class="w"> </span><span class="o">--</span><span class="n">flag</span><span class="w"> </span><span class="s">&quot;-DREAL32&quot;</span><span class="w"></span>
-<span class="err">```</span><span class="w"> </span><span class="o">--&gt;</span><span class="w"></span>
-
-<span class="n">To</span><span class="w"> </span><span class="n">run</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">unit</span><span class="w"> </span><span class="n">tests</span><span class="o">:</span><span class="w"></span>
+<div class="codehilite"><pre><span></span><code>fpm build --profile release --flag &quot;-DREAL32&quot;
 </code></pre></div>
 
-<p>fpm test --profile release</p>
-<div class="codehilite"><pre><span></span><code><span class="k">To</span><span class="w"> </span><span class="k">use</span><span class="w"> </span><span class="err">`</span><span class="n">geodesic</span><span class="o">-</span><span class="k">fortran</span><span class="err">`</span><span class="w"> </span><span class="k">within</span><span class="w"> </span><span class="n">your</span><span class="w"> </span><span class="n">fpm</span><span class="w"> </span><span class="n">project</span><span class="p">,</span><span class="w"> </span><span class="k">add</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">following</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">your</span><span class="w"> </span><span class="err">`</span><span class="n">fpm</span><span class="p">.</span><span class="n">toml</span><span class="err">`</span><span class="w"> </span><span class="k">file</span><span class="err">:</span><span class="w"></span>
-<span class="err">```</span><span class="n">toml</span><span class="w"></span>
-<span class="o">[</span><span class="n">dependencies</span><span class="o">]</span><span class="w"></span>
-<span class="n">geodesic</span><span class="o">-</span><span class="k">fortran</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="err">{</span><span class="w"> </span><span class="n">git</span><span class="o">=</span><span class="ss">&quot;https://github.com/jacobwilliams/geodesic-fortran.git&quot;</span><span class="w"> </span><span class="err">}</span><span class="w"></span>
+<p>To run the unit tests:</p>
+<div class="codehilite"><pre><span></span><code>fpm test --profile release
+</code></pre></div>
+
+<p>To use <code>geodesic-fortran</code> within your fpm project, add the following to your <code>fpm.toml</code> file:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">[dependencies]</span><span class="w"></span>
+<span class="n">geodesic-fortran</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">git</span><span class="o">=</span><span class="s">&quot;https://github.com/jacobwilliams/geodesic-fortran.git&quot;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
 </code></pre></div>
 
 <p>or, to use a specific version:</p>
