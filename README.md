@@ -10,7 +10,7 @@ Implementation of geodesic routines in modern Fortran.
 
 ### Description
 
-This is a library to solve geodesic problems on an ellipsoid model of a planetary body (e.g., the Earth).
+This is a library to solve geodesic problems on a planetary body (e.g., the Earth).
 
 ## Documentation
 
