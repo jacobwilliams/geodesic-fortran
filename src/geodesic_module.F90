@@ -1518,7 +1518,7 @@ end function Lambda12
     integer,parameter :: nA3x = nA3
 
     real(wp),intent(in) :: eps
-    real(wp),intent(out) :: A3x(0: nA3x-1)
+    real(wp),intent(in) :: A3x(0: nA3x-1)
 
     A3f = polyval(nA3 - 1, A3x, eps)
 
